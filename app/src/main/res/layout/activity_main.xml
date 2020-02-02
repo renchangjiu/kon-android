@@ -20,7 +20,7 @@
                 android:background="@color/colorPrimary"
                 android:gravity="center"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                app:navigationIcon="@drawable/nav"
+                app:navigationIcon="@drawable/t_actionbar_nav"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
             <LinearLayout
