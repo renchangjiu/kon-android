@@ -1,8 +1,14 @@
 <resources>
     <string name="app_name">kon</string>
-    <string name="search">Search</string>
+    <string name="search">搜索</string>
 
     <string name="title_activity_splash">SplashActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="scan_local_music">扫描本地音乐</string>
+    <string name="select_sort_way">选择排序方式</string>
+    <string name="get_cover_lyrics">获取封面歌词</string>
+    <string name="improve_tone_quality">升级音质</string>
+    <string name="play_all">播放全部</string>
+    <string name="multiple_choice">多选</string>
 </resources>

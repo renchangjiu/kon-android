@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
  */
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"image"})
 @Accessors(chain = true)
 public class Mp3Metadata {
     /**

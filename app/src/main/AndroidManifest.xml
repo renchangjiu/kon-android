@@ -13,6 +13,9 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
         <activity
+                android:name=".activity.LocalMusicActivity"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
                 android:name=".activity.SplashActivity"
                 android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>

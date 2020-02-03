@@ -1,6 +1,7 @@
 package com.htt.kon.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.htt.kon.R;
+import com.htt.kon.activity.LocalMusicActivity;
 import com.htt.kon.activity.MainActivity;
 import com.htt.kon.adapter.LocalManagerAdapter;
 import com.htt.kon.util.LogUtils;
@@ -61,7 +63,26 @@ public class MusicFragment extends Fragment {
 
     private void initFragment() {
         this.listView.setAdapter(new LocalManagerAdapter(this.activity));
+        this.listView.setOnItemClickListener((parent, view, position, id) -> {
+            Intent intent = new Intent(activity, LocalMusicActivity.class);
+            switch (position) {
+                case 0:
+                    intent = new Intent(activity, LocalMusicActivity.class);
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                default:
+            }
+            startActivity(intent);
+        });
 
+        // 分隔布局的点击事件
         this.listViewSeparateLayout.setOnClickListener(new ListViewSeparateLayout.OnClickListener() {
             @Override
             public void onCommonClick(View v) {

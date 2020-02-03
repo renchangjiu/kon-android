@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".activity.LocalMusicActivity">
+
+    <androidx.appcompat.widget.Toolbar
+            android:id="@+id/alm_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:navigationIcon="@drawable/t_actionbar_back"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:title="本地音乐" />
+
+    <com.google.android.material.tabs.TabLayout
+            android:id="@+id/alm_tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="@color/write1"
+            app:tabIndicatorColor="@color/red1"
+            app:tabIndicatorHeight="3dp"
+            app:tabSelectedTextColor="@color/colorPrimary"
+            app:tabTextColor="@color/black" />
+
+
+    <androidx.viewpager.widget.ViewPager
+            android:id="@+id/alm_viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+</LinearLayout>

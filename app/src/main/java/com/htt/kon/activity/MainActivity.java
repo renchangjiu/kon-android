@@ -22,6 +22,7 @@ import com.htt.kon.R;
 import com.htt.kon.fragment.MusicFragment;
 import com.htt.kon.fragment.DiscoverFragment;
 import com.htt.kon.fragment.FriendsFragment;
+import com.htt.kon.util.UiUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         this.toolbar.setTitle("");
         setSupportActionBar(this.toolbar);
-        setStatusBarColor();
+        UiUtils.setStatusBarColor(this);
 
         this.initActivity();
     }
@@ -162,17 +163,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * 设置状态栏颜色
-     */
-    private void setStatusBarColor() {
-        Window window = getWindow();
-        //取消设置透明状态栏,使 ContentView 内容不再覆盖状态栏
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        //需要设置这个 flag 才能调用 setStatusBarColor 来设置状态栏颜色
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        //设置状态栏颜色
-        int color = ContextCompat.getColor(this, R.color.colorPrimary);
-        window.setStatusBarColor(color);
-    }
 }

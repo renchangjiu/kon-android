@@ -6,6 +6,8 @@
     <color name="background">#F2F4F5</color>
     <color name="black">#000000</color>
     <color name="lightBlack">#343838</color>
+    <color name="red1">#D3433C</color>
+    <color name="write1">#FEFFFF</color>
 
     <color name="black_overlay">#66000000</color>
 </resources>

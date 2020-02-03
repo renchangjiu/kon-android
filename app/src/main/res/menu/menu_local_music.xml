@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+            android:id="@+id/mlm_menu_search"
+            android:icon="@drawable/t_actionbar_search"
+            android:title="@string/search"
+            app:showAsAction="ifRoom" />
+    <item
+
+            android:id="@+id/mlm_scan_local_music"
+            android:icon="@drawable/m_scan_loacl_music"
+            android:title="@string/scan_local_music"
+            app:showAsAction="never" />
+    <item
+            android:id="@+id/mlm_select_sort_way"
+            android:icon="@drawable/m_select_sort_way"
+            android:title="@string/select_sort_way"
+            app:showAsAction="never" />
+    <item
+            android:id="@+id/mlm_get_cover_lyrics"
+            android:icon="@drawable/m_get_cover_lyrics"
+            android:title="@string/get_cover_lyrics"
+            app:showAsAction="never" />
+    <item
+            android:id="@+id/mlm_improve_tone_quality"
+            android:icon="@drawable/m_improve_tone_quality"
+            android:title="@string/improve_tone_quality"
+            app:showAsAction="never" />
+</menu>
