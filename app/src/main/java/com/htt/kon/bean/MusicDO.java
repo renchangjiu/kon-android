@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  * @date 2020/02/02 21:12
  */
 @Entity(tableName = "MUSIC")
-public class Music {
+public class MusicDO {
     @PrimaryKey
     private Long id;
 

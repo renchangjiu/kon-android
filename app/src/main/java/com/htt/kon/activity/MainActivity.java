@@ -35,7 +35,7 @@ import butterknife.OnClick;
  * @author su
  * @date 2020/01/31 21:20
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends PlayBarActivity {
 
     @BindView(R.id.am_drawerLayout)
     DrawerLayout drawerLayout;

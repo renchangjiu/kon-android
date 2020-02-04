@@ -33,26 +33,32 @@
                 <ImageView
                         android:id="@+id/am_imageViewMusic"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/selector_actionbar_music"
+                        android:layout_height="match_parent"
+                        android:background="?attr/selectableItemBackgroundBorderless"
                         android:clickable="true"
-                        android:focusable="true" />
+                        android:contentDescription="@null"
+                        android:focusable="true"
+                        android:src="@drawable/selector_actionbar_music" />
 
                 <ImageView
                         android:id="@+id/am_imageViewDiscover"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/selector_actionbar_discover"
+                        android:layout_height="match_parent"
+                        android:background="?attr/selectableItemBackgroundBorderless"
                         android:clickable="true"
-                        android:focusable="true" />
+                        android:contentDescription="@null"
+                        android:focusable="true"
+                        android:src="@drawable/selector_actionbar_discover" />
 
                 <ImageView
                         android:id="@+id/am_imageViewFriends"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/selector_actionbar_friends"
+                        android:layout_height="match_parent"
+                        android:background="?attr/selectableItemBackgroundBorderless"
                         android:clickable="true"
-                        android:focusable="true" />
+                        android:contentDescription="@null"
+                        android:focusable="true"
+                        android:src="@drawable/selector_actionbar_friends" />
 
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>

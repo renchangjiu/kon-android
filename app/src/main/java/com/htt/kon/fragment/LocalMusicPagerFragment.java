@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +13,12 @@ import androidx.fragment.app.Fragment;
 
 import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
+import com.htt.kon.adapter.list.SingleAdapter;
+import com.htt.kon.bean.MusicDO;
+import com.htt.kon.util.IdWorker;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,7 +27,7 @@ import butterknife.ButterKnife;
  * @author su
  * @date 2020/02/03 21:00
  */
-public class LocalMusicFragment extends Fragment {
+public class LocalMusicPagerFragment extends Fragment {
     public static final String FLAG_SINGLE = "single";
     public static final String FLAG_ARTIST = "artist";
     public static final String FLAG_ALBUM = "album";
@@ -50,8 +55,7 @@ public class LocalMusicFragment extends Fragment {
 
         switch (this.flag) {
             case FLAG_SINGLE:
-                View headerView = inflater.inflate(R.layout.list_header_view, container, false);
-                this.listView.addHeaderView(headerView);
+                this.initListViewSingle();
                 break;
             case FLAG_ARTIST:
                 break;
@@ -64,38 +68,43 @@ public class LocalMusicFragment extends Fragment {
         return view;
     }
 
-    private LocalMusicFragment() {
+
+    private void initListViewSingle() {
+        View headerView = LayoutInflater.from(this.activity).inflate(R.layout.list_single_header, null);
+        this.listView.addHeaderView(headerView);
+        List<MusicDO> res = new ArrayList<>();
+        MusicDO music = new MusicDO();
+        music.setId(IdWorker.singleNextId());
+        music.setTitle("listen");
+        music.setArtist("htt");
+        music.setAlbum("kon");
+        res.add(music);
+        MusicDO music1 = new MusicDO();
+        music1.setId(IdWorker.singleNextId());
+        music1.setTitle("listen");
+        music1.setArtist("htt");
+        music1.setAlbum("kon");
+        res.add(music1);
+        MusicDO music2 = new MusicDO();
+        music2.setId(IdWorker.singleNextId());
+        music2.setTitle("listen");
+        music2.setArtist("htt");
+        music2.setAlbum("kon");
+        res.add(music2);
+        this.listView.setAdapter(new SingleAdapter(res, this.listView, this.activity));
+    }
+
+    private LocalMusicPagerFragment() {
         super();
     }
 
-    public static LocalMusicFragment getInstance(String flag) {
-        LocalMusicFragment instance = new LocalMusicFragment();
+    public static LocalMusicPagerFragment getInstance(String flag) {
+        LocalMusicPagerFragment instance = new LocalMusicPagerFragment();
         Bundle bundle = new Bundle();
         bundle.putString("flag", flag);
         instance.setArguments(bundle);
         return instance;
     }
 
-    private class MyBaseAdapter extends BaseAdapter {
 
-        @Override
-        public int getCount() {
-            return 0;
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            return null;
-        }
-    }
 }

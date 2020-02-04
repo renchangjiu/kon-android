@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,8 +16,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
 import com.htt.kon.activity.MainActivity;
-import com.htt.kon.adapter.LocalManagerAdapter;
-import com.htt.kon.util.LogUtils;
+import com.htt.kon.adapter.list.LocalManagerAdapter;
 import com.htt.kon.view.GenericListView;
 import com.htt.kon.view.ListViewSeparateLayout;
 
@@ -88,6 +86,7 @@ public class MusicFragment extends Fragment {
             public void onCommonClick(View v) {
                 LocalManagerAdapter adapter = listView.getAdapter();
                 adapter.setCount(new Random().nextInt(5), new Random().nextInt(100));
+                activity.togglePlayBar();
             }
 
             @Override

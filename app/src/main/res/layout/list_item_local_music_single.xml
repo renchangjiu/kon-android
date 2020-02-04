@@ -1,6 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="50dp">
 
+    <ImageView
+            android:id="@+id/lilms_imageViewPlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/list_item_play" />
+
+    <TextView
+            android:id="@+id/lilms_textViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="11dp"
+            android:layout_toEndOf="@id/lilms_imageViewPlay"
+            android:text="兔子先生"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+    <TextView
+            android:id="@+id/lilms_textViewArtistAlbum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lilms_textViewTitle"
+            android:layout_alignStart="@id/lilms_textViewTitle"
+            android:layout_toEndOf="@id/lilms_imageViewPlay"
+            android:text="yyyyyyyyyyyyyyyyyyy"
+            android:textSize="13dp" />
+
+
+    <ImageView
+            android:id="@+id/lilms_imageViewOption"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="20dp"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/list_item_option"
+            android:focusable="false" />
 </RelativeLayout>

@@ -1,4 +1,4 @@
-package com.htt.kon.adapter;
+package com.htt.kon.adapter.list;
 
 import android.content.Context;
 import android.view.LayoutInflater;

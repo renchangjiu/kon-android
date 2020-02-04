@@ -16,6 +16,9 @@
                 android:name=".activity.LocalMusicActivity"
                 android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
+                android:name=".activity.PlayBarActivity"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
                 android:name=".activity.SplashActivity"
                 android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>

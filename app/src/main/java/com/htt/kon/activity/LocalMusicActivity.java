@@ -1,7 +1,6 @@
 package com.htt.kon.activity;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -13,7 +12,7 @@ import android.view.MenuItem;
 import com.google.android.material.tabs.TabLayout;
 import com.htt.kon.R;
 import com.htt.kon.adapter.pager.LocalMusicAdapter;
-import com.htt.kon.fragment.LocalMusicFragment;
+import com.htt.kon.fragment.LocalMusicPagerFragment;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.UiUtils;
 
@@ -27,7 +26,7 @@ import butterknife.ButterKnife;
  * @author su
  * @date 2020/02/03 17:50
  */
-public class LocalMusicActivity extends AppCompatActivity {
+public class LocalMusicActivity extends PlayBarActivity {
 
     @BindView(R.id.alm_toolbar)
     Toolbar toolbar;
@@ -55,10 +54,10 @@ public class LocalMusicActivity extends AppCompatActivity {
             finish();
         });
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(LocalMusicFragment.getInstance(LocalMusicFragment.FLAG_SINGLE));
-        fragments.add(LocalMusicFragment.getInstance(LocalMusicFragment.FLAG_ARTIST));
-        fragments.add(LocalMusicFragment.getInstance(LocalMusicFragment.FLAG_ALBUM));
-        fragments.add(LocalMusicFragment.getInstance(LocalMusicFragment.FLAG_DIR));
+        fragments.add(LocalMusicPagerFragment.getInstance(LocalMusicPagerFragment.FLAG_SINGLE));
+        fragments.add(LocalMusicPagerFragment.getInstance(LocalMusicPagerFragment.FLAG_ARTIST));
+        fragments.add(LocalMusicPagerFragment.getInstance(LocalMusicPagerFragment.FLAG_ALBUM));
+        fragments.add(LocalMusicPagerFragment.getInstance(LocalMusicPagerFragment.FLAG_DIR));
         List<String> titles = new ArrayList<>();
         titles.add("单曲");
         titles.add("歌手");

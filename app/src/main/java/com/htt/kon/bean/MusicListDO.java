@@ -15,7 +15,7 @@ import lombok.experimental.Accessors;
 @Setter
 @ToString
 @Accessors(chain = true)
-public class MusicList {
+public class MusicListDO {
 
     private Integer id;
 
