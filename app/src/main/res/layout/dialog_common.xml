@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="#F3F3F3"
+        android:orientation="vertical">
+
+    <TextView
+            android:id="@+id/dc_textView"
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:layout_marginStart="9dp"
+            android:gravity="center_vertical"
+            android:text="歌曲: 兔子先生" />
+
+    <ListView
+            android:id="@+id/dc_listView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@drawable/divider_list"
+            android:dividerHeight="1dp"
+            tools:listitem="@layout/list_item_dialog_common" />
+</LinearLayout>

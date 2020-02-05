@@ -10,7 +10,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.htt.kon.R;
+import com.htt.kon.activity.LocalMusicActivity;
 import com.htt.kon.bean.MusicDO;
+import com.htt.kon.dialog.CommonDialogFragment;
 import com.htt.kon.util.LogUtils;
 
 import java.util.List;
@@ -23,14 +25,14 @@ public class SingleAdapter extends BaseAdapter {
 
     private List<MusicDO> res;
     private ListView listView;
-    private Context context;
+    private LocalMusicActivity activity;
     private int playIconShowPos = -1;
 
 
-    public SingleAdapter(List<MusicDO> res, ListView listView, Context context) {
+    public SingleAdapter(List<MusicDO> res, ListView listView, Context activity) {
         this.res = res;
         this.listView = listView;
-        this.context = context;
+        this.activity = (LocalMusicActivity) activity;
     }
 
     @Override
@@ -50,13 +52,17 @@ public class SingleAdapter extends BaseAdapter {
             view.setTag(holder);
 
             this.listView.setOnItemClickListener((parent1, view1, position1, id) -> {
-                LogUtils.e("item click: " + position1);
                 this.playIconShowPos = position1 - 1;
                 this.notifyDataSetChanged();
             });
+
+            // 单击右侧图标
             holder.imageViewOption.setOnClickListener(v -> {
                 LogUtils.e("option click: " + position);
+                CommonDialogFragment dialog = CommonDialogFragment.of(1, CommonDialogFragment.TAGS_SINGLE);
+                dialog.show(this.activity.getSupportFragmentManager(), "1");
             });
+
         }
 
 

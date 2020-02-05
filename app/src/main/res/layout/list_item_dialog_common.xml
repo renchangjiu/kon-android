@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="47dp"
+        android:orientation="horizontal">
+
+    <ImageView
+            android:id="@+id/lidc_imageViewIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/common_dialog_play_next" />
+
+    <TextView
+            android:id="@+id/lidc_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="13dp"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/lightBlack"
+            android:text="下一首播放" />
+
+</LinearLayout>

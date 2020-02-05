@@ -6,7 +6,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="@color/background"
-        tools:context=".activity.LocalMusicActivity">
+        tools:activity=".activity.LocalMusicActivity">
 
     <androidx.appcompat.widget.Toolbar
             android:id="@+id/alm_toolbar"

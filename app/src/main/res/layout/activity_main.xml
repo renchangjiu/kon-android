@@ -5,7 +5,7 @@
         android:id="@+id/am_drawerLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".activity.MainActivity">
+        tools:activity=".activity.MainActivity">
 
     <!-- 主内容区 -->
     <LinearLayout
