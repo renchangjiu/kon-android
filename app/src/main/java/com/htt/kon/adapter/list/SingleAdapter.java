@@ -59,8 +59,11 @@ public class SingleAdapter extends BaseAdapter {
             // 单击右侧图标
             holder.imageViewOption.setOnClickListener(v -> {
                 LogUtils.e("option click: " + position);
-                CommonDialogFragment dialog = CommonDialogFragment.of(1, CommonDialogFragment.TAGS_SINGLE);
+                CommonDialogFragment dialog = CommonDialogFragment.ofSingle(1);
                 dialog.show(this.activity.getSupportFragmentManager(), "1");
+                dialog.setOnSelectListener(tag -> {
+                    LogUtils.e(tag);
+                });
             });
 
         }

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="480dp"
         android:background="#F3F3F3"
         android:orientation="vertical">
 
@@ -17,7 +17,9 @@
     <ListView
             android:id="@+id/dc_listView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbars="none"
             android:divider="@drawable/divider_list"
             android:dividerHeight="1dp"
             tools:listitem="@layout/list_item_dialog_common" />

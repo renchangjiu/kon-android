@@ -6,17 +6,23 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
+            android:name=".App"
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <service
+                android:name=".service.MusicService"
+                android:enabled="true"
+                android:exported="true"></service>
+
         <activity
                 android:name=".activity.LocalMusicActivity"
                 android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-                android:name=".activity.PlayBarActivity"
+                android:name=".activity.BaseActivity"
                 android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
                 android:name=".activity.SplashActivity"

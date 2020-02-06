@@ -1,9 +1,7 @@
 package com.htt.kon.activity;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -14,8 +12,6 @@ import androidx.viewpager.widget.ViewPager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.htt.kon.R;
@@ -35,7 +31,7 @@ import butterknife.OnClick;
  * @author su
  * @date 2020/01/31 21:20
  */
-public class MainActivity extends PlayBarActivity {
+public class MainActivity extends BaseActivity {
 
     @BindView(R.id.am_drawerLayout)
     DrawerLayout drawerLayout;

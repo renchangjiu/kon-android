@@ -26,7 +26,7 @@ import butterknife.ButterKnife;
  * @author su
  * @date 2020/02/03 17:50
  */
-public class LocalMusicActivity extends PlayBarActivity {
+public class LocalMusicActivity extends BaseActivity {
 
     @BindView(R.id.alm_toolbar)
     Toolbar toolbar;

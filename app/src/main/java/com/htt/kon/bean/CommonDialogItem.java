@@ -1,5 +1,6 @@
 package com.htt.kon.bean;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -15,6 +16,7 @@ import lombok.experimental.Accessors;
 @Setter
 @ToString
 @Accessors(chain = true)
+@AllArgsConstructor
 public class CommonDialogItem {
 
     private int id;
