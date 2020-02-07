@@ -2,6 +2,10 @@ package com.htt.kon.util;
 
 import android.util.Log;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 /**
  * @author su
  * @date 2020/01/14 13:03
@@ -29,6 +33,21 @@ public class LogUtils {
         }
     }
 
+    public static void e(Throwable throwable) {
+        if (OPEN_LOG) {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            throwable.printStackTrace(pw);
+            Log.e(getDefaultTag(), sw.toString());
+            try {
+                pw.close();
+                sw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static void d(String tag, Object o) {
         if (OPEN_LOG) {
             Log.d(tag, o.toString());
@@ -50,7 +69,7 @@ public class LogUtils {
 
 
     private static String getDefaultTag() {
-        return getClassName() + "#" + getMethodName();
+        return getClassName() + " # " + getMethodName();
     }
 
     private static String getClassName() {

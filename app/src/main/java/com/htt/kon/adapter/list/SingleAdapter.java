@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
-import com.htt.kon.bean.MusicDO;
+import com.htt.kon.bean.Music;
 import com.htt.kon.dialog.CommonDialogFragment;
 import com.htt.kon.util.LogUtils;
 
@@ -23,13 +23,13 @@ import java.util.List;
  */
 public class SingleAdapter extends BaseAdapter {
 
-    private List<MusicDO> res;
+    private List<Music> res;
     private ListView listView;
     private LocalMusicActivity activity;
     private int playIconShowPos = -1;
 
 
-    public SingleAdapter(List<MusicDO> res, ListView listView, Context activity) {
+    public SingleAdapter(List<Music> res, ListView listView, Context activity) {
         this.res = res;
         this.listView = listView;
         this.activity = (LocalMusicActivity) activity;
@@ -74,7 +74,7 @@ public class SingleAdapter extends BaseAdapter {
         } else {
             holder.imageViewPlay.setVisibility(View.GONE);
         }
-        MusicDO item = this.getItem(position);
+        Music item = this.getItem(position);
         holder.textViewTitle.setText(item.getTitle());
         holder.textViewArtistAlbum.setText(item.getArtist() + " " + item.getAlbum());
         return view;
@@ -86,7 +86,7 @@ public class SingleAdapter extends BaseAdapter {
     }
 
     @Override
-    public MusicDO getItem(int position) {
+    public Music getItem(int position) {
         return this.res.get(position);
     }
 

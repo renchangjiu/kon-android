@@ -12,13 +12,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
+import com.htt.kon.App;
 import com.htt.kon.R;
+import com.htt.kon.adapter.pager.PlayBarAdapter;
+import com.htt.kon.bean.Playlist;
 import com.htt.kon.service.MusicService;
 import com.htt.kon.util.LogUtils;
+
 
 /**
  * 自定义基类，实现底部播放栏及处理音乐播放相关功能
@@ -40,21 +47,35 @@ public class BaseActivity extends AppCompatActivity {
      */
     private View playBar;
 
+    private ImageView imageViewCover;
+
+    private TextView textViewTitle;
+
+    private TextView textViewArtist;
+
+    private ViewPager viewPager;
+
+    private ImageView imageViewBtn;
+
+    private ImageView imageViewPlayList;
+
+
     private MusicServiceConnect msConn = new MusicServiceConnect();
+
     private MusicService msService;
+
+    private App app;
+    private Playlist playlist;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ViewGroup mDecorView = (ViewGroup) getWindow().getDecorView();
         this.contentContainer = (FrameLayout) ((ViewGroup) mDecorView.getChildAt(0)).getChildAt(1);
-        this.playBar = LayoutInflater.from(getBaseContext()).inflate(R.layout.layout_play_bar, null);
-        View viewById = this.playBar.findViewById(R.id.lpb_imageViewBtn);
-        viewById.setClickable(true);
-        viewById.setFocusable(true);
-        viewById.setOnClickListener(v -> {
-            LogUtils.e();
-        });
+        this.playBar = LayoutInflater.from(this).inflate(R.layout.layout_play_bar, null);
+        app = App.getApp();
+        playlist = app.getPlaylist();
+        this.initPlayBar();
         LogUtils.e();
     }
 
@@ -63,16 +84,26 @@ public class BaseActivity extends AppCompatActivity {
         super.onPostCreate(savedInstanceState);
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.BOTTOM;
-        this.contentContainer.addView(playBar, layoutParams);
+        this.contentContainer.addView(this.playBar, layoutParams);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         Intent intent = new Intent(this, MusicService.class);
-        startService(intent);
         bindService(intent, msConn, Context.BIND_AUTO_CREATE);
         LogUtils.e();
+    }
+
+    /**
+     * 设置playBar 的一些事件
+     */
+    private void initPlayBar() {
+        this.viewPager = this.playBar.findViewById(R.id.lpb_viewPager);
+        this.imageViewBtn = this.playBar.findViewById(R.id.lpb_imageViewBtn);
+        this.imageViewPlayList = this.playBar.findViewById(R.id.lpb_imageViewPlayList);
+
+        this.viewPager.setAdapter(new PlayBarAdapter(this.playlist, this));
     }
 
     @Override

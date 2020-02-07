@@ -1,56 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/write"
         android:gravity="center_vertical"
         android:maxHeight="50dp"
-        android:minHeight="50dp">
+        android:minHeight="50dp"
+        android:orientation="horizontal">
 
     <!-- 底部浮动播放栏 -->
 
-    <ImageView
-            android:id="@+id/lpb_imageView"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:background="@color/red1" />
 
-    <TextView
-            android:id="@+id/lpb_textViewTitile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_toEndOf="@id/lpb_imageView"
-            android:text="歌名"
-            android:textSize="15sp" />
-
-    <TextView
-            android:id="@+id/lpb_textViewArtist"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/lpb_textViewTitile"
-            android:layout_marginStart="4dp"
-            android:layout_toEndOf="@id/lpb_imageView"
-            android:text="歌手"
-            android:textSize="10sp" />
+    <androidx.viewpager.widget.ViewPager
+            android:id="@+id/lpb_viewPager"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
 
     <ImageView
             android:id="@+id/lpb_imageViewBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toStartOf="@id/lpb_imageViewBtn2"
+            android:layout_marginEnd="18dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
             android:src="@drawable/common_dialog_play_next" />
 
     <ImageView
-            android:id="@+id/lpb_imageViewBtn2"
+            android:id="@+id/lpb_imageViewPlayList"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="11dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            android:src="@drawable/common_dialog_play_next" />
+            android:src="@drawable/playbar_play_list" />
 
-</RelativeLayout>
+</LinearLayout>

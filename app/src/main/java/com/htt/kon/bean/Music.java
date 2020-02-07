@@ -3,16 +3,21 @@ package com.htt.kon.bean;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.fasterxml.jackson.databind.util.BeanUtil;
+
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Date;
 
 /**
  * @author su
  * @date 2020/02/02 21:12
  */
 @Entity(tableName = "MUSIC")
-public class MusicDO {
+public class Music {
     @PrimaryKey
     private Long id;
 
@@ -23,7 +28,7 @@ public class MusicDO {
     private Long mid;
 
     /**
-     * 文件绝对路径
+     * 文件的绝对路径
      */
     @ColumnInfo(name = "path")
     private String path;
@@ -32,11 +37,11 @@ public class MusicDO {
      * 文件大小, 字节
      */
     @ColumnInfo(name = "size")
-    private Integer size;
+    private Long size;
 
 
     /**
-     * 音乐的封面, base64
+     * 歌曲封面的绝对路径
      */
     @ColumnInfo(name = "image")
     private String image;
@@ -64,6 +69,14 @@ public class MusicDO {
      */
     @ColumnInfo(name = "duration")
     private Integer duration;
+
+    /**
+     * 创建日期(毫秒级时间戳)
+     */
+    @ColumnInfo(name = "CREATE_TIME")
+    private Long createTime;
+    @Ignore
+    private String createTimeLabel;
 
     /**
      * 是否删除, 1是/2否
@@ -96,11 +109,11 @@ public class MusicDO {
         this.path = path;
     }
 
-    public Integer getSize() {
+    public Long getSize() {
         return size;
     }
 
-    public void setSize(Integer size) {
+    public void setSize(Long size) {
         this.size = size;
     }
 
@@ -144,28 +157,27 @@ public class MusicDO {
         this.duration = duration;
     }
 
+    public Long getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Long createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getCreateTimeLabel() {
+        return createTimeLabel;
+    }
+
+    public void setCreateTimeLabel(String createTimeLabel) {
+        this.createTimeLabel = createTimeLabel;
+    }
+
     public Integer getDelFlag() {
         return delFlag;
     }
 
     public void setDelFlag(Integer delFlag) {
         this.delFlag = delFlag;
-    }
-
-    @NotNull
-    @Override
-    public String toString() {
-        return "Music{" +
-                "id=" + id +
-                ", mid=" + mid +
-                ", path='" + path + '\'' +
-                ", size=" + size +
-                ", image='" + image + '\'' +
-                ", title='" + title + '\'' +
-                ", artist='" + artist + '\'' +
-                ", album='" + album + '\'' +
-                ", duration=" + duration +
-                ", delFlag=" + delFlag +
-                '}';
     }
 }

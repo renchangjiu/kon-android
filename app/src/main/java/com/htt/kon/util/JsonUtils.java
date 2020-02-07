@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 
 /**
- * json 工具类, 使用jackson库
+ * json 工具类, 使用 jackson 库
  *
  * @author dou
  * @date 2019/3/22 14:25

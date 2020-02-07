@@ -34,7 +34,7 @@ public class StorageUtils {
     /**
      * 获取外置sd卡根路径
      */
-    public static String getSdcardRootPathR(Context context) {
+    public static String getSdcardRootPath(Context context) {
         String path = "";
         try {
             File[] filesDirs = context.getExternalFilesDirs(null);
@@ -49,7 +49,7 @@ public class StorageUtils {
     /**
      * 获取外置sd卡根路径, 适用于 android6.0+
      */
-    public static String getSdcardRootPath(Context context) {
+    public static String getSdcardRootPathR(Context context) {
         String path = "";
         //使用getSystemService(String)检索一个StorageManager用于访问系统存储功能。
         StorageManager storageManager = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
@@ -77,7 +77,7 @@ public class StorageUtils {
     /**
      * 获取外置sd卡根路径, 适用于 android6.0以下
      */
-    public static String getSdcardRootPath() {
+    public static String getSdcardRootPathR() {
         String path = "";
         try {
             Map<String, String> map = System.getenv();

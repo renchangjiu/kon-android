@@ -4,6 +4,9 @@ import android.media.MediaMetadataRetriever;
 
 import com.htt.kon.bean.Mp3Metadata;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 解析音乐文件的 tag 信息
  *
@@ -12,6 +15,21 @@ import com.htt.kon.bean.Mp3Metadata;
  */
 public class MusicFileMetadataParser {
 
+
+    /**
+     * 解析 MP3 文件
+     */
+    public static List<Mp3Metadata> parse(List<String> paths) {
+        List<Mp3Metadata> list = new ArrayList<>();
+        for (String path : paths) {
+            list.add(parse(path));
+        }
+        return list;
+    }
+
+    /**
+     * 解析 MP3 文件
+     */
     public static Mp3Metadata parse(String path) {
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
         mmr.setDataSource(path);

@@ -6,8 +6,8 @@ import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
 
-import com.htt.kon.bean.MusicDO;
-import com.htt.kon.bean.PlayList;
+import com.htt.kon.bean.Music;
+import com.htt.kon.bean.Playlist;
 import com.htt.kon.util.IdWorker;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.MusicFileSearcher;
@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class MusicService extends Service {
     private MusicBinder binder = new MusicBinder();
-    private PlayList playList;
+    private Playlist playList;
     private MediaPlayer player;
 
     public MusicService() {
@@ -37,8 +37,11 @@ public class MusicService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
         player = new MediaPlayer();
+        LogUtils.e();
+    }
+
+    private void search() {
 
         // 初始化播放列表
         String sdcardRootPath = StorageUtils.getSdcardRootPathR(this);
@@ -48,16 +51,13 @@ public class MusicService extends Service {
         List<String> list2 = MusicFileSearcher.search(externalRootPath);
 
         list1.addAll(list2);
-        List<MusicDO> musicDOS = new ArrayList<>();
+        List<Music> musicDOS = new ArrayList<>();
         for (String path : list1) {
-            MusicDO music = new MusicDO();
+            Music music = new Music();
             music.setId(IdWorker.singleNextId());
             music.setPath(path);
             musicDOS.add(music);
         }
-        this.playList = PlayList.of();
-        this.playList.setMusics(musicDOS);
-        LogUtils.e();
     }
 
     @Override

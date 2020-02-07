@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment;
 import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
 import com.htt.kon.adapter.list.SingleAdapter;
-import com.htt.kon.bean.MusicDO;
+import com.htt.kon.bean.Music;
 import com.htt.kon.util.IdWorker;
 
 import java.util.ArrayList;
@@ -72,20 +72,20 @@ public class LocalMusicPagerFragment extends Fragment {
     private void initListViewSingle() {
         View headerView = LayoutInflater.from(this.activity).inflate(R.layout.list_single_header, null);
         this.listView.addHeaderView(headerView);
-        List<MusicDO> res = new ArrayList<>();
-        MusicDO music = new MusicDO();
+        List<Music> res = new ArrayList<>();
+        Music music = new Music();
         music.setId(IdWorker.singleNextId());
         music.setTitle("listen");
         music.setArtist("htt");
         music.setAlbum("kon");
         res.add(music);
-        MusicDO music1 = new MusicDO();
+        Music music1 = new Music();
         music1.setId(IdWorker.singleNextId());
         music1.setTitle("listen");
         music1.setArtist("htt");
         music1.setAlbum("kon");
         res.add(music1);
-        MusicDO music2 = new MusicDO();
+        Music music2 = new Music();
         music2.setId(IdWorker.singleNextId());
         music2.setTitle("listen");
         music2.setArtist("htt");
