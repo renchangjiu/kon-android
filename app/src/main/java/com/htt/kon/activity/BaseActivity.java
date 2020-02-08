@@ -23,6 +23,7 @@ import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.adapter.pager.PlayBarAdapter;
 import com.htt.kon.bean.Playlist;
+import com.htt.kon.dialog.PlayListDialogFragment;
 import com.htt.kon.service.MusicService;
 import com.htt.kon.util.LogUtils;
 
@@ -65,6 +66,7 @@ public class BaseActivity extends AppCompatActivity {
     private MusicService msService;
 
     private App app;
+
     private Playlist playlist;
 
     @Override
@@ -73,8 +75,9 @@ public class BaseActivity extends AppCompatActivity {
         ViewGroup mDecorView = (ViewGroup) getWindow().getDecorView();
         this.contentContainer = (FrameLayout) ((ViewGroup) mDecorView.getChildAt(0)).getChildAt(1);
         this.playBar = LayoutInflater.from(this).inflate(R.layout.layout_play_bar, null);
-        app = App.getApp();
-        playlist = app.getPlaylist();
+
+        this.app = App.getApp();
+        this.playlist = app.getPlaylist();
         this.initPlayBar();
         LogUtils.e();
     }
@@ -96,7 +99,8 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 设置playBar 的一些事件
+     * 初始化playBar
+     * TODO 播放列表为空时需要特殊处理
      */
     private void initPlayBar() {
         this.viewPager = this.playBar.findViewById(R.id.lpb_viewPager);
@@ -104,6 +108,60 @@ public class BaseActivity extends AppCompatActivity {
         this.imageViewPlayList = this.playBar.findViewById(R.id.lpb_imageViewPlayList);
 
         this.viewPager.setAdapter(new PlayBarAdapter(this.playlist, this));
+
+        this.viewPager.setCurrentItem(this.playlist.getIndex(), true);
+
+        this.imageViewBtn.setOnClickListener(v -> {
+            LogUtils.e();
+            this.msService.playOrPause();
+            this.updatePlayBarInterface();
+        });
+
+        this.imageViewPlayList.setOnClickListener(v -> {
+            PlayListDialogFragment of = PlayListDialogFragment.of(this.msService);
+            of.show(getSupportFragmentManager(), "");
+        });
+
+        this.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            private int pos = playlist.getIndex();
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                this.pos = playlist.getIndex();
+                // 右翻页
+                if (position > pos) {
+                    msService.next(true);
+                    LogUtils.e("play next music.");
+                } else if (position < pos) {
+                    // 左翻页
+                    msService.prev(true);
+                    LogUtils.e("play prev music.");
+                }
+                updatePlayBarInterface();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
+    }
+
+
+    /**
+     * 根据当前播放状态, 修改playbar 的界面
+     */
+    public void updatePlayBarInterface() {
+        if (this.msService != null) {
+            if (this.msService.isPlaying()) {
+                this.imageViewBtn.setImageResource(R.drawable.playbar_paly);
+            } else {
+                this.imageViewBtn.setImageResource(R.drawable.playbar_pause);
+            }
+        }
     }
 
     @Override
@@ -116,6 +174,7 @@ public class BaseActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         unbindService(msConn);
+        this.playlist.save2disk(this);
         LogUtils.e();
     }
 
@@ -176,6 +235,11 @@ public class BaseActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             MusicService.MusicBinder binder = (MusicService.MusicBinder) service;
             msService = binder.getMusicService();
+            msService.setPlayStateChangeListener(() -> {
+                // 使playbar 显示当前播放的歌曲的信息
+                viewPager.setCurrentItem(playlist.getIndex(), true);
+                updatePlayBarInterface();
+            });
             LogUtils.e();
         }
 

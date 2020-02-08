@@ -19,6 +19,7 @@ import com.htt.kon.util.LogUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
+ * 底部播放栏 adapter
  * @author su
  * @date 2020/02/07 21:09
  */
@@ -26,20 +27,6 @@ public class PlayBarAdapter extends PagerAdapter {
     private Playlist playlist;
     private Context context;
 
-    // /**
-    //  * 封面图片
-    //  */
-    // private ImageView imageViewCover;
-    //
-    // /**
-    //  * 歌名栏
-    //  */
-    // private TextView textViewTitle;
-    //
-    // /**
-    //  * 歌手及歌词栏
-    //  */
-    // private TextView textViewArtist;
 
     public PlayBarAdapter(Playlist playlist, Context context) {
         this.playlist = playlist;
@@ -56,9 +43,9 @@ public class PlayBarAdapter extends PagerAdapter {
     }
 
     private void init(View view, int position) {
-        ImageView  imageViewCover = view.findViewById(R.id.lipb_imageViewCover);
-        TextView  textViewTitle = view.findViewById(R.id.lipb_textViewTitle);
-        TextView  textViewArtist = view.findViewById(R.id.lipb_textViewArtist);
+        ImageView imageViewCover = view.findViewById(R.id.lipb_imageViewCover);
+        TextView textViewTitle = view.findViewById(R.id.lipb_textViewTitle);
+        TextView textViewArtist = view.findViewById(R.id.lipb_textViewArtist);
 
         Music music = this.playlist.getMusic(position);
         if (StringUtils.isNotEmpty(music.getImage())) {

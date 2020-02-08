@@ -15,9 +15,9 @@
             android:id="@+id/lidc_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="13dp"
             android:layout_gravity="center_vertical"
-            android:textColor="@color/lightBlack"
-            android:text="下一首播放" />
+            android:layout_marginStart="13dp"
+            android:text="下一首播放"
+            android:textColor="@color/lightBlack" />
 
 </LinearLayout>

@@ -11,4 +11,11 @@
     <string name="improve_tone_quality">升级音质</string>
     <string name="play_all">播放全部</string>
     <string name="multiple_choice">多选</string>
+    <string name="mode_single_loop">单曲循环</string>
+    <string name="mode_loop">列表循环</string>
+    <string name="mode_random">随机播放</string>
+    <string name="collect_all">收藏全部</string>
+    <string name="deep_sea_girl">深海少女</string>
+    <string name="luo"> - 洛天依</string>
+    <string name="playlist_title_artist_sep">&#160;-&#160;</string>
 </resources>

@@ -47,9 +47,9 @@ public class Playlist {
     private static final int MODE_RANDOM = 2;
 
     /**
-     * 播放模式: 顺序播放(列表播放完则停止)
+     * 播放模式: 单曲循环
      */
-    private static final int MODE_SEQUENTIAL = 3;
+    private static final int MODE_SINGLE_LOOP = 3;
 
     private List<Music> musics;
 
@@ -76,9 +76,9 @@ public class Playlist {
     }
 
     /**
-     * 播放下一首
+     * 播放下一首, 返回切换后的Music
      */
-    public void next() {
+    public Music next() {
         switch (this.mode) {
             case MODE_LOOP:
                 if (this.index >= this.musics.size() - 1) {
@@ -89,12 +89,13 @@ public class Playlist {
                 break;
             default:
         }
+        return this.getCurMusic();
     }
 
     /**
-     * 播放上一首
+     * 播放上一首, 返回切换后的Music
      */
-    public void prev() {
+    public Music prev() {
         switch (this.mode) {
             case MODE_LOOP:
                 if (this.index <= 0) {
@@ -105,6 +106,7 @@ public class Playlist {
                 break;
             default:
         }
+        return this.getCurMusic();
     }
 
     private Playlist() {
@@ -145,7 +147,7 @@ public class Playlist {
         try {
             InnerPlaylist ipl = new InnerPlaylist();
             ipl.setIndex(this.index);
-            ipl.setMode(this.index);
+            ipl.setMode(this.mode);
             ipl.setMusics(this.musics);
             String json = JsonUtils.bean2Json(ipl);
             FileOutputStream out = new FileOutputStream(context.getFilesDir().getAbsolutePath() + PLAY_LIST_LOCAL_PATH);

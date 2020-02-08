@@ -65,9 +65,7 @@ public class SingleAdapter extends BaseAdapter {
                     LogUtils.e(tag);
                 });
             });
-
         }
-
 
         if (this.playIconShowPos == position) {
             holder.imageViewPlay.setVisibility(View.VISIBLE);

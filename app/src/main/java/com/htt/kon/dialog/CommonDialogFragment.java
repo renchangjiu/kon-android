@@ -3,18 +3,14 @@ package com.htt.kon.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 
 import com.htt.kon.R;
 import com.htt.kon.adapter.list.dialog.CommonDialogAdapter;
@@ -25,12 +21,13 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import lombok.Setter;
 
 /**
  * @author su
  * @date 2020/02/05 17:45
  */
-public class CommonDialogFragment extends DialogFragment {
+public class CommonDialogFragment extends BaseDialogFragment {
     private static final String BUNDLE_KEY_MUSIC_ID = "musicId";
 
     public static final int TAG_PLAY_NEXT = 0;
@@ -79,7 +76,8 @@ public class CommonDialogFragment extends DialogFragment {
 
     private Context context;
 
-    private OnSelectListener listener;
+    @Setter
+    private OnSelectListener onSelectListener;
 
     /**
      * 单曲页面
@@ -126,8 +124,8 @@ public class CommonDialogFragment extends DialogFragment {
             default:
         }
         this.listView.setOnItemClickListener((parent, view, position, id) -> {
-            if (this.listener != null) {
-                this.listener.onSelect(position);
+            if (this.onSelectListener != null) {
+                this.onSelectListener.onSelect(position);
             }
         });
     }
@@ -175,15 +173,6 @@ public class CommonDialogFragment extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        // 设置dialog 的宽度为屏宽、高度为屏高的6/10、位置在屏幕底部
-        Window window = getDialog().getWindow();
-        window.setBackgroundDrawableResource(android.R.color.white);
-        window.getDecorView().setPadding(0, 0, 0, 0);
-        WindowManager.LayoutParams wlp = window.getAttributes();
-        wlp.gravity = Gravity.BOTTOM;
-        wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        wlp.height = (int) (context.getResources().getDisplayMetrics().heightPixels * 0.6);
-        window.setAttributes(wlp);
     }
 
     @Override
@@ -191,9 +180,6 @@ public class CommonDialogFragment extends DialogFragment {
         super.onStop();
     }
 
-    public void setOnSelectListener(OnSelectListener listener) {
-        this.listener = listener;
-    }
 
     public interface OnSelectListener {
         void onSelect(int tag);
