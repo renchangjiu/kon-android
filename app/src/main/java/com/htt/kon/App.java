@@ -29,7 +29,7 @@ import java.util.List;
 public class App extends Application {
     private static Context context;
 
-    private Playlist playlist;
+    private static Playlist playlist;
 
     @Override
     public void onCreate() {
@@ -37,7 +37,7 @@ public class App extends Application {
         LogUtils.e();
         context = getApplicationContext();
 
-        this.playlist = Playlist.init4Disk(this);
+        playlist = Playlist.init4Disk(this);
 
         Intent intent = new Intent(this, MusicService.class);
         startService(intent);

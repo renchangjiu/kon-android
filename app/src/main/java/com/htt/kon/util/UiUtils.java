@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.view.Menu;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ListView;
 
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.core.content.ContextCompat;
@@ -47,5 +48,9 @@ public class UiUtils {
         //设置状态栏颜色
         int color = ContextCompat.getColor(activity, R.color.colorPrimary);
         window.setStatusBarColor(color);
+    }
+
+    public static <T> T getListViewAdapter(ListView listView, Class<T> t) {
+        return (T) listView.getAdapter();
     }
 }

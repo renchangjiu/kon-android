@@ -17,7 +17,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-            <com.htt.kon.view.GenericListView
+            <com.htt.kon.view.BaseListView
                     android:id="@+id/fm_listViewManager"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

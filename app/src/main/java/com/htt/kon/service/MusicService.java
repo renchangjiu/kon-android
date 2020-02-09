@@ -57,11 +57,13 @@ public class MusicService extends Service {
         this.playlist = this.app.getPlaylist();
         LogUtils.e();
         this.player = new MediaPlayer();
-        try {
-            this.player.setDataSource(this.playlist.getCurMusic().getPath());
-            this.player.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (this.playlist.isNotEmpty()) {
+            try {
+                this.player.setDataSource(this.playlist.getCurMusic().getPath());
+                this.player.prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         // 监听播放完毕事件
         this.player.setOnCompletionListener(mp -> {
@@ -74,12 +76,10 @@ public class MusicService extends Service {
     public void playOrPause() {
         if (this.player.isPlaying()) {
             this.player.pause();
+            LogUtils.e("Play pause, music path: " + this.playlist.getCurMusic().getPath());
         } else {
             this.player.start();
-            // int duration = this.player.getDuration();
-            // int seek = duration - 10000;
-            // this.player.seekTo(seek);
-            LogUtils.e();
+            LogUtils.e("Play start, music path: " + this.playlist.getCurMusic().getPath());
         }
     }
 
@@ -129,21 +129,45 @@ public class MusicService extends Service {
 
 
     /**
+     * 移除指定位置的歌曲
+     *
+     * @param autoPlay 移除后, 是否立即播放当前index 的歌曲
+     */
+    public void remove(int position, boolean autoPlay) {
+        this.playlist.remove(position);
+        if (autoPlay) {
+            play();
+        }
+    }
+
+    /**
+     * 播放当前歌曲
+     */
+    public void play() {
+        this.play(this.playlist.getIndex());
+    }
+
+    /**
      * 播放指定位置的歌曲
      */
-    public void play(int index) {
-        this.playlist.setIndex(index);
+    public void play(int position) {
+        this.playlist.setIndex(position);
         Music curMusic = this.playlist.getCurMusic();
         try {
             this.player.stop();
             this.player.reset();
-            this.player.setDataSource(curMusic.getPath());
-            this.player.prepare();
-            this.playOrPause();
-            this.emit();
+            if (curMusic != null) {
+                this.player.setDataSource(curMusic.getPath());
+                this.player.prepare();
+                this.playOrPause();
+            }
         } catch (IOException e) {
             LogUtils.e(e);
         }
+    }
+
+    public void setMode(int mode) {
+        this.playlist.setMode(mode);
     }
 
     @Override

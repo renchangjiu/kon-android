@@ -180,4 +180,13 @@ public class Music {
     public void setDelFlag(Integer delFlag) {
         this.delFlag = delFlag;
     }
+
+    @NotNull
+    @Override
+    public String toString() {
+        return "Music{" +
+                "id=" + id +
+                ", path='" + path + '\'' +
+                '}';
+    }
 }

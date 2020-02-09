@@ -1,13 +1,11 @@
 package com.htt.kon.adapter.list.dialog;
 
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
@@ -26,25 +24,37 @@ import lombok.Setter;
  */
 public class PlaylistDialogAdapter extends BaseAdapter {
 
+    private static final int SIGNAL_LOCATE_BTN_CLICK = 1;
+    private static final int SIGNAL_DELETE_BTN_CLICK = 2;
+
     private Playlist playlist;
 
     private final App app;
 
-    private int clickPos = -1;
+    // private int clickPos = -1;
+
     private final int lightBlackColor;
 
+    @Setter
+    private OnClickListener onClickListener;
 
-    public PlaylistDialogAdapter(int clickPos) {
+    public PlaylistDialogAdapter() {
         this.app = App.getApp();
         this.playlist = this.app.getPlaylist();
-        this.clickPos = clickPos;
+        // this.clickPos = clickPos;
         lightBlackColor = ContextCompat.getColor(this.app, R.color.lightBlack);
     }
 
-    public void setClickPos(int clickPos) {
-        this.clickPos = clickPos;
-        this.notifyDataSetChanged();
-    }
+    /**
+     * 设置被点击项的pos, 即是当前播放的pos
+     */
+    // public void setClickPos(int clickPos) {
+    //     if (this.clickPos == clickPos) {
+    //         return;
+    //     }
+    //     this.clickPos = clickPos;
+    //     this.notifyDataSetChanged();
+    // }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -64,10 +74,12 @@ public class PlaylistDialogAdapter extends BaseAdapter {
             view.setTag(holder);
         }
 
+        this.setEvent(holder, position);
+
         Music item = this.getItem(position);
         holder.textViewTitle.setText(item.getTitle());
         holder.textViewArtist.setText(this.app.getString(R.string.playlist_title_artist_sep) + item.getArtist());
-        if (this.clickPos == position) {
+        if (this.playlist.getIndex() == position) {
             holder.imageViewPlay.setVisibility(View.VISIBLE);
             holder.imageViewLocate.setVisibility(View.VISIBLE);
             holder.textViewTitle.setTextColor(Color.RED);
@@ -76,9 +88,18 @@ public class PlaylistDialogAdapter extends BaseAdapter {
             holder.imageViewPlay.setVisibility(View.GONE);
             holder.imageViewLocate.setVisibility(View.GONE);
             holder.textViewTitle.setTextColor(this.lightBlackColor);
-            holder.textViewArtist.setTextColor(this.lightBlackColor);
+            holder.textViewArtist.setTextColor(Color.GRAY);
         }
         return view;
+    }
+
+    private void setEvent(ViewHolder holder, int position) {
+        holder.imageViewLocate.setOnClickListener(v -> {
+            this.emit(SIGNAL_LOCATE_BTN_CLICK, position);
+        });
+        holder.imageViewDelete.setOnClickListener(v -> {
+            this.emit(SIGNAL_DELETE_BTN_CLICK, position);
+        });
     }
 
     @Override
@@ -94,6 +115,35 @@ public class PlaylistDialogAdapter extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         return this.getItem(position).getId();
+    }
+
+    /**
+     * 回调事件监听器的方法
+     *
+     * @param signal flag
+     * @param data   可选的参数
+     * @return 可选的返回值
+     */
+    private Object emit(int signal, Object data) {
+        if (this.onClickListener == null) {
+            return null;
+        }
+        switch (signal) {
+            case SIGNAL_LOCATE_BTN_CLICK:
+                this.onClickListener.onLocateBtnClick((Integer) data);
+                return null;
+            case SIGNAL_DELETE_BTN_CLICK:
+                this.onClickListener.onDeleteBtnClick((Integer) data);
+                return null;
+            default:
+                return null;
+        }
+    }
+
+    public interface OnClickListener {
+        void onLocateBtnClick(int position);
+
+        void onDeleteBtnClick(int position);
     }
 
     private class ViewHolder {

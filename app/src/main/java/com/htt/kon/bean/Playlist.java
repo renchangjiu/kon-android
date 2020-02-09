@@ -1,37 +1,36 @@
 package com.htt.kon.bean;
 
 import android.content.Context;
+import android.util.SparseArray;
 
 import androidx.annotation.NonNull;
 
+import com.htt.kon.R;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.LogUtils;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.experimental.Accessors;
 
 /**
- * 播放列表, 单例
+ * 播放列表, 单例. 其各种设置属性的方法务必仅在 MusicService 中调用, 以防止逻辑混乱
  *
  * @author su
  * @date 2020/02/04 10:21
  */
+@ToString
 public class Playlist {
     private static final String PLAY_LIST_LOCAL_PATH = "/playlist.json";
 
@@ -39,22 +38,32 @@ public class Playlist {
     /**
      * 播放模式: 列表循环
      */
-    private static final int MODE_LOOP = 1;
+    public static final int MODE_LOOP = 1;
 
     /**
      * 播放模式: 随机播放
      */
-    private static final int MODE_RANDOM = 2;
+    public static final int MODE_RANDOM = 2;
 
     /**
      * 播放模式: 单曲循环
      */
-    private static final int MODE_SINGLE_LOOP = 3;
+    public static final int MODE_SINGLE_LOOP = 3;
 
+    public static final int[] MODES = new int[]{MODE_LOOP, MODE_RANDOM, MODE_SINGLE_LOOP};
+
+    private static SparseArray<String> modeLabelsMapping = null;
+
+    @Getter
+    @Setter
     private List<Music> musics;
 
+    @Getter
+    @Setter
     private int mode = MODE_LOOP;
 
+    @Getter
+    @Setter
     private int index = 0;
 
     public Music getCurMusic() {
@@ -75,6 +84,14 @@ public class Playlist {
         return this.musics.size();
     }
 
+    public boolean isEmpty() {
+        return this.musics.isEmpty();
+    }
+
+    public boolean isNotEmpty() {
+        return !this.isEmpty();
+    }
+
     /**
      * 播放下一首, 返回切换后的Music
      */
@@ -86,6 +103,11 @@ public class Playlist {
                 } else {
                     this.index += 1;
                 }
+                break;
+            case MODE_RANDOM:
+                this.index = new Random().nextInt(this.size());
+                break;
+            case MODE_SINGLE_LOOP:
                 break;
             default:
         }
@@ -104,9 +126,26 @@ public class Playlist {
                     this.index -= 1;
                 }
                 break;
+            case MODE_RANDOM:
+                this.index = new Random().nextInt(this.size());
+                break;
+            case MODE_SINGLE_LOOP:
+                break;
             default:
         }
         return this.getCurMusic();
+    }
+
+    /**
+     * 根据pos 删除列表中的某一项
+     *
+     * @param position pos
+     */
+    public void remove(int position) {
+        this.musics.remove(position);
+        if (position < this.index) {
+            this.index -= 1;
+        }
     }
 
     private Playlist() {
@@ -159,28 +198,50 @@ public class Playlist {
         }
     }
 
-    public List<Music> getMusics() {
-        return musics;
+
+    /**
+     * 获取到播放模式及其对应的名称的映射
+     *
+     * @return 如 <1, "列表循环">
+     */
+    public static SparseArray<String> getModeLabelsMapping(Context context) {
+        if (modeLabelsMapping != null) {
+            return modeLabelsMapping;
+        }
+        modeLabelsMapping = new SparseArray<>(MODES.length);
+        modeLabelsMapping.put(MODE_LOOP, context.getString(R.string.mode_loop));
+        modeLabelsMapping.put(MODE_RANDOM, context.getString(R.string.mode_random));
+        modeLabelsMapping.put(MODE_SINGLE_LOOP, context.getString(R.string.mode_single_loop));
+        return modeLabelsMapping;
     }
 
-    public void setMusics(@NonNull List<Music> musics) {
-        this.musics = musics;
+    public static PlayMode getModeByValue(int mode, Context context) {
+        PlayMode pm = new PlayMode();
+        pm.setValue(mode);
+        switch (mode) {
+            case MODE_LOOP:
+                pm.setLabel(context.getString(R.string.mode_loop)).setImageId(R.drawable.playlist_loop_play);
+                return pm;
+            case MODE_RANDOM:
+                pm.setLabel(context.getString(R.string.mode_random)).setImageId(R.drawable.playlist_random_play);
+                return pm;
+            case MODE_SINGLE_LOOP:
+            default:
+                pm.setLabel(context.getString(R.string.mode_single_loop)).setImageId(R.drawable.playlist_single_loop_play);
+                return pm;
+        }
     }
 
-    public int getMode() {
-        return mode;
-    }
 
-    public void setMode(int mode) {
-        this.mode = mode;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
+    public static PlayMode getNextPlayMode(int mode, Context context) {
+        switch (mode) {
+            case MODE_LOOP:
+                return getModeByValue(MODE_RANDOM, context);
+            case MODE_RANDOM:
+                return getModeByValue(MODE_SINGLE_LOOP, context);
+            default:
+                return getModeByValue(MODE_LOOP, context);
+        }
     }
 
     @Getter

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,19 +14,22 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.adapter.pager.PlayBarAdapter;
+import com.htt.kon.bean.PlayMode;
 import com.htt.kon.bean.Playlist;
+import com.htt.kon.constant.FragmentTagConstant;
 import com.htt.kon.dialog.PlayListDialogFragment;
 import com.htt.kon.service.MusicService;
 import com.htt.kon.util.LogUtils;
+import com.htt.kon.util.stream.Optional;
 
 
 /**
@@ -48,26 +52,16 @@ public class BaseActivity extends AppCompatActivity {
      */
     private View playBar;
 
-    private ImageView imageViewCover;
-
-    private TextView textViewTitle;
-
-    private TextView textViewArtist;
-
     private ViewPager viewPager;
 
     private ImageView imageViewBtn;
-
-    private ImageView imageViewPlayList;
-
 
     private MusicServiceConnect msConn = new MusicServiceConnect();
 
     private MusicService msService;
 
-    private App app;
-
     private Playlist playlist;
+    private ImageView imageViewPlayList;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,7 +70,7 @@ public class BaseActivity extends AppCompatActivity {
         this.contentContainer = (FrameLayout) ((ViewGroup) mDecorView.getChildAt(0)).getChildAt(1);
         this.playBar = LayoutInflater.from(this).inflate(R.layout.layout_play_bar, null);
 
-        this.app = App.getApp();
+        App app = App.getApp();
         this.playlist = app.getPlaylist();
         this.initPlayBar();
         LogUtils.e();
@@ -95,6 +89,9 @@ public class BaseActivity extends AppCompatActivity {
         super.onStart();
         Intent intent = new Intent(this, MusicService.class);
         bindService(intent, msConn, Context.BIND_AUTO_CREATE);
+        if (this.playlist.isEmpty()) {
+            this.hidePlayBar();
+        }
         LogUtils.e();
     }
 
@@ -117,9 +114,11 @@ public class BaseActivity extends AppCompatActivity {
             this.updatePlayBarInterface();
         });
 
+        // 弹出播放列表对话框
         this.imageViewPlayList.setOnClickListener(v -> {
-            PlayListDialogFragment of = PlayListDialogFragment.of(this.msService);
-            of.show(getSupportFragmentManager(), "");
+            PlayListDialogFragment of = PlayListDialogFragment.of();
+            of.show(getSupportFragmentManager(), FragmentTagConstant.PLAYLIST_FRAGMENT);
+            of.setOnClickListener(new PlayListDialogFragmentOnClickListener());
         });
 
         this.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -229,6 +228,76 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 处理播放列表弹出框的所有事件
+     */
+    private class PlayListDialogFragmentOnClickListener implements PlayListDialogFragment.OnClickListener {
+        /**
+         * 当播放列表的item 被点击时回调
+         *
+         * @param position position
+         */
+        @Override
+        public void onItemClick(int position) {
+            if (position != playlist.getIndex() || !msService.isPlaying()) {
+                BaseActivity.this.msService.play(position);
+                viewPager.setCurrentItem(playlist.getIndex());
+
+            }
+        }
+
+        /**
+         * 当播放模式按钮被点击时回调
+         */
+        @Override
+        public void onPlayModeBtnClick() {
+            PlayMode nextPlayMode = Playlist.getNextPlayMode(playlist.getMode(), BaseActivity.this);
+            msService.setMode(nextPlayMode.getValue());
+        }
+
+        @Override
+        public void onCollectBtnClick() {
+
+        }
+
+        @Override
+        public void onClearBtnClick() {
+
+        }
+
+        /**
+         * 当item 的定位按钮被点击时回调, 定位到某歌单或页面
+         *
+         * @param position pos
+         */
+        @Override
+        public void onLocateBtnClick(int position) {
+            LogUtils.e();
+        }
+
+        /**
+         * 当item 的删除按钮被点击时回调, 删除播放列表中的某一个
+         *
+         * @param position pos
+         * @return playlist's index.
+         */
+        @Override
+        public int onDeleteBtnClick(int position) {
+            int index = playlist.getIndex();
+            msService.remove(position, false);
+            Optional.of(viewPager.getAdapter()).ifPresent(PagerAdapter::notifyDataSetChanged);
+            if (msService.isPlaying() && position == index) {
+                msService.play();
+            }
+            if (playlist.isEmpty()) {
+                hidePlayBar();
+            }
+            Log.e("d", "dd");
+            LogUtils.e(playlist);
+            return playlist.getIndex();
+        }
+    }
+
     private class MusicServiceConnect implements ServiceConnection {
 
         @Override
@@ -239,6 +308,11 @@ public class BaseActivity extends AppCompatActivity {
                 // 使playbar 显示当前播放的歌曲的信息
                 viewPager.setCurrentItem(playlist.getIndex(), true);
                 updatePlayBarInterface();
+                PlayListDialogFragment dialog = (PlayListDialogFragment) getSupportFragmentManager()
+                        .findFragmentByTag(FragmentTagConstant.PLAYLIST_FRAGMENT);
+                if (dialog != null) {
+                    dialog.updateAdapterInterface();
+                }
             });
             LogUtils.e();
         }

@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * 底部播放栏 adapter
+ *
  * @author su
  * @date 2020/02/07 21:09
  */
@@ -57,6 +58,14 @@ public class PlayBarAdapter extends PagerAdapter {
         view.setOnClickListener(v -> {
             LogUtils.e();
         });
+    }
+
+    /**
+     * 解决ViewPager 不刷新问题, 另有更优解, 见: https://www.jianshu.com/p/266861496508
+     */
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        return POSITION_NONE;
     }
 
     @Override

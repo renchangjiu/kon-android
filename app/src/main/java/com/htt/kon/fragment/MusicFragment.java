@@ -17,7 +17,7 @@ import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
 import com.htt.kon.activity.MainActivity;
 import com.htt.kon.adapter.list.LocalManagerAdapter;
-import com.htt.kon.view.GenericListView;
+import com.htt.kon.view.BaseListView;
 import com.htt.kon.view.ListViewSeparateLayout;
 
 import java.util.Random;
@@ -39,7 +39,7 @@ public class MusicFragment extends Fragment {
 
 
     @BindView(R.id.fm_listViewManager)
-    GenericListView<LocalManagerAdapter> listView;
+    BaseListView<LocalManagerAdapter> listView;
 
     @BindView(R.id.fm_listViewSeparateLayout)
     ListViewSeparateLayout listViewSeparateLayout;

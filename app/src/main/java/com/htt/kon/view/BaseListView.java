@@ -11,26 +11,26 @@ import android.widget.ListView;
  * @author su
  * @date 2020/02/02 19:28
  */
-public class GenericListView<T extends ListAdapter> extends ListView {
+public class BaseListView<T extends ListAdapter> extends ListView {
 
     @Override
     public T getAdapter() {
         return (T) super.getAdapter();
     }
 
-    public GenericListView(Context context) {
+    public BaseListView(Context context) {
         super(context);
     }
 
-    public GenericListView(Context context, AttributeSet attrs) {
+    public BaseListView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public GenericListView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public BaseListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public GenericListView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public BaseListView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 }
