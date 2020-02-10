@@ -3,24 +3,10 @@ package com.htt.kon;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Environment;
 
-import com.htt.kon.bean.Mp3Metadata;
-import com.htt.kon.bean.Music;
-import com.htt.kon.bean.Playlist;
+import com.htt.kon.service.Playlist;
 import com.htt.kon.service.MusicService;
-import com.htt.kon.util.IdWorker;
 import com.htt.kon.util.LogUtils;
-import com.htt.kon.util.MusicFileMetadataParser;
-import com.htt.kon.util.MusicFileSearcher;
-import com.htt.kon.util.StorageUtils;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @author su

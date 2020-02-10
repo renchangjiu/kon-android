@@ -13,7 +13,7 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import com.htt.kon.R;
 import com.htt.kon.bean.Music;
-import com.htt.kon.bean.Playlist;
+import com.htt.kon.service.Playlist;
 import com.htt.kon.util.LogUtils;
 
 import org.apache.commons.lang3.StringUtils;

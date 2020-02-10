@@ -19,7 +19,7 @@
             android:layout_marginStart="6dp"
             android:text="@string/deep_sea_girl"
             android:textColor="@color/lightBlack"
-            android:textSize="13dp" />
+            android:textSize="13sp" />
 
     <TextView
             android:id="@+id/lip_textViewArtist"
@@ -28,7 +28,7 @@
             android:layout_weight="1"
             android:textColor="@color/grey"
             android:text="@string/luo"
-            android:textSize="10dp" />
+            android:textSize="10sp" />
 
     <ImageView
             android:id="@+id/lip_imageViewLocate"

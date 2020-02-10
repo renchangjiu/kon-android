@@ -21,10 +21,10 @@ public interface MusicDao {
     @Delete
     void delete(Music... musics);
 
-    @Query("update music set del_flag = 1 where id = :id")
+    @Query("update MUSIC set DEL_FLAG = 1 where ID = :id")
     void logicDelete(long id);
 
-    @Query("SELECT * FROM Music where del_flag = 2")
+    @Query("SELECT * FROM music where DEL_FLAG = 2")
     Music[] list();
 
 }

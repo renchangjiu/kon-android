@@ -13,8 +13,7 @@ import androidx.core.content.ContextCompat;
 import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.bean.Music;
-import com.htt.kon.bean.Playlist;
-import com.htt.kon.util.LogUtils;
+import com.htt.kon.service.Playlist;
 
 import lombok.Setter;
 

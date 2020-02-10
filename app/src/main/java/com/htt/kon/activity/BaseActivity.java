@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +23,7 @@ import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.adapter.pager.PlayBarAdapter;
 import com.htt.kon.bean.PlayMode;
-import com.htt.kon.bean.Playlist;
+import com.htt.kon.service.Playlist;
 import com.htt.kon.constant.FragmentTagConstant;
 import com.htt.kon.dialog.PlayListDialogFragment;
 import com.htt.kon.service.MusicService;
@@ -262,7 +261,9 @@ public class BaseActivity extends AppCompatActivity {
 
         @Override
         public void onClearBtnClick() {
-
+            msService.clear();
+            Optional.of(viewPager.getAdapter()).ifPresent(PagerAdapter::notifyDataSetChanged);
+            hidePlayBar();
         }
 
         /**
@@ -292,7 +293,6 @@ public class BaseActivity extends AppCompatActivity {
             if (playlist.isEmpty()) {
                 hidePlayBar();
             }
-            Log.e("d", "dd");
             LogUtils.e(playlist);
             return playlist.getIndex();
         }

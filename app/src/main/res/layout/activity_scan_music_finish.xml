@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        tools:context=".activity.ScanMusicFinishActivity">
+
+    <androidx.appcompat.widget.Toolbar
+            android:id="@+id/asmf_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:navigationIcon="@drawable/t_actionbar_back"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:title="@string/scan_music" />
+
+    <FrameLayout
+            android:layout_width="170dp"
+            android:layout_height="280dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="57dp">
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/scan_music_bg" />
+
+        <ImageView
+                android:layout_width="58dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/scan_music_ok" />
+    </FrameLayout>
+
+
+    <TextView
+            android:id="@+id/asmf_textViewResult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/scan_music_result_count"
+            android:textSize="13sp" />
+
+    <TextView
+            android:id="@+id/asmf_textViewBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="33dp"
+            android:background="@drawable/selector_scan_music1"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingStart="130dp"
+            android:paddingEnd="130dp"
+            android:text="回到我的音乐"
+            android:textColor="@color/write" />
+
+    <TextView
+            android:id="@+id/asmf_textViewLyric"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="19dp"
+            android:background="@drawable/selector_scan_music2"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingStart="118dp"
+            android:paddingEnd="118dp"
+            android:text="一键获取封面歌词"
+            android:textColor="@color/selector_scan_music_tc" />
+</LinearLayout>

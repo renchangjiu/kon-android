@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#D33A32</color>
+    <color name="themeColor">#D33A32</color>
+    <color name="themeColorPressed">#BE352B</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="background">#F2F4F5</color>

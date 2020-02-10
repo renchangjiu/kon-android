@@ -17,7 +17,7 @@ import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.adapter.list.dialog.PlaylistDialogAdapter;
 import com.htt.kon.bean.PlayMode;
-import com.htt.kon.bean.Playlist;
+import com.htt.kon.service.Playlist;
 import com.htt.kon.util.UiUtils;
 
 
@@ -105,8 +105,7 @@ public class PlayListDialogFragment extends BaseDialogFragment {
             assert onClickListener != null;
             onClickListener.onItemClick(position);
             // 更新被点击项图标
-            PlaylistDialogAdapter adapter = UiUtils.getListViewAdapter(this.listView, PlaylistDialogAdapter.class);
-            adapter.notifyDataSetChanged();
+            UiUtils.getListViewAdapter(this.listView, PlaylistDialogAdapter.class).notifyDataSetChanged();
         });
 
         // 获取下一个播放模式并设置界面
@@ -115,12 +114,31 @@ public class PlayListDialogFragment extends BaseDialogFragment {
             onClickListener.onPlayModeBtnClick();
             this.updateModeInterface();
         });
+
+        // 收藏按钮的点击事件
+        this.textViewCollect.setOnClickListener(v -> {
+            assert onClickListener != null;
+            onClickListener.onCollectBtnClick();
+        });
+
+        //  清空按钮的点击事件
+        this.imageViewClear.setOnClickListener(v -> {
+            OptionDialog of = OptionDialog.of(context, getString(R.string.sure_to_clear_playlist));
+            of.setPositiveButton(getString(R.string.clear), () -> {
+                assert onClickListener != null;
+                onClickListener.onClearBtnClick();
+                UiUtils.getListViewAdapter(this.listView, PlaylistDialogAdapter.class).notifyDataSetChanged();
+                dismiss();
+            });
+            of.setNegativeButton(null);
+            of.show();
+        });
     }
 
     /**
      * 设置播放模式按钮的文字和图片
      */
-    public void updateModeInterface() {
+    private void updateModeInterface() {
         int mode = this.playlist.getMode();
         PlayMode playMode = Playlist.getModeByValue(mode, this.context);
         Drawable drawable = this.context.getResources().getDrawable(playMode.getImageId(), null);

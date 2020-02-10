@@ -14,22 +14,26 @@ public class LogUtils {
     private static final boolean OPEN_LOG = true;
     private static final String DEFAULT_MSG = "---";
 
+    private static final int MAX_LENGTH = 1024;
+    private static final int LEVEL_ERROR = 1;
+    private static final int LEVEL_DEBUG = 2;
+
     public static void e(String tag, Object o) {
         if (OPEN_LOG) {
-            Log.e(tag, o.toString());
+            print(LEVEL_ERROR, tag, o.toString());
         }
     }
 
     public static void e(Object o) {
         if (OPEN_LOG) {
-            Log.e(getDefaultTag(), o.toString());
+            print(LEVEL_ERROR, getDefaultTag(), o.toString());
         }
-    }
 
+    }
 
     public static void e() {
         if (OPEN_LOG) {
-            Log.e(getDefaultTag(), DEFAULT_MSG);
+            print(LEVEL_ERROR, getDefaultTag(), DEFAULT_MSG);
         }
     }
 
@@ -38,7 +42,7 @@ public class LogUtils {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             throwable.printStackTrace(pw);
-            Log.e(getDefaultTag(), sw.toString());
+            print(LEVEL_ERROR, getDefaultTag(), sw.toString());
             try {
                 pw.close();
                 sw.close();
@@ -50,32 +54,61 @@ public class LogUtils {
 
     public static void d(String tag, Object o) {
         if (OPEN_LOG) {
-            Log.d(tag, o.toString());
+            print(LEVEL_DEBUG, tag, o.toString());
         }
     }
 
     public static void d(Object o) {
         if (OPEN_LOG) {
-            Log.d(getDefaultTag(), o.toString());
+            print(LEVEL_DEBUG, getDefaultTag(), o.toString());
         }
     }
 
 
     public static void d() {
         if (OPEN_LOG) {
-            Log.d(getDefaultTag(), DEFAULT_MSG);
+            print(LEVEL_DEBUG, getDefaultTag(), DEFAULT_MSG);
+        }
+    }
+
+    private static void print(int level, String tag, String string) {
+        if (string.length() <= MAX_LENGTH) {
+            print1(level, tag, string);
+        } else {
+            while (string.length() > MAX_LENGTH) {
+                print1(level, tag, string.substring(0, MAX_LENGTH));
+                string = string.substring(MAX_LENGTH);
+            }
+        }
+    }
+
+    private static void print1(int level, String tag, String string) {
+        switch (level) {
+            case LEVEL_ERROR:
+                Log.e(tag, string);
+                break;
+            case LEVEL_DEBUG:
+                Log.d(tag, string);
+                break;
+            default:
         }
     }
 
 
     private static String getDefaultTag() {
-        return getClassName() + " # " + getMethodName();
+        String defTag = getClassName() + "#" + getMethodName();
+        if (defTag.length() >= 23) {
+            defTag = defTag.substring(0, 20) + "...";
+        }
+        return defTag;
     }
 
     private static String getClassName() {
         StackTraceElement[] stackTraces = Thread.currentThread().getStackTrace();
         if (stackTraces.length >= 6) {
-            return stackTraces[5].getClassName();
+            String className = stackTraces[5].getClassName();
+            className = className.substring(className.lastIndexOf(".") + 1);
+            return className;
         }
         return "";
     }

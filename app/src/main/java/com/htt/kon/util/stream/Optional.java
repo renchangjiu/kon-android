@@ -1,6 +1,5 @@
 package com.htt.kon.util.stream;
 
-import java.util.Objects;
 
 /**
  * 简易 optional
@@ -13,7 +12,7 @@ public class Optional<T> {
     private final T value;
 
     private Optional(T value) {
-        this.value = Objects.requireNonNull(value);
+        this.value = value;
     }
 
     public static <T> Optional<T> of(T value) {

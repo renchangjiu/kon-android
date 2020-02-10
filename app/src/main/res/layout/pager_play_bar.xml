@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="5dp"
-                android:text="歌名"
+                android:text="@string/music_title"
                 android:textSize="13sp" />
 
         <TextView
@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:gravity="center_vertical"
-                android:text="歌手"
+                android:text="@string/artist"
                 android:textSize="10sp" />
     </LinearLayout>
 </LinearLayout>

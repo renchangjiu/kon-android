@@ -7,7 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.htt.kon.bean.Mp3Metadata;
 import com.htt.kon.bean.Music;
-import com.htt.kon.bean.Playlist;
+import com.htt.kon.service.Playlist;
 import com.htt.kon.util.IdWorker;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.MusicFileMetadataParser;
@@ -81,7 +81,6 @@ public class ContextTest {
                     out.close();
                     music.setImage(imageFile.getAbsolutePath());
                 }
-                // getResources().getr
                 music.setTitle(metadata.getTitle());
                 music.setArtist(metadata.getArtist());
                 music.setAlbum(metadata.getAlbum());

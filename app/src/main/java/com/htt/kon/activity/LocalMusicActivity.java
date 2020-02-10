@@ -5,6 +5,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -82,7 +83,8 @@ public class LocalMusicActivity extends BaseActivity {
                 LogUtils.e(1);
                 break;
             case R.id.mlm_scan_local_music:
-                LogUtils.e(2);
+                Intent intent = new Intent(this, ScanMusicActivity.class);
+                startActivity(intent);
                 break;
             case R.id.mlm_select_sort_way:
                 LogUtils.e(3);

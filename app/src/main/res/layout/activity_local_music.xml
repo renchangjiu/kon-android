@@ -4,8 +4,8 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:background="@color/background"
+        android:orientation="vertical"
         tools:activity=".activity.LocalMusicActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -17,7 +17,7 @@
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:navigationIcon="@drawable/t_actionbar_back"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:title="本地音乐" />
+            app:title="@string/local_music" />
 
     <com.google.android.material.tabs.TabLayout
             android:id="@+id/alm_tabLayout"

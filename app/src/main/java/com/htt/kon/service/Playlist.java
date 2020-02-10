@@ -1,11 +1,11 @@
-package com.htt.kon.bean;
+package com.htt.kon.service;
 
 import android.content.Context;
 import android.util.SparseArray;
 
-import androidx.annotation.NonNull;
-
 import com.htt.kon.R;
+import com.htt.kon.bean.Music;
+import com.htt.kon.bean.PlayMode;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.LogUtils;
 
@@ -146,6 +146,14 @@ public class Playlist {
         if (position < this.index) {
             this.index -= 1;
         }
+    }
+
+    /**
+     * 清空
+     */
+    public void clear() {
+        this.musics.clear();
+        this.index = 0;
     }
 
     private Playlist() {

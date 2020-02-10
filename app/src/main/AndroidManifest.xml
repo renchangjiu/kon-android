@@ -13,11 +13,19 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <activity
+                android:name=".activity.ScanMusicFinishActivity"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <service
                 android:name=".service.MusicService"
                 android:enabled="true"
-                android:exported="true"></service>
+                android:exported="true"
+                android:permission="TODO" />
 
+        <activity
+                android:name=".activity.ScanMusicActivity"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
                 android:name=".activity.LocalMusicActivity"
                 android:theme="@style/Theme.AppCompat.Light.NoActionBar" />

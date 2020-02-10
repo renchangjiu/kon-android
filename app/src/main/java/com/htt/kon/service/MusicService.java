@@ -8,7 +8,6 @@ import android.os.IBinder;
 
 import com.htt.kon.App;
 import com.htt.kon.bean.Music;
-import com.htt.kon.bean.Playlist;
 import com.htt.kon.util.IdWorker;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.MusicFileSearcher;
@@ -147,6 +146,7 @@ public class MusicService extends Service {
         this.play(this.playlist.getIndex());
     }
 
+
     /**
      * 播放指定位置的歌曲
      */
@@ -166,6 +166,15 @@ public class MusicService extends Service {
         }
     }
 
+    /**
+     * 清空播放列表
+     */
+    public void clear() {
+        this.playlist.clear();
+        this.player.stop();
+        this.player.reset();
+    }
+
     public void setMode(int mode) {
         this.playlist.setMode(mode);
     }
@@ -180,25 +189,6 @@ public class MusicService extends Service {
     public void onDestroy() {
         super.onDestroy();
         LogUtils.e();
-    }
-
-
-    private void search() {
-        // 初始化播放列表
-        String sdcardRootPath = StorageUtils.getSdcardRootPathR(this);
-        List<String> list1 = MusicFileSearcher.search(sdcardRootPath);
-
-        String externalRootPath = StorageUtils.getExternalRootPath(this);
-        List<String> list2 = MusicFileSearcher.search(externalRootPath);
-
-        list1.addAll(list2);
-        List<Music> musicDOS = new ArrayList<>();
-        for (String path : list1) {
-            Music music = new Music();
-            music.setId(IdWorker.singleNextId());
-            music.setPath(path);
-            musicDOS.add(music);
-        }
     }
 
 

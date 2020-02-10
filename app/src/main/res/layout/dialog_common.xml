@@ -12,7 +12,7 @@
             android:layout_height="43dp"
             android:layout_marginStart="9dp"
             android:gravity="center_vertical"
-            android:text="歌曲: 兔子先生" />
+            android:text="@string/dc_textView_example" />
 
     <ListView
             android:id="@+id/dc_listView"
