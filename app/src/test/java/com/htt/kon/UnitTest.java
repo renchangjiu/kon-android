@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 public class UnitTest {
     @Test
     public void main() throws IOException, InterruptedException {
-        String command = "cmd.exe /c adb shell input tap 500 500";
+        String command = "cmd.exe /c adb -s 397d01a shell input tap 500 500";
         int i = 0;
         while (true) {
             Runtime.getRuntime().exec(command);

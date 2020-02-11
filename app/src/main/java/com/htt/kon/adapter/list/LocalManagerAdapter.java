@@ -10,6 +10,9 @@ import android.widget.TextView;
 
 
 import com.htt.kon.R;
+import com.htt.kon.activity.MainActivity;
+import com.htt.kon.constant.MidConstant;
+import com.htt.kon.service.MusicDbService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +23,15 @@ import java.util.List;
  * @date 2020/02/02 19:18
  */
 public class LocalManagerAdapter extends BaseAdapter {
-    private Context context;
+    private MusicDbService musicDbService;
+
+    private MainActivity activity;
+
     private List<ItemData> res;
 
-    public LocalManagerAdapter(Context context) {
-        this.context = context;
+    public LocalManagerAdapter(Context activity) {
+        this.activity = (MainActivity) activity;
+        this.musicDbService = MusicDbService.of(this.activity);
         this.initItemData();
     }
 
@@ -33,7 +40,11 @@ public class LocalManagerAdapter extends BaseAdapter {
         ItemData item1 = new ItemData();
         item1.imageId = R.drawable.music_icon_local;
         item1.itemTitle = "本地音乐";
-        item1.count = 0;
+        new Thread(() -> {
+            item1.count = this.musicDbService.list(MidConstant.MID_LOCAL_MUSIC).size();
+            this.activity.runOnUiThread(this::notifyDataSetChanged);
+        }).start();
+
 
         ItemData item2 = new ItemData();
         item2.imageId = R.drawable.music_icon_recently_played;

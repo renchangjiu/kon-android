@@ -15,7 +15,10 @@ import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
 import com.htt.kon.adapter.list.SingleAdapter;
 import com.htt.kon.bean.Music;
+import com.htt.kon.constant.MidConstant;
+import com.htt.kon.service.MusicDbService;
 import com.htt.kon.util.IdWorker;
+import com.htt.kon.util.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +27,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
+ * 本地音乐activity 下的4个tab页
+ *
  * @author su
  * @date 2020/02/03 21:00
  */
@@ -32,6 +37,8 @@ public class LocalMusicPagerFragment extends Fragment {
     public static final String FLAG_ARTIST = "artist";
     public static final String FLAG_ALBUM = "album";
     public static final String FLAG_DIR = "dir";
+
+    private MusicDbService musicDbService;
 
     private LocalMusicActivity activity;
 
@@ -52,7 +59,7 @@ public class LocalMusicPagerFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_local_music, container, false);
         ButterKnife.bind(this, view);
-
+        this.musicDbService = MusicDbService.of(this.activity);
         switch (this.flag) {
             case FLAG_SINGLE:
                 this.initListViewSingle();
@@ -72,26 +79,12 @@ public class LocalMusicPagerFragment extends Fragment {
     private void initListViewSingle() {
         View headerView = LayoutInflater.from(this.activity).inflate(R.layout.list_single_header, null);
         this.listView.addHeaderView(headerView);
-        List<Music> res = new ArrayList<>();
-        Music music = new Music();
-        music.setId(IdWorker.singleNextId());
-        music.setTitle("listen");
-        music.setArtist("htt");
-        music.setAlbum("kon");
-        res.add(music);
-        Music music1 = new Music();
-        music1.setId(IdWorker.singleNextId());
-        music1.setTitle("listen");
-        music1.setArtist("htt");
-        music1.setAlbum("kon");
-        res.add(music1);
-        Music music2 = new Music();
-        music2.setId(IdWorker.singleNextId());
-        music2.setTitle("listen");
-        music2.setArtist("htt");
-        music2.setAlbum("kon");
-        res.add(music2);
-        this.listView.setAdapter(new SingleAdapter(res, this.listView, this.activity));
+        new Thread(() -> {
+            List<Music> list = this.musicDbService.list(MidConstant.MID_LOCAL_MUSIC);
+            this.activity.runOnUiThread(() -> {
+                this.listView.setAdapter(new SingleAdapter(list, this.listView, this.activity));
+            });
+        }).start();
     }
 
     private LocalMusicPagerFragment() {

@@ -47,7 +47,7 @@ public class MusicList {
     /**
      * 是否删除, 1是/2否
      */
-    @ColumnInfo(name = "del_flag")
+    @ColumnInfo(name = "DEL_FLAG")
     private Integer delFlag;
 
     /**

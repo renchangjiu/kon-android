@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "9f9e60ce917bb588c5ee9ff581686f8c",
+    "identityHash": "9c60cba9d85f6a8c772da41cb72746ea",
     "entities": [
       {
         "tableName": "MUSIC",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `mid` INTEGER, `path` TEXT, `size` INTEGER, `image` TEXT, `title` TEXT, `artist` TEXT, `album` TEXT, `duration` INTEGER, `CREATE_TIME` INTEGER, `del_flag` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `MID` INTEGER, `PATH` TEXT, `SIZE` INTEGER, `IMAGE` TEXT, `TITLE` TEXT, `ARTIST` TEXT, `ALBUM` TEXT, `DURATION` INTEGER, `BIT_RATE` INTEGER, `CREATE_TIME` INTEGER, `DEL_FLAG` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -16,49 +16,55 @@
           },
           {
             "fieldPath": "mid",
-            "columnName": "mid",
+            "columnName": "MID",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
             "fieldPath": "path",
-            "columnName": "path",
+            "columnName": "PATH",
             "affinity": "TEXT",
             "notNull": false
           },
           {
             "fieldPath": "size",
-            "columnName": "size",
+            "columnName": "SIZE",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
             "fieldPath": "image",
-            "columnName": "image",
+            "columnName": "IMAGE",
             "affinity": "TEXT",
             "notNull": false
           },
           {
             "fieldPath": "title",
-            "columnName": "title",
+            "columnName": "TITLE",
             "affinity": "TEXT",
             "notNull": false
           },
           {
             "fieldPath": "artist",
-            "columnName": "artist",
+            "columnName": "ARTIST",
             "affinity": "TEXT",
             "notNull": false
           },
           {
             "fieldPath": "album",
-            "columnName": "album",
+            "columnName": "ALBUM",
             "affinity": "TEXT",
             "notNull": false
           },
           {
             "fieldPath": "duration",
-            "columnName": "duration",
+            "columnName": "DURATION",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "bitRate",
+            "columnName": "BIT_RATE",
             "affinity": "INTEGER",
             "notNull": false
           },
@@ -70,7 +76,7 @@
           },
           {
             "fieldPath": "delFlag",
-            "columnName": "del_flag",
+            "columnName": "DEL_FLAG",
             "affinity": "INTEGER",
             "notNull": false
           }
@@ -86,7 +92,7 @@
       },
       {
         "tableName": "MUSIC_LIST",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `NAME` TEXT, `CREATE_TIME` INTEGER, `PLAY_COUNT` INTEGER, `del_flag` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `NAME` TEXT, `CREATE_TIME` INTEGER, `PLAY_COUNT` INTEGER, `DEL_FLAG` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -114,7 +120,7 @@
           },
           {
             "fieldPath": "delFlag",
-            "columnName": "del_flag",
+            "columnName": "DEL_FLAG",
             "affinity": "INTEGER",
             "notNull": false
           }
@@ -132,7 +138,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9f9e60ce917bb588c5ee9ff581686f8c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9c60cba9d85f6a8c772da41cb72746ea')"
     ]
   }
 }

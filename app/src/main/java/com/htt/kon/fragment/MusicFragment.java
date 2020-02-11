@@ -17,6 +17,7 @@ import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
 import com.htt.kon.activity.MainActivity;
 import com.htt.kon.adapter.list.LocalManagerAdapter;
+import com.htt.kon.service.MusicDbService;
 import com.htt.kon.view.BaseListView;
 import com.htt.kon.view.ListViewSeparateLayout;
 
@@ -30,8 +31,9 @@ import butterknife.ButterKnife;
  * @date 2020/02/01 19:46
  */
 public class MusicFragment extends Fragment {
-
     private MainActivity activity;
+
+    private MusicDbService musicDbService;
 
 
     @BindView(R.id.fm_swipeRefreshLayout)
@@ -55,11 +57,13 @@ public class MusicFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_music, container, false);
         ButterKnife.bind(this, view);
-        this.initFragment();
+
+        this.init();
         return view;
     }
 
-    private void initFragment() {
+    private void init() {
+        this.musicDbService = MusicDbService.of(this.activity);
         this.listView.setAdapter(new LocalManagerAdapter(this.activity));
         this.listView.setOnItemClickListener((parent, view, position, id) -> {
             Intent intent = new Intent(activity, LocalMusicActivity.class);

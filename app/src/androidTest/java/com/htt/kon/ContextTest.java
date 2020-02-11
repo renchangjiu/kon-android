@@ -1,6 +1,8 @@
 package com.htt.kon;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.provider.MediaStore;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -18,6 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,7 +34,7 @@ import java.util.List;
 @RunWith(AndroidJUnit4.class)
 public class ContextTest {
     @Test
-    public void useAppContext() throws IOException, InterruptedException {
+    public void useAppContext() throws Exception {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
         // String path = "/storage/emulated/0/listen.mp3";
@@ -48,9 +51,48 @@ public class ContextTest {
         //
         // list.addAll(list1);
 
-        preparePlaylist(context);
+        // preparePlaylist(context);
 
+        getmusic(context);
         LogUtils.e();
+    }
+
+    public static void getmusic(Context context) throws Exception {
+        long start = System.currentTimeMillis();
+        List<String> paths = MusicFileSearcher.search(context);
+
+        List<Music> musics = new ArrayList<>();
+        String root = context.getExternalFilesDir(null).getAbsolutePath();
+        File dir = new File(root + "/image/");
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+        for (String path : paths) {
+            Mp3Metadata metadata = MusicFileMetadataParser.parse(path);
+            Music music = new Music();
+            music.setId(IdWorker.singleNextId());
+            music.setMid(0L);
+            music.setPath(path);
+            music.setSize(new File(path).length());
+            if (metadata.getImage() != null) {
+                File imageFile = new File(dir.getAbsolutePath() + "/" + music.getId() + ".png");
+                FileOutputStream out = new FileOutputStream(imageFile);
+                out.write(metadata.getImage());
+                out.flush();
+                out.close();
+                music.setImage(imageFile.getAbsolutePath());
+            }
+            music.setTitle(metadata.getTitle());
+            music.setArtist(metadata.getArtist());
+            music.setAlbum(metadata.getAlbum());
+            music.setDuration(metadata.getDuration());
+            music.setCreateTime(start);
+            music.setDelFlag(2);
+            musics.add(music);
+        }
+        long sep = System.currentTimeMillis() - start;
+        LogUtils.e();
+
     }
 
     public void preparePlaylist(Context context) {

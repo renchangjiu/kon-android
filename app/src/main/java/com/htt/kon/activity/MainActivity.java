@@ -18,6 +18,7 @@ import com.htt.kon.R;
 import com.htt.kon.fragment.MusicFragment;
 import com.htt.kon.fragment.DiscoverFragment;
 import com.htt.kon.fragment.FriendsFragment;
+import com.htt.kon.service.MusicDbService;
 import com.htt.kon.util.UiUtils;
 
 import java.util.ArrayList;
@@ -53,6 +54,8 @@ public class MainActivity extends BaseActivity {
 
     private List<Fragment> fragments;
 
+    private MusicDbService musicDbService;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,10 +67,11 @@ public class MainActivity extends BaseActivity {
         setSupportActionBar(this.toolbar);
         UiUtils.setStatusBarColor(this);
 
-        this.initActivity();
+        this.init();
     }
 
-    private void initActivity() {
+    private void init() {
+        this.musicDbService = MusicDbService.of(this);
         this.imageViewMusic.setSelected(true);
         fragments = new ArrayList<>();
         fragments.add(new MusicFragment());

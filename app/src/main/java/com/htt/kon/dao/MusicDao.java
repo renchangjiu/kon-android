@@ -7,6 +7,8 @@ import androidx.room.Query;
 
 import com.htt.kon.bean.Music;
 
+import java.util.List;
+
 
 /**
  * @author su
@@ -16,7 +18,11 @@ import com.htt.kon.bean.Music;
 public interface MusicDao {
 
     @Insert
-    void insert(Music... musics);
+    void insert(List<Music> musics);
+
+    @Insert
+    void insert(Music musics);
+
 
     @Delete
     void delete(Music... musics);
@@ -24,7 +30,14 @@ public interface MusicDao {
     @Query("update MUSIC set DEL_FLAG = 1 where ID = :id")
     void logicDelete(long id);
 
-    @Query("SELECT * FROM music where DEL_FLAG = 2")
+
+    @Query("SELECT * FROM MUSIC where DEL_FLAG = 2")
     Music[] list();
+
+    /**
+     * list by mid
+     */
+    @Query("SELECT * FROM MUSIC where DEL_FLAG = 2 and MID = :mid")
+    Music[] list(long mid);
 
 }

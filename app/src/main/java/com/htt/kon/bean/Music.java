@@ -6,11 +6,9 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import com.fasterxml.jackson.databind.util.BeanUtil;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Date;
 
 /**
  * @author su
@@ -24,51 +22,57 @@ public class Music {
     /**
      * 所属歌单ID
      */
-    @ColumnInfo(name = "mid")
+    @ColumnInfo(name = "MID")
     private Long mid;
 
     /**
      * 文件的绝对路径
      */
-    @ColumnInfo(name = "path")
+    @ColumnInfo(name = "PATH")
     private String path;
 
     /**
      * 文件大小, 字节
      */
-    @ColumnInfo(name = "size")
+    @ColumnInfo(name = "SIZE")
     private Long size;
 
 
     /**
      * 歌曲封面的绝对路径
      */
-    @ColumnInfo(name = "image")
+    @ColumnInfo(name = "IMAGE")
     private String image;
 
     /**
-     * title
+     * 歌曲名
      */
-    @ColumnInfo(name = "title")
+    @ColumnInfo(name = "TITLE")
     private String title;
 
     /**
-     * artist
+     * 歌手
      */
-    @ColumnInfo(name = "artist")
+    @ColumnInfo(name = "ARTIST")
     private String artist;
 
     /**
-     * album
+     * 专辑名
      */
-    @ColumnInfo(name = "album")
+    @ColumnInfo(name = "ALBUM")
     private String album;
 
     /**
      * 时长, 毫秒
      */
-    @ColumnInfo(name = "duration")
+    @ColumnInfo(name = "DURATION")
     private Integer duration;
+
+    /**
+     * 比特率, 单位: kbps
+     */
+    @ColumnInfo(name = "BIT_RATE")
+    private Integer bitRate;
 
     /**
      * 创建日期(毫秒级时间戳)
@@ -81,7 +85,7 @@ public class Music {
     /**
      * 是否删除, 1是/2否
      */
-    @ColumnInfo(name = "del_flag")
+    @ColumnInfo(name = "DEL_FLAG")
     private Integer delFlag;
 
 
@@ -179,6 +183,14 @@ public class Music {
 
     public void setDelFlag(Integer delFlag) {
         this.delFlag = delFlag;
+    }
+
+    public Integer getBitRate() {
+        return bitRate;
+    }
+
+    public void setBitRate(Integer bitRate) {
+        this.bitRate = bitRate;
     }
 
     @NotNull

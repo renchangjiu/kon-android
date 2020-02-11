@@ -1,8 +1,16 @@
 package com.htt.kon.util;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.provider.MediaStore;
+
+import com.htt.kon.bean.Mp3Metadata;
+import com.htt.kon.bean.Music;
+
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,6 +24,23 @@ import java.util.List;
 public class MusicFileSearcher {
     private static final String[] EXT = new String[]{"mp3", "flac"};
 
+
+    /**
+     * 使用 MediaProvider 获取音乐文件
+     */
+    public static List<String> search(Context context) {
+        Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+                , null, null, null, null);
+        List<String> paths = new ArrayList<>();
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                String path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
+                paths.add(path);
+            }
+            cursor.close();
+        }
+        return paths;
+    }
 
     /**
      * 从指定根目录及子目录中搜索音乐文件

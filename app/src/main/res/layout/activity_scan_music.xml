@@ -5,7 +5,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".activity.ScanMusicActivity">
+        tools:activity=".activity.ScanMusicActivity">
 
     <androidx.appcompat.widget.Toolbar
             android:id="@+id/asm_toolbar"
@@ -47,7 +47,9 @@
             android:clickable="true"
             android:focusable="true"
             android:paddingStart="130dp"
+            android:paddingTop="6dp"
             android:paddingEnd="130dp"
+            android:paddingBottom="6dp"
             android:text="@string/scan_full"
             android:textColor="@color/write" />
 
@@ -61,7 +63,9 @@
             android:clickable="true"
             android:focusable="true"
             android:paddingStart="125dp"
+            android:paddingTop="6dp"
             android:paddingEnd="125dp"
+            android:paddingBottom="6dp"
             android:text="@string/scan_custom"
             android:textColor="@color/selector_scan_music_tc" />
 </LinearLayout>

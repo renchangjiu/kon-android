@@ -1,6 +1,8 @@
 package com.htt.kon.util.stream;
 
 
+import java.util.NoSuchElementException;
+
 /**
  * 简易 optional
  *
@@ -23,6 +25,18 @@ public class Optional<T> {
     public void ifPresent(Consumer<? super T> consumer) {
         if (value != null) {
             consumer.accept(value);
+        }
+    }
+
+    public boolean isPresent() {
+        return value != null;
+    }
+
+    public T get() {
+        if (this.value == null) {
+            throw new NoSuchElementException("No value present");
+        } else {
+            return this.value;
         }
     }
 }
