@@ -9,13 +9,17 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
 import com.htt.kon.bean.Music;
 import com.htt.kon.dialog.CommonDialogFragment;
+import com.htt.kon.service.Playlist;
 import com.htt.kon.util.LogUtils;
 
 import java.util.List;
+
+import lombok.Setter;
 
 /**
  * @author su
@@ -25,30 +29,17 @@ public class LocalMusicSingleAdapter extends BaseAdapter {
 
     private List<Music> res;
 
-    private ListView listView;
-
     private LocalMusicActivity activity;
 
-    private int playIconShowPos = -1;
+    private Playlist playlist;
 
-    private int clickPos;
+    @Setter
+    private OnClickListener onClickListener;
 
-
-    public LocalMusicSingleAdapter(List<Music> res, ListView listView, Context activity) {
+    public LocalMusicSingleAdapter(List<Music> res, Context activity) {
         this.res = res;
-        this.listView = listView;
         this.activity = (LocalMusicActivity) activity;
-    }
-
-    /**
-     * 设置被点击项的pos, 即是当前播放的pos
-     */
-    public void setClickPos(int clickPos) {
-        if (this.clickPos == clickPos) {
-            return;
-        }
-        this.clickPos = clickPos;
-        this.notifyDataSetChanged();
+        this.playlist = App.getApp().getPlaylist();
     }
 
     @Override
@@ -67,11 +58,6 @@ public class LocalMusicSingleAdapter extends BaseAdapter {
             holder.textViewArtistAlbum = view.findViewById(R.id.lilms_textViewArtistAlbum);
             view.setTag(holder);
 
-            this.listView.setOnItemClickListener((parent1, view1, position1, id) -> {
-                this.playIconShowPos = position1 - 1;
-                this.notifyDataSetChanged();
-            });
-
             // 单击右侧图标
             holder.imageViewOption.setOnClickListener(v -> {
                 LogUtils.e("option click: " + position);
@@ -82,13 +68,13 @@ public class LocalMusicSingleAdapter extends BaseAdapter {
                 });
             });
         }
+        Music item = this.getItem(position);
 
-        if (this.playIconShowPos == position) {
+        if (this.playlist.isNotEmpty() && this.playlist.getCurMusic().getId().equals(item.getId())) {
             holder.imageViewPlay.setVisibility(View.VISIBLE);
         } else {
             holder.imageViewPlay.setVisibility(View.GONE);
         }
-        Music item = this.getItem(position);
         holder.textViewTitle.setText(item.getTitle());
         String format = this.activity.getString(R.string.artist_album);
         holder.textViewArtistAlbum.setText(String.format(format, item.getArtist(), item.getAlbum()));
@@ -117,4 +103,7 @@ public class LocalMusicSingleAdapter extends BaseAdapter {
         private ImageView imageViewOption;
     }
 
+    public interface OnClickListener {
+
+    }
 }

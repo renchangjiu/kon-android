@@ -1,12 +1,21 @@
 <resources>
     <string name="app_name">kon</string>
     <string name="search">搜索</string>
+
+    <string name="local_music">本地音乐</string>
+    <string name="recently_played">最近播放</string>
+    <string name="download_manage">下载管理</string>
+    <string name="my_radio_station">我的电台</string>
+    <string name="my_collection">我的收藏</string>
+    <string name="item_count">(%d)</string>
+
     <string name="scan_local_music">扫描本地音乐</string>
     <string name="scan_music">扫描音乐</string>
     <string name="select_sort_way">选择排序方式</string>
     <string name="get_cover_lyrics">获取封面歌词</string>
     <string name="improve_tone_quality">升级音质</string>
     <string name="play_all">播放全部</string>
+    <string name="local_music_count">(共%d首)</string>
     <string name="multiple_choice">多选</string>
     <string name="mode_single_loop">单曲循环</string>
     <string name="mode_loop">列表循环</string>
@@ -15,9 +24,9 @@
     <string name="deep_sea_girl">深海少女</string>
     <string name="luo"> - 洛天依</string>
     <string name="playlist_title_artist_sep">&#160;-&#160;</string>
+    <string name="play_mode_show">%s&#160;&#160;(%d)</string>
     <string name="dc_textView_example">歌曲: 兔子先生</string>
     <string name="play_next">下一首播放</string>
-    <string name="local_music">本地音乐</string>
     <string name="artist">歌手</string>
     <string name="music_title">歌名</string>
     <string name="cancel">取消</string>

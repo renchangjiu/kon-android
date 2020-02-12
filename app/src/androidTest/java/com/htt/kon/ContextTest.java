@@ -1,8 +1,6 @@
 package com.htt.kon;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.provider.MediaStore;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -20,9 +18,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -131,9 +127,9 @@ public class ContextTest {
                 music.setDelFlag(2);
                 musics.add(music);
             }
-            Playlist playlist = Playlist.init4Disk(context);
+            Playlist playlist = Playlist.init(context);
             playlist.setMusics(musics);
-            playlist.save2disk(context);
+            playlist.save(context);
 
         } catch (Exception e) {
             e.printStackTrace();

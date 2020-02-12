@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:minHeight="48dp"
+        android:orientation="horizontal">
+
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="13dp"
+            android:contentDescription="@string/play_all"
+            android:drawableStart="@drawable/play1"
+            android:drawablePadding="12dp"
+            android:text="@string/play_all"
+            android:textColor="@color/lightBlack"
+            android:textSize="15sp" />
+
+    <TextView
+            android:id="@+id/lhs_textViewCount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/local_music_count"
+            android:textColor="@color/grey"
+            android:textSize="13sp" />
+
+
+    <TextView
+            android:id="@+id/lhs_textViewMultipleChoice"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:contentDescription="@string/multiple_choice"
+            android:drawableStart="@drawable/list_header_option"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            android:paddingStart="9dp"
+            android:paddingEnd="9dp"
+            android:text="@string/multiple_choice"
+            android:textColor="@color/lightBlack"
+            android:textSize="14sp" />
+</LinearLayout>

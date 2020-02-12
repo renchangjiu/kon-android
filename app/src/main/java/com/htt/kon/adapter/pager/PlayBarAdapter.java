@@ -11,12 +11,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
+import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.bean.Music;
 import com.htt.kon.service.Playlist;
 import com.htt.kon.util.LogUtils;
 
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * 底部播放栏 adapter
@@ -25,39 +29,47 @@ import org.apache.commons.lang3.StringUtils;
  * @date 2020/02/07 21:09
  */
 public class PlayBarAdapter extends PagerAdapter {
+
     private Playlist playlist;
-    private Context context;
 
+    /**
+     * viewPager 优化
+     */
+    private Queue<View> viewPool = new LinkedList<>();
 
-    public PlayBarAdapter(Playlist playlist, Context context) {
-        this.playlist = playlist;
-        this.context = context;
+    public PlayBarAdapter() {
+        this.playlist = App.getApp().getPlaylist();
     }
 
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        View view = LayoutInflater.from(this.context).inflate(R.layout.pager_play_bar, container, false);
-        container.addView(view);
-        this.init(view, position);
-        return view;
-    }
-
-    private void init(View view, int position) {
-        ImageView imageViewCover = view.findViewById(R.id.lipb_imageViewCover);
-        TextView textViewTitle = view.findViewById(R.id.lipb_textViewTitle);
-        TextView textViewArtist = view.findViewById(R.id.lipb_textViewArtist);
-
+        View view;
+        ViewHolder holder;
+        if (!this.viewPool.isEmpty()) {
+            view = this.viewPool.poll();
+            holder = (ViewHolder) view.getTag();
+        } else {
+            view = LayoutInflater.from(container.getContext()).inflate(R.layout.pager_play_bar, container, false);
+            holder = new ViewHolder();
+            holder.imageViewCover = view.findViewById(R.id.lipb_imageViewCover);
+            holder.textViewTitle = view.findViewById(R.id.lipb_textViewTitle);
+            holder.textViewArtist = view.findViewById(R.id.lipb_textViewArtist);
+            view.setTag(holder);
+        }
         Music music = this.playlist.getMusic(position);
         if (StringUtils.isNotEmpty(music.getImage())) {
-            imageViewCover.setImageBitmap(BitmapFactory.decodeFile(music.getImage()));
+            holder.imageViewCover.setImageBitmap(BitmapFactory.decodeFile(music.getImage()));
         }
-        textViewTitle.setText(music.getTitle());
-        textViewArtist.setText(music.getArtist());
+        holder.textViewTitle.setText(music.getTitle());
+        holder.textViewArtist.setText(music.getArtist());
 
         view.setOnClickListener(v -> {
             LogUtils.e();
         });
+
+        container.addView(view);
+        return view;
     }
 
     /**
@@ -68,6 +80,7 @@ public class PlayBarAdapter extends PagerAdapter {
         return POSITION_NONE;
     }
 
+
     @Override
     public int getCount() {
         return this.playlist.size();
@@ -76,11 +89,19 @@ public class PlayBarAdapter extends PagerAdapter {
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((View) object);
+        // 将当前 View 加入到池子中
+        this.viewPool.add((View) object);
     }
 
 
     @Override
     public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
         return view == object;
+    }
+
+    private class ViewHolder {
+        private ImageView imageViewCover;
+        private TextView textViewTitle;
+        private TextView textViewArtist;
     }
 }

@@ -55,10 +55,10 @@ public class LocalMusicActivity extends BaseActivity {
             finish();
         });
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(LocalMusicSinglePagerFragment.getInstance(LocalMusicSinglePagerFragment.FLAG_SINGLE));
-        fragments.add(LocalMusicSinglePagerFragment.getInstance(LocalMusicSinglePagerFragment.FLAG_ARTIST));
-        fragments.add(LocalMusicSinglePagerFragment.getInstance(LocalMusicSinglePagerFragment.FLAG_ALBUM));
-        fragments.add(LocalMusicSinglePagerFragment.getInstance(LocalMusicSinglePagerFragment.FLAG_DIR));
+        fragments.add(LocalMusicSinglePagerFragment.of());
+        fragments.add(LocalMusicSinglePagerFragment.of());
+        fragments.add(LocalMusicSinglePagerFragment.of());
+        fragments.add(LocalMusicSinglePagerFragment.of());
         List<String> titles = new ArrayList<>();
         titles.add("单曲");
         titles.add("歌手");
@@ -83,8 +83,7 @@ public class LocalMusicActivity extends BaseActivity {
                 LogUtils.e(1);
                 break;
             case R.id.mlm_scan_local_music:
-                Intent intent = new Intent(this, ScanMusicActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(this, ScanMusicActivity.class));
                 break;
             case R.id.mlm_select_sort_way:
                 LogUtils.e(3);
@@ -109,5 +108,9 @@ public class LocalMusicActivity extends BaseActivity {
         return super.onMenuOpened(featureId, menu);
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LogUtils.e();
+    }
 }

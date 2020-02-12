@@ -6,11 +6,11 @@
         android:orientation="vertical">
 
     <ListView
-            android:id="@+id/flm_listView"
+            android:id="@+id/flms_listView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@drawable/divider_list_single"
             android:dividerHeight="1dp"
-            tools:listheader="@layout/list_single_header"
+            tools:listheader="@layout/list_header_single"
             tools:listitem="@layout/list_item_local_music_single" />
 </LinearLayout>

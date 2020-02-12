@@ -18,7 +18,7 @@ import com.htt.kon.R;
 import com.htt.kon.fragment.MusicFragment;
 import com.htt.kon.fragment.DiscoverFragment;
 import com.htt.kon.fragment.FriendsFragment;
-import com.htt.kon.service.MusicDbService;
+import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.util.UiUtils;
 
 import java.util.ArrayList;

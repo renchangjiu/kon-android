@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,16 +18,15 @@ import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
 import com.htt.kon.activity.MainActivity;
 import com.htt.kon.adapter.list.LocalManagerAdapter;
-import com.htt.kon.service.MusicDbService;
-import com.htt.kon.view.BaseListView;
+import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.view.ListViewSeparateLayout;
-
-import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
+ * MainActivity 下的MusicFragment
+ *
  * @author su
  * @date 2020/02/01 19:46
  */
@@ -42,7 +42,7 @@ public class MusicFragment extends Fragment {
 
 
     @BindView(R.id.fm_listViewManager)
-    BaseListView<LocalManagerAdapter> listView;
+    ListView listView;
 
     @BindView(R.id.fm_listViewSeparateLayout)
     ListViewSeparateLayout listViewSeparateLayout;
@@ -67,31 +67,30 @@ public class MusicFragment extends Fragment {
         this.musicDbService = MusicDbService.of(this.activity);
         this.listView.setAdapter(new LocalManagerAdapter(this.activity));
         this.listView.setOnItemClickListener((parent, view, position, id) -> {
-            Intent intent = new Intent(activity, LocalMusicActivity.class);
             switch (position) {
                 case 0:
-                    intent = new Intent(activity, LocalMusicActivity.class);
+                    startActivity(new Intent(activity, LocalMusicActivity.class));
                     break;
                 case 1:
+                    Toast.makeText(activity, "敬请期待...", Toast.LENGTH_SHORT).show();
                     break;
                 case 2:
+                    Toast.makeText(activity, "敬请期待...", Toast.LENGTH_SHORT).show();
                     break;
                 case 3:
+                    Toast.makeText(activity, "敬请期待...", Toast.LENGTH_SHORT).show();
                     break;
                 case 4:
+                    Toast.makeText(activity, "敬请期待...", Toast.LENGTH_SHORT).show();
                     break;
                 default:
             }
-            startActivity(intent);
         });
 
         // 分隔布局的点击事件
         this.listViewSeparateLayout.setOnClickListener(new ListViewSeparateLayout.OnClickListener() {
             @Override
             public void onCommonClick(View v) {
-                LocalManagerAdapter adapter = listView.getAdapter();
-                // adapter.setCount(new Random().nextInt(5), new Random().nextInt(100));
-                // activity.togglePlayBar();
             }
 
             @Override

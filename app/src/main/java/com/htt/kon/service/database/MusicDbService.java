@@ -1,8 +1,6 @@
-package com.htt.kon.service;
+package com.htt.kon.service.database;
 
 import android.content.Context;
-
-import androidx.room.Insert;
 
 import com.htt.kon.bean.Music;
 import com.htt.kon.dao.AppDatabase;

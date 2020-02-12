@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:htt="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/background"
@@ -17,12 +18,13 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-            <com.htt.kon.view.BaseListView
+            <ListView
                     android:id="@+id/fm_listViewManager"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:divider="@drawable/divider_list"
-                    android:dividerHeight="1dp" />
+                    android:dividerHeight="1dp"
+                    tools:listitem="@layout/list_item_local_manager" />
 
             <com.htt.kon.view.ListViewSeparateLayout
                     android:id="@+id/fm_listViewSeparateLayout"

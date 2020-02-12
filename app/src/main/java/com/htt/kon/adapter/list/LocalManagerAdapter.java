@@ -12,10 +12,12 @@ import android.widget.TextView;
 import com.htt.kon.R;
 import com.htt.kon.activity.MainActivity;
 import com.htt.kon.constant.MidConstant;
-import com.htt.kon.service.MusicDbService;
+import com.htt.kon.service.database.MusicDbService;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Setter;
 
 
 /**
@@ -23,6 +25,7 @@ import java.util.List;
  * @date 2020/02/02 19:18
  */
 public class LocalManagerAdapter extends BaseAdapter {
+
     private MusicDbService musicDbService;
 
     private MainActivity activity;
@@ -33,60 +36,6 @@ public class LocalManagerAdapter extends BaseAdapter {
         this.activity = (MainActivity) activity;
         this.musicDbService = MusicDbService.of(this.activity);
         this.initItemData();
-    }
-
-
-    private void initItemData() {
-        ItemData item1 = new ItemData();
-        item1.imageId = R.drawable.music_icon_local;
-        item1.itemTitle = "本地音乐";
-        new Thread(() -> {
-            item1.count = this.musicDbService.list(MidConstant.MID_LOCAL_MUSIC).size();
-            this.activity.runOnUiThread(this::notifyDataSetChanged);
-        }).start();
-
-
-        ItemData item2 = new ItemData();
-        item2.imageId = R.drawable.music_icon_recently_played;
-        item2.itemTitle = "最近播放";
-        item2.count = 0;
-
-        ItemData item3 = new ItemData();
-        item3.imageId = R.drawable.music_icon_download;
-        item3.itemTitle = "下载管理";
-        item3.count = 0;
-
-        ItemData item4 = new ItemData();
-        item4.imageId = R.drawable.music_icon_download;
-        item4.itemTitle = "我的电台";
-        item4.count = 0;
-
-        ItemData item5 = new ItemData();
-        item5.imageId = R.drawable.music_icon_download;
-        item5.itemTitle = "我的收藏";
-        item5.count = 0;
-
-        this.res = new ArrayList<>();
-        this.res.add(item1);
-        this.res.add(item2);
-        this.res.add(item3);
-        this.res.add(item4);
-        this.res.add(item5);
-    }
-
-    @Override
-    public int getCount() {
-        return this.res.size();
-    }
-
-    @Override
-    public ItemData getItem(int position) {
-        return this.res.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return 0;
     }
 
     @Override
@@ -108,17 +57,63 @@ public class LocalManagerAdapter extends BaseAdapter {
         ItemData itemData = this.getItem(position);
         holder.imageView.setImageResource(itemData.imageId);
         holder.textViewTitle.setText(itemData.itemTitle);
-        holder.textViewCount.setText("(" + itemData.count + ")");
+        String format = this.activity.getString(R.string.item_count);
+        holder.textViewCount.setText(String.format(format, itemData.count));
         return view;
     }
 
-    /**
-     * 设置 item 数量
-     */
-    public void setCount(int position, int count) {
-        ItemData item = this.getItem(position);
-        item.count = count;
-        this.notifyDataSetChanged();
+    private void initItemData() {
+        ItemData item1 = new ItemData();
+        item1.imageId = R.drawable.music_icon_local;
+        item1.itemTitle = this.activity.getString(R.string.local_music);
+        new Thread(() -> {
+            item1.count = this.musicDbService.list(MidConstant.MID_LOCAL_MUSIC).size();
+            this.activity.runOnUiThread(this::notifyDataSetChanged);
+        }).start();
+
+
+        ItemData item2 = new ItemData();
+        item2.imageId = R.drawable.music_icon_recently_played;
+        item2.itemTitle = this.activity.getString(R.string.recently_played);
+        item2.count = 0;
+
+        ItemData item3 = new ItemData();
+        item3.imageId = R.drawable.music_icon_download;
+        item3.itemTitle = this.activity.getString(R.string.download_manage);
+        item3.count = 0;
+
+        ItemData item4 = new ItemData();
+        item4.imageId = R.drawable.music_icon_my_radio_station;
+        item4.itemTitle = this.activity.getString(R.string.my_radio_station);
+        item4.count = 0;
+
+        ItemData item5 = new ItemData();
+        item5.imageId = R.drawable.music_icon_my_collection;
+        item5.itemTitle = this.activity.getString(R.string.my_collection);
+        item5.count = 0;
+
+        this.res = new ArrayList<>();
+        this.res.add(item1);
+        this.res.add(item2);
+        this.res.add(item3);
+        this.res.add(item4);
+        this.res.add(item5);
+    }
+
+
+    @Override
+    public int getCount() {
+        return this.res.size();
+    }
+
+    @Override
+    public ItemData getItem(int position) {
+        return this.res.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return 0;
     }
 
     private class ViewHolder {

@@ -7,9 +7,10 @@
 
     <ImageView
             android:id="@+id/lilm_imageView"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_marginStart="13dp"
+            android:contentDescription="@string/local_music"
             android:src="@drawable/music_icon_local" />
 
     <TextView
@@ -18,16 +19,16 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:text="@string/local_music"
+            android:textColor="@color/lightBlack"
             android:textSize="15sp"
-            android:typeface="monospace"
-            android:textColor="@color/lightBlack"/>
+            android:typeface="monospace" />
 
     <TextView
             android:id="@+id/lilm_textViewCount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:text="(999)"
-            android:textColor="#959697"
+            android:text="@string/item_count"
+            android:textColor="@color/grey"
             android:textSize="13sp" />
 </LinearLayout>

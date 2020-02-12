@@ -55,8 +55,7 @@ public class PlayListDialogFragment extends BaseDialogFragment {
     }
 
     public static PlayListDialogFragment of() {
-        PlayListDialogFragment instance = new PlayListDialogFragment();
-        return instance;
+        return new PlayListDialogFragment();
     }
 
 
@@ -81,6 +80,7 @@ public class PlayListDialogFragment extends BaseDialogFragment {
         this.updateModeInterface();
         PlaylistDialogAdapter adapter1 = new PlaylistDialogAdapter();
         this.listView.setAdapter(adapter1);
+        this.listView.setSelection(this.playlist.getIndex());
         adapter1.setOnClickListener(new PlaylistDialogAdapter.OnClickListener() {
             @Override
             public void onLocateBtnClick(int position) {
@@ -91,7 +91,7 @@ public class PlayListDialogFragment extends BaseDialogFragment {
             @Override
             public void onDeleteBtnClick(int position) {
                 assert onClickListener != null;
-                int i = onClickListener.onDeleteBtnClick(position);
+                onClickListener.onDeleteBtnClick(position);
                 PlaylistDialogAdapter adapter = UiUtils.getListViewAdapter(listView, PlaylistDialogAdapter.class);
                 adapter.notifyDataSetChanged();
                 updateModeInterface();
@@ -144,7 +144,8 @@ public class PlayListDialogFragment extends BaseDialogFragment {
         Drawable drawable = this.context.getResources().getDrawable(playMode.getImageId(), null);
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
         this.textViewPlayMode.setCompoundDrawables(drawable, null, null, null);
-        this.textViewPlayMode.setText(playMode.getLabel() + "  (" + this.playlist.size() + ")");
+        String format = getString(R.string.play_mode_show);
+        this.textViewPlayMode.setText(String.format(format, playMode.getLabel(), this.playlist.size()));
     }
 
     public void updateAdapterInterface() {

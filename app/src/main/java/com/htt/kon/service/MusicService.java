@@ -6,15 +6,15 @@ import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.htt.kon.App;
 import com.htt.kon.bean.Music;
-import com.htt.kon.util.IdWorker;
+import com.htt.kon.broadcast.MusicPlayStateBroadcastReceiver;
 import com.htt.kon.util.LogUtils;
-import com.htt.kon.util.MusicFileSearcher;
-import com.htt.kon.util.StorageUtils;
+import com.htt.kon.util.stream.Optional;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Setter;
@@ -29,32 +29,23 @@ public class MusicService extends Service {
 
     private MediaPlayer player;
 
-    private App app;
-
     private Playlist playlist;
 
-    /**
-     * 播放状态变化的监听器
-     */
+    private volatile boolean playNow;
+
     @Setter
-    private OnPlayStateChangeListener playStateChangeListener;
+    private OnPreparedListener onPreparedListener;
 
 
     public MusicService() {
     }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        LogUtils.e();
-        return this.binder;
-    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        this.app = App.getApp();
-        this.playlist = this.app.getPlaylist();
-        LogUtils.e();
+        this.playlist = App.getApp().getPlaylist();
+        LogUtils.e("MusicService onCreate.");
         this.player = new MediaPlayer();
         if (this.playlist.isNotEmpty()) {
             try {
@@ -66,11 +57,42 @@ public class MusicService extends Service {
         }
         // 监听播放完毕事件
         this.player.setOnCompletionListener(mp -> {
-            this.next(true);
-            this.emit();
+            LogUtils.e("Music play finished.");
+            this.next();
+        });
+
+        this.player.setOnPreparedListener(mp -> {
+            if (this.playNow) {
+                mp.start();
+                this.playNow = false;
+            }
+            Optional.of(this.onPreparedListener).ifPresent(v -> v.onPreparedFinish(this.player));
         });
     }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        LogUtils.e("MusicService onStartCommand.");
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        LogUtils.e("MusicService onBind.");
+        return this.binder;
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        LogUtils.e("MusicService onUnbind.");
+        return super.onUnbind(intent);
+    }
+
+    @Override
+    public void onDestroy() {
+        LogUtils.e("MusicService onDestroy.");
+        super.onDestroy();
+    }
 
     public void playOrPause() {
         if (this.player.isPlaying()) {
@@ -88,42 +110,19 @@ public class MusicService extends Service {
 
     /**
      * 切换到下一首
-     *
-     * @param autoPlay 切换完成后, 是否立即播放
      */
-    public void next(boolean autoPlay) {
-        Music curMusic = this.playlist.next();
-        try {
-            this.player.stop();
-            this.player.reset();
-            this.player.setDataSource(curMusic.getPath());
-            this.player.prepare();
-            if (autoPlay) {
-                this.playOrPause();
-            }
-        } catch (IOException e) {
-            LogUtils.e(e);
-        }
+    public void next() {
+        this.playlist.next();
+        this.play();
     }
+
 
     /**
      * 切换到上一首
-     *
-     * @param autoPlay 切换完成后, 是否立即播放
      */
-    public void prev(boolean autoPlay) {
-        Music curMusic = this.playlist.prev();
-        try {
-            this.player.stop();
-            this.player.reset();
-            this.player.setDataSource(curMusic.getPath());
-            this.player.prepare();
-            if (autoPlay) {
-                this.playOrPause();
-            }
-        } catch (IOException e) {
-            LogUtils.e(e);
-        }
+    public void prev() {
+        this.playlist.prev();
+        this.play();
     }
 
 
@@ -140,7 +139,7 @@ public class MusicService extends Service {
     }
 
     /**
-     * 播放当前歌曲
+     * 立即播放当前歌曲
      */
     public void play() {
         this.play(this.playlist.getIndex());
@@ -158,8 +157,15 @@ public class MusicService extends Service {
             this.player.reset();
             if (curMusic != null) {
                 this.player.setDataSource(curMusic.getPath());
-                this.player.prepare();
-                this.playOrPause();
+                this.player.prepareAsync();
+                this.playNow = true;
+                this.onPreparedListener.onPreparedStart(this.player);
+
+                // 发出广播
+                Intent intent = new Intent();
+                intent.setAction(MusicPlayStateBroadcastReceiver.ACTION);
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                LogUtils.e("Send a broadcast, Action: " + MusicPlayStateBroadcastReceiver.ACTION);
             }
         } catch (IOException e) {
             LogUtils.e(e);
@@ -175,20 +181,21 @@ public class MusicService extends Service {
         this.player.reset();
     }
 
+
+    /**
+     * 使用新的歌曲集合替换当前播放的列表, 并立即播放
+     *
+     * @param musics musics
+     * @param index  index
+     */
+    public void replace(List<Music> musics, int index) {
+        this.playlist.replace(musics, index);
+        this.play();
+    }
+
+
     public void setMode(int mode) {
         this.playlist.setMode(mode);
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        LogUtils.e();
-        return super.onStartCommand(intent, flags, startId);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        LogUtils.e();
     }
 
 
@@ -198,24 +205,16 @@ public class MusicService extends Service {
         }
     }
 
-    /**
-     * 发出播放另一首歌曲的信号
-     */
-    private void emit() {
-        if (this.playStateChangeListener != null) {
-            this.playStateChangeListener.onPlayAnotherMusic();
-        }
-    }
-
-    /**
-     * 播放状态监听器
-     */
-    public interface OnPlayStateChangeListener {
+    public interface OnPreparedListener {
+        /**
+         * 当 MediaPlayer 开始准备时调用
+         */
+        void onPreparedStart(MediaPlayer mp);
 
         /**
-         * 当播放另一首歌曲时调用(非用户手动切换, 而是程序自动切换)
+         * 当 MediaPlayer 准备完成后调用
          */
-        void onPlayAnotherMusic();
-
+        void onPreparedFinish(MediaPlayer mp);
     }
+
 }

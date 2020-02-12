@@ -1,14 +1,11 @@
-package com.htt.kon.service;
+package com.htt.kon.service.database;
 
 import android.content.Context;
 
 
-import com.htt.kon.bean.Music;
 import com.htt.kon.dao.AppDatabase;
 import com.htt.kon.dao.MusicDao;
 import com.htt.kon.dao.MusicListDao;
-
-import java.util.List;
 
 /**
  * 单例

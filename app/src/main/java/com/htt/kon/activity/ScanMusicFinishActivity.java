@@ -9,8 +9,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Html;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,17 +17,15 @@ import com.htt.kon.R;
 import com.htt.kon.bean.Mp3Metadata;
 import com.htt.kon.bean.Music;
 import com.htt.kon.constant.MidConstant;
-import com.htt.kon.service.MusicDbService;
+import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.util.IdWorker;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.MusicFileMetadataParser;
 import com.htt.kon.util.MusicFileSearcher;
-import com.htt.kon.util.ThreadUtil;
 import com.htt.kon.util.UiUtils;
 import com.htt.kon.util.stream.Optional;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.ThreadUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;

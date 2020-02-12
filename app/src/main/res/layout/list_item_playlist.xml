@@ -17,6 +17,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
+            android:ellipsize="end"
+            android:maxEms="18"
+            android:maxLines="1"
             android:text="@string/deep_sea_girl"
             android:textColor="@color/lightBlack"
             android:textSize="13sp" />
@@ -26,8 +29,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/grey"
+            android:ellipsize="end"
+            android:maxEms="16"
+            android:maxLines="1"
             android:text="@string/luo"
+            android:textColor="@color/grey"
             android:textSize="10sp" />
 
     <ImageView

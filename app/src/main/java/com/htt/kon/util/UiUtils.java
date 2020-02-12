@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.view.Menu;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.HeaderViewListAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import androidx.appcompat.view.menu.MenuBuilder;
@@ -50,7 +52,20 @@ public class UiUtils {
         window.setStatusBarColor(color);
     }
 
+    /**
+     * 获取 ListView 的 adapter
+     *
+     * @param listView listView
+     * @param t        Adapter.class
+     */
     public static <T> T getListViewAdapter(ListView listView, Class<T> t) {
-        return (T) listView.getAdapter();
+        ListAdapter adapter = listView.getAdapter();
+        if (adapter instanceof HeaderViewListAdapter) {
+            HeaderViewListAdapter ad = (HeaderViewListAdapter) listView.getAdapter();
+            return (T) ad.getWrappedAdapter();
+        } else {
+            return (T) adapter;
+        }
     }
+
 }

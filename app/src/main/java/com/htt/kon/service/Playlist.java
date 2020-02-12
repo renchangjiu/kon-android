@@ -55,16 +55,88 @@ public class Playlist {
     private static SparseArray<String> modeLabelsMapping = null;
 
     @Getter
-    @Setter
     private List<Music> musics;
 
     @Getter
-    @Setter
     private int mode = MODE_LOOP;
 
     @Getter
-    @Setter
     private int index = 0;
+
+    /**
+     * 播放下一首, 返回切换后的Music
+     */
+    Music next() {
+        switch (this.mode) {
+            case MODE_LOOP:
+                if (this.index >= this.musics.size() - 1) {
+                    this.index = 0;
+                } else {
+                    this.index += 1;
+                }
+                break;
+            case MODE_RANDOM:
+                this.index = new Random().nextInt(this.size());
+                break;
+            case MODE_SINGLE_LOOP:
+                break;
+            default:
+        }
+        return this.getCurMusic();
+    }
+
+    /**
+     * 播放上一首, 返回切换后的Music
+     */
+    Music prev() {
+        switch (this.mode) {
+            case MODE_LOOP:
+                if (this.index <= 0) {
+                    this.index = this.musics.size() - 1;
+                } else {
+                    this.index -= 1;
+                }
+                break;
+            case MODE_RANDOM:
+                this.index = new Random().nextInt(this.size());
+                break;
+            case MODE_SINGLE_LOOP:
+                break;
+            default:
+        }
+        return this.getCurMusic();
+    }
+
+    /**
+     * 根据pos 删除列表中的某一项
+     *
+     * @param position pos
+     */
+    void remove(int position) {
+        this.musics.remove(position);
+        if (position < this.index) {
+            this.index -= 1;
+        }
+    }
+
+    /**
+     * 清空
+     */
+    void clear() {
+        this.musics.clear();
+        this.index = 0;
+    }
+
+    /**
+     * 使用新的歌曲集合替换当前播放的列表
+     *
+     * @param musics musics
+     * @param index  index
+     */
+    void replace(List<Music> musics, int index) {
+        this.musics = musics;
+        this.index = index;
+    }
 
     public Music getCurMusic() {
         if (this.musics.isEmpty()) {
@@ -92,69 +164,6 @@ public class Playlist {
         return !this.isEmpty();
     }
 
-    /**
-     * 播放下一首, 返回切换后的Music
-     */
-    public Music next() {
-        switch (this.mode) {
-            case MODE_LOOP:
-                if (this.index >= this.musics.size() - 1) {
-                    this.index = 0;
-                } else {
-                    this.index += 1;
-                }
-                break;
-            case MODE_RANDOM:
-                this.index = new Random().nextInt(this.size());
-                break;
-            case MODE_SINGLE_LOOP:
-                break;
-            default:
-        }
-        return this.getCurMusic();
-    }
-
-    /**
-     * 播放上一首, 返回切换后的Music
-     */
-    public Music prev() {
-        switch (this.mode) {
-            case MODE_LOOP:
-                if (this.index <= 0) {
-                    this.index = this.musics.size() - 1;
-                } else {
-                    this.index -= 1;
-                }
-                break;
-            case MODE_RANDOM:
-                this.index = new Random().nextInt(this.size());
-                break;
-            case MODE_SINGLE_LOOP:
-                break;
-            default:
-        }
-        return this.getCurMusic();
-    }
-
-    /**
-     * 根据pos 删除列表中的某一项
-     *
-     * @param position pos
-     */
-    public void remove(int position) {
-        this.musics.remove(position);
-        if (position < this.index) {
-            this.index -= 1;
-        }
-    }
-
-    /**
-     * 清空
-     */
-    public void clear() {
-        this.musics.clear();
-        this.index = 0;
-    }
 
     private Playlist() {
         this.musics = new ArrayList<>();
@@ -163,7 +172,7 @@ public class Playlist {
     /**
      * 从磁盘初始化播放列表
      */
-    public static Playlist init4Disk(Context context) {
+    public static Playlist init(Context context) {
         try {
             File file = new File(context.getFilesDir().getAbsolutePath() + PLAY_LIST_LOCAL_PATH);
             if (!file.exists()) {
@@ -180,6 +189,7 @@ public class Playlist {
             playlist.setIndex(ipl.getIndex());
             playlist.setMode(ipl.getMode());
             playlist.setMusics(ipl.getMusics());
+            LogUtils.e("Init playlist.");
             return playlist;
         } catch (IOException e) {
             LogUtils.e(e);
@@ -190,7 +200,7 @@ public class Playlist {
     /**
      * 将播放列表保存到本地文件中
      */
-    public void save2disk(Context context) {
+    public void save(Context context) {
         try {
             InnerPlaylist ipl = new InnerPlaylist();
             ipl.setIndex(this.index);
@@ -201,9 +211,22 @@ public class Playlist {
             out.write(json.getBytes());
             out.flush();
             out.close();
+            LogUtils.e("Save playlist.");
         } catch (IOException e) {
-            LogUtils.e(e.getMessage());
+            LogUtils.e(e);
         }
+    }
+
+    void setMusics(List<Music> musics) {
+        this.musics = musics;
+    }
+
+    void setMode(int mode) {
+        this.mode = mode;
+    }
+
+    void setIndex(int index) {
+        this.index = index;
     }
 
 
