@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import com.google.android.material.tabs.TabLayout;
 import com.htt.kon.R;
 import com.htt.kon.adapter.pager.LocalMusicAdapter;
-import com.htt.kon.fragment.LocalMusicPagerFragment;
+import com.htt.kon.fragment.music.LocalMusicSinglePagerFragment;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.UiUtils;
 
@@ -55,10 +55,10 @@ public class LocalMusicActivity extends BaseActivity {
             finish();
         });
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(LocalMusicPagerFragment.getInstance(LocalMusicPagerFragment.FLAG_SINGLE));
-        fragments.add(LocalMusicPagerFragment.getInstance(LocalMusicPagerFragment.FLAG_ARTIST));
-        fragments.add(LocalMusicPagerFragment.getInstance(LocalMusicPagerFragment.FLAG_ALBUM));
-        fragments.add(LocalMusicPagerFragment.getInstance(LocalMusicPagerFragment.FLAG_DIR));
+        fragments.add(LocalMusicSinglePagerFragment.getInstance(LocalMusicSinglePagerFragment.FLAG_SINGLE));
+        fragments.add(LocalMusicSinglePagerFragment.getInstance(LocalMusicSinglePagerFragment.FLAG_ARTIST));
+        fragments.add(LocalMusicSinglePagerFragment.getInstance(LocalMusicSinglePagerFragment.FLAG_ALBUM));
+        fragments.add(LocalMusicSinglePagerFragment.getInstance(LocalMusicSinglePagerFragment.FLAG_DIR));
         List<String> titles = new ArrayList<>();
         titles.add("单曲");
         titles.add("歌手");

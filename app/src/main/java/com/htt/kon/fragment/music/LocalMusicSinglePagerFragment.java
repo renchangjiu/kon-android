@@ -1,4 +1,4 @@
-package com.htt.kon.fragment;
+package com.htt.kon.fragment.music;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,26 +13,23 @@ import androidx.fragment.app.Fragment;
 
 import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
-import com.htt.kon.adapter.list.SingleAdapter;
+import com.htt.kon.adapter.list.LocalMusicSingleAdapter;
 import com.htt.kon.bean.Music;
 import com.htt.kon.constant.MidConstant;
 import com.htt.kon.service.MusicDbService;
-import com.htt.kon.util.IdWorker;
-import com.htt.kon.util.LogUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * 本地音乐activity 下的4个tab页
+ * 本地音乐activity 下的单曲tab 页
  *
  * @author su
  * @date 2020/02/03 21:00
  */
-public class LocalMusicPagerFragment extends Fragment {
+public class LocalMusicSinglePagerFragment extends Fragment {
     public static final String FLAG_SINGLE = "single";
     public static final String FLAG_ARTIST = "artist";
     public static final String FLAG_ALBUM = "album";
@@ -57,7 +54,7 @@ public class LocalMusicPagerFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_local_music, container, false);
+        View view = inflater.inflate(R.layout.fragment_local_music_single, container, false);
         ButterKnife.bind(this, view);
         this.musicDbService = MusicDbService.of(this.activity);
         switch (this.flag) {
@@ -82,17 +79,17 @@ public class LocalMusicPagerFragment extends Fragment {
         new Thread(() -> {
             List<Music> list = this.musicDbService.list(MidConstant.MID_LOCAL_MUSIC);
             this.activity.runOnUiThread(() -> {
-                this.listView.setAdapter(new SingleAdapter(list, this.listView, this.activity));
+                this.listView.setAdapter(new LocalMusicSingleAdapter(list, this.listView, this.activity));
             });
         }).start();
     }
 
-    private LocalMusicPagerFragment() {
+    private LocalMusicSinglePagerFragment() {
         super();
     }
 
-    public static LocalMusicPagerFragment getInstance(String flag) {
-        LocalMusicPagerFragment instance = new LocalMusicPagerFragment();
+    public static LocalMusicSinglePagerFragment getInstance(String flag) {
+        LocalMusicSinglePagerFragment instance = new LocalMusicSinglePagerFragment();
         Bundle bundle = new Bundle();
         bundle.putString("flag", flag);
         instance.setArguments(bundle);

@@ -129,7 +129,7 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    class MyPageChangeListener implements ViewPager.OnPageChangeListener {
+    private class MyPageChangeListener implements ViewPager.OnPageChangeListener {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 

@@ -31,6 +31,7 @@ import butterknife.ButterKnife;
  * @date 2020/02/01 19:46
  */
 public class MusicFragment extends Fragment {
+
     private MainActivity activity;
 
     private MusicDbService musicDbService;
@@ -89,8 +90,8 @@ public class MusicFragment extends Fragment {
             @Override
             public void onCommonClick(View v) {
                 LocalManagerAdapter adapter = listView.getAdapter();
-                adapter.setCount(new Random().nextInt(5), new Random().nextInt(100));
-                activity.togglePlayBar();
+                // adapter.setCount(new Random().nextInt(5), new Random().nextInt(100));
+                // activity.togglePlayBar();
             }
 
             @Override

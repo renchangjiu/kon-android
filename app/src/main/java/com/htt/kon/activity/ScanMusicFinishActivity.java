@@ -62,6 +62,7 @@ public class ScanMusicFinishActivity extends AppCompatActivity {
             this.textViewCancelScan.setVisibility(View.GONE);
             this.textViewBack.setVisibility(View.VISIBLE);
             this.textViewLyric.setVisibility(View.VISIBLE);
+            this.imageViewSearcher.setImageResource(R.drawable.scan_music_ok);
         } else if (msg.what == HANDLER_WHAT_PROCESS) {
             // 扫描进度
             String path = (String) msg.obj;

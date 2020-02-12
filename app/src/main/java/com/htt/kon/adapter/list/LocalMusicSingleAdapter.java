@@ -21,18 +21,34 @@ import java.util.List;
  * @author su
  * @date 2020/02/04 08:33
  */
-public class SingleAdapter extends BaseAdapter {
+public class LocalMusicSingleAdapter extends BaseAdapter {
 
     private List<Music> res;
+
     private ListView listView;
+
     private LocalMusicActivity activity;
+
     private int playIconShowPos = -1;
 
+    private int clickPos;
 
-    public SingleAdapter(List<Music> res, ListView listView, Context activity) {
+
+    public LocalMusicSingleAdapter(List<Music> res, ListView listView, Context activity) {
         this.res = res;
         this.listView = listView;
         this.activity = (LocalMusicActivity) activity;
+    }
+
+    /**
+     * 设置被点击项的pos, 即是当前播放的pos
+     */
+    public void setClickPos(int clickPos) {
+        if (this.clickPos == clickPos) {
+            return;
+        }
+        this.clickPos = clickPos;
+        this.notifyDataSetChanged();
     }
 
     @Override
@@ -74,7 +90,8 @@ public class SingleAdapter extends BaseAdapter {
         }
         Music item = this.getItem(position);
         holder.textViewTitle.setText(item.getTitle());
-        holder.textViewArtistAlbum.setText(item.getArtist() + " " + item.getAlbum());
+        String format = this.activity.getString(R.string.artist_album);
+        holder.textViewArtistAlbum.setText(String.format(format, item.getArtist(), item.getAlbum()));
         return view;
     }
 

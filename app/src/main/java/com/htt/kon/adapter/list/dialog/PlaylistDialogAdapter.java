@@ -30,8 +30,6 @@ public class PlaylistDialogAdapter extends BaseAdapter {
 
     private final App app;
 
-    // private int clickPos = -1;
-
     private final int lightBlackColor;
 
     @Setter
@@ -40,20 +38,8 @@ public class PlaylistDialogAdapter extends BaseAdapter {
     public PlaylistDialogAdapter() {
         this.app = App.getApp();
         this.playlist = this.app.getPlaylist();
-        // this.clickPos = clickPos;
         lightBlackColor = ContextCompat.getColor(this.app, R.color.lightBlack);
     }
-
-    /**
-     * 设置被点击项的pos, 即是当前播放的pos
-     */
-    // public void setClickPos(int clickPos) {
-    //     if (this.clickPos == clickPos) {
-    //         return;
-    //     }
-    //     this.clickPos = clickPos;
-    //     this.notifyDataSetChanged();
-    // }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
