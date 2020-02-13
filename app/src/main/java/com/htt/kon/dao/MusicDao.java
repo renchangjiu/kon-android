@@ -40,4 +40,7 @@ public interface MusicDao {
     @Query("SELECT * FROM MUSIC where DEL_FLAG = 2 and MID = :mid")
     Music[] list(long mid);
 
+    @Query("SELECT * FROM MUSIC where id = :id")
+    Music selectByKey(long id);
+
 }

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +22,7 @@ import com.htt.kon.adapter.list.LocalMusicSingleAdapter;
 import com.htt.kon.bean.Music;
 import com.htt.kon.broadcast.MusicPlayStateBroadcastReceiver;
 import com.htt.kon.constant.MidConstant;
+import com.htt.kon.dialog.CommonDialogFragment;
 import com.htt.kon.service.Playlist;
 import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.util.LogUtils;
@@ -93,15 +95,29 @@ public class LocalMusicSinglePagerFragment extends Fragment {
         new Thread(() -> {
             List<Music> list = this.musicDbService.list(MidConstant.MID_LOCAL_MUSIC);
             this.activity.runOnUiThread(() -> {
-                this.listView.setAdapter(new LocalMusicSingleAdapter(list, this.activity));
+                LocalMusicSingleAdapter adapter = new LocalMusicSingleAdapter(list, this.activity);
+                this.listView.setAdapter(adapter);
                 String format = this.activity.getString(R.string.local_music_count);
                 this.textViewCount.setText(String.format(format, list.size()));
+
+                adapter.setOnOptionClickListener(item -> {
+                    Music data = (Music) item.getData();
+                    switch (item.getId()) {
+                        case CommonDialogFragment.TAG_PLAY_NEXT:
+                            this.activity.nextPlay(data);
+                            Toast.makeText(this.activity, this.activity.getString(R.string.added_to_next_play), Toast.LENGTH_SHORT).show();
+                            break;
+                        default:
+                    }
+                    LogUtils.e(item);
+                });
             });
         }).start();
 
         this.listView.setOnItemClickListener((parent, view, position, id) -> {
             setPlaylist(position - 1);
         });
+
 
         // 播放全部
         headerView.setOnClickListener(v -> {

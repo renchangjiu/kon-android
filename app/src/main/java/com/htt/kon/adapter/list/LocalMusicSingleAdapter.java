@@ -6,16 +6,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
+import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
 import com.htt.kon.dialog.CommonDialogFragment;
 import com.htt.kon.service.Playlist;
 import com.htt.kon.util.LogUtils;
+import com.htt.kon.util.stream.Optional;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class LocalMusicSingleAdapter extends BaseAdapter {
     private Playlist playlist;
 
     @Setter
-    private OnClickListener onClickListener;
+    private OnOptionClickListener onOptionClickListener;
 
     public LocalMusicSingleAdapter(List<Music> res, Context activity) {
         this.res = res;
@@ -57,17 +58,19 @@ public class LocalMusicSingleAdapter extends BaseAdapter {
             holder.textViewTitle = view.findViewById(R.id.lilms_textViewTitle);
             holder.textViewArtistAlbum = view.findViewById(R.id.lilms_textViewArtistAlbum);
             view.setTag(holder);
-
-            // 单击右侧图标
-            holder.imageViewOption.setOnClickListener(v -> {
-                LogUtils.e("option click: " + position);
-                CommonDialogFragment dialog = CommonDialogFragment.ofSingle(1);
-                dialog.show(this.activity.getSupportFragmentManager(), "1");
-                dialog.setOnSelectListener(tag -> {
-                    LogUtils.e(tag);
-                });
-            });
         }
+
+        // 单击右侧图标
+        holder.imageViewOption.setOnClickListener(v -> {
+            CommonDialogFragment dialog = CommonDialogFragment.ofSingle(this.getItem(position).getId());
+            dialog.show(this.activity.getSupportFragmentManager(), "1");
+            dialog.setOnClickListener(item -> {
+                // 封装数据后回调方法
+                item.setData(this.getItem(position));
+                Optional.of(this.onOptionClickListener).ifPresent(v1 -> v1.onClick(item));
+            });
+        });
+
         Music item = this.getItem(position);
 
         if (this.playlist.isNotEmpty() && this.playlist.getCurMusic().getId().equals(item.getId())) {
@@ -103,7 +106,7 @@ public class LocalMusicSingleAdapter extends BaseAdapter {
         private ImageView imageViewOption;
     }
 
-    public interface OnClickListener {
-
+    public interface OnOptionClickListener {
+        void onClick(CommonDialogItem item);
     }
 }

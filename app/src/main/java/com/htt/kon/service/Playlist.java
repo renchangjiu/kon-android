@@ -138,6 +138,25 @@ public class Playlist {
         this.index = index;
     }
 
+
+    /**
+     * 添加到指定位置
+     *
+     * @param music music
+     */
+    void add(Music music) {
+        this.musics.add(music);
+    }
+
+    /**
+     * 添加歌曲到指定位置
+     *
+     * @param music music
+     */
+    void add(Music music, int index) {
+        this.musics.add(index, music);
+    }
+
     public Music getCurMusic() {
         if (this.musics.isEmpty()) {
             return null;

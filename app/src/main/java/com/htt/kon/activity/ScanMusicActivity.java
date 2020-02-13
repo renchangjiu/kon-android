@@ -46,8 +46,7 @@ public class ScanMusicActivity extends AppCompatActivity {
         });
 
         this.textViewScanFull.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ScanMusicFinishActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(this, ScanMusicFinishActivity.class));
         });
 
         this.textViewScanCustom.setOnClickListener(v -> {

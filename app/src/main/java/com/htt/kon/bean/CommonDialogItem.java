@@ -26,8 +26,8 @@ public class CommonDialogItem {
     private int imageId;
 
     /**
-     * 动态显示在item 上的参数, 可能需要
+     * 携带的数据
      */
-    private String data;
+    private Object data;
 
 }

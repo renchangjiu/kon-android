@@ -58,4 +58,8 @@ public class MusicDbService {
     public void insert(Music music) {
         this.musicDao.insert(music);
     }
+
+    public Music getById(long id) {
+        return this.musicDao.selectByKey(id);
+    }
 }

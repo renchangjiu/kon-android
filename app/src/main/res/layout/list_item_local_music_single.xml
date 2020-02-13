@@ -18,6 +18,9 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="9dp"
             android:layout_toEndOf="@id/lilms_imageViewPlay"
+            android:ellipsize="marquee"
+            android:maxEms="24"
+            android:singleLine="true"
             android:text="@string/deep_sea_girl"
             android:textColor="@color/lightBlack"
             android:textSize="14sp" />
@@ -31,6 +34,9 @@
             android:layout_marginTop="7dp"
             android:layout_marginBottom="6dp"
             android:layout_toEndOf="@id/lilms_imageViewPlay"
+            android:ellipsize="marquee"
+            android:maxEms="24"
+            android:singleLine="true"
             android:text="@string/artist_album"
             android:textColor="@color/grey"
             android:textSize="12sp" />
@@ -42,9 +48,9 @@
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:paddingEnd="20dp"
-            android:paddingStart="10dp"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
+            android:paddingStart="10dp"
+            android:paddingEnd="20dp"
             android:src="@drawable/list_item_option" />
 </RelativeLayout>

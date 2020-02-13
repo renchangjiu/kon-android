@@ -232,6 +232,16 @@ public class BaseActivity extends AppCompatActivity {
         this.showPlayBar();
     }
 
+    /**
+     * 下一首播放
+     *
+     * @param music music
+     */
+    public void nextPlay(Music music) {
+        this.msService.nextPlay(music);
+        this.updatePlayBarViewPager();
+        this.updatePlayBarInterface();
+    }
 
     /**
      * 隐藏播放栏

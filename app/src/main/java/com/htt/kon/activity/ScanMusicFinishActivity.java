@@ -118,8 +118,8 @@ public class ScanMusicFinishActivity extends AppCompatActivity {
             Toast.makeText(this, "已停止", Toast.LENGTH_SHORT).show();
         });
         this.textViewBack.setOnClickListener(v -> {
-            Intent intent = new Intent(this, LocalMusicActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(this, LocalMusicActivity.class));
+            finish();
         });
 
         this.textViewLyric.setOnClickListener(v -> {

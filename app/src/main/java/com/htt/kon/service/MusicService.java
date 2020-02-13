@@ -193,6 +193,14 @@ public class MusicService extends Service {
         this.play();
     }
 
+    /**
+     * 下一首播放
+     *
+     * @param music music
+     */
+    public void nextPlay(Music music) {
+        this.playlist.add(music, this.playlist.getIndex() + 1);
+    }
 
     public void setMode(int mode) {
         this.playlist.setMode(mode);

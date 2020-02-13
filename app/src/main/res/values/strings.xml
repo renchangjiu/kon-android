@@ -41,4 +41,6 @@
     <string name="back_to_my_music">回到我的音乐</string>
     <string name="get_lyric">一键获取封面歌词</string>
     <string name="artist_album">%s - %s</string>
+    <string name="QUALITY_IMPROVE">音质升级</string>
+    <string name="added_to_next_play">已添加到下一首播放</string>
 </resources>
