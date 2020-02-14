@@ -1,6 +1,7 @@
 package com.htt.kon;
 
 import android.app.Application;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;

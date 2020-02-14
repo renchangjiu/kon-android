@@ -13,7 +13,6 @@ import lombok.experimental.Accessors;
  * @date 2020/02/05 20:14
  */
 @Getter
-@Setter
 @ToString
 @Accessors(chain = true)
 @AllArgsConstructor
@@ -21,6 +20,7 @@ public class CommonDialogItem {
 
     private int id;
 
+    @Setter
     private String name;
 
     private int imageId;
@@ -28,6 +28,7 @@ public class CommonDialogItem {
     /**
      * 携带的数据
      */
+    @Setter
     private Object data;
 
 }

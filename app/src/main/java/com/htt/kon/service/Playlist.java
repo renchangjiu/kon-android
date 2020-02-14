@@ -124,7 +124,7 @@ public class Playlist {
      */
     void clear() {
         this.musics.clear();
-        this.index = 0;
+        this.index = -1;
     }
 
     /**
@@ -140,7 +140,7 @@ public class Playlist {
 
 
     /**
-     * 添加到指定位置
+     * 添加到播放列表的最后一位
      *
      * @param music music
      */
@@ -149,12 +149,15 @@ public class Playlist {
     }
 
     /**
-     * 添加歌曲到指定位置
+     * 添加到播放列表的指定位置
      *
      * @param music music
      */
     void add(Music music, int index) {
         this.musics.add(index, music);
+        if (this.index == -1) {
+            this.index = 0;
+        }
     }
 
     public Music getCurMusic() {

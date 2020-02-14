@@ -1,5 +1,6 @@
 package com.htt.kon.service;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -44,6 +45,8 @@ public class MusicService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        // TODO
+        // startForeground(1, new Notification());
         this.playlist = App.getApp().getPlaylist();
         LogUtils.e("MusicService onCreate.");
         this.player = new MediaPlayer();
@@ -179,6 +182,7 @@ public class MusicService extends Service {
         this.playlist.clear();
         this.player.stop();
         this.player.reset();
+        LogUtils.e(this.playlist);
     }
 
 

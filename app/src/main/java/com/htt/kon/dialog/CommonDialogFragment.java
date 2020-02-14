@@ -3,9 +3,13 @@ package com.htt.kon.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -18,12 +22,14 @@ import com.htt.kon.adapter.list.dialog.CommonDialogAdapter;
 import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
 import com.htt.kon.service.database.MusicDbService;
-import com.htt.kon.util.LogUtils;
+import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.UiUtils;
 import com.htt.kon.util.stream.Optional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +41,7 @@ import lombok.Setter;
  */
 public class CommonDialogFragment extends BaseDialogFragment {
     private static final String BUNDLE_KEY_MUSIC_ID = "musicId";
+    private static final String BUNDLE_KEY_MUSIC_JSON = "musicJson";
 
 
     /**
@@ -100,20 +107,21 @@ public class CommonDialogFragment extends BaseDialogFragment {
 
     private String flag;
 
-    private static List<CommonDialogItem> FULL_ITEMS = new ArrayList<>();
+
+    private static final SparseArray<CommonDialogItem> FULL_ITEMS = new SparseArray<>();
 
     // 初始化item 列表
     static {
-        FULL_ITEMS.add(new CommonDialogItem(TAG_PLAY_NEXT, "下一首播放", R.drawable.common_dialog_play_next, null));
-        FULL_ITEMS.add(new CommonDialogItem(TAG_COLLECT, "收藏到歌单", R.drawable.common_dialog_collect2music_list, null));
-        FULL_ITEMS.add(new CommonDialogItem(TAG_COMMENT, "评论(999)", R.drawable.common_dialog_comment, null));
-        FULL_ITEMS.add(new CommonDialogItem(TAG_SHARE, "分享", R.drawable.common_dialog_share, null));
-        FULL_ITEMS.add(new CommonDialogItem(TAG_UPLOAD, "上传到云盘", R.drawable.common_dialog_upload, null));
-        FULL_ITEMS.add(new CommonDialogItem(TAG_ARTIST, "歌手: ", R.drawable.common_dialog_artist, null));
-        FULL_ITEMS.add(new CommonDialogItem(TAG_ALBUM, "专辑: ", R.drawable.common_dialog_album, null));
-        FULL_ITEMS.add(new CommonDialogItem(TAG_VIDEO, "查看视频", R.drawable.common_dialog_video, null));
-        FULL_ITEMS.add(new CommonDialogItem(TAG_DELETE, "删除", R.drawable.common_dialog_delete, null));
-        FULL_ITEMS.add(new CommonDialogItem(TAG_IMPROVE, "音质升级", R.drawable.common_dialog_improve, null));
+        FULL_ITEMS.put(TAG_PLAY_NEXT, new CommonDialogItem(TAG_PLAY_NEXT, "下一首播放", R.drawable.common_dialog_play_next, null));
+        FULL_ITEMS.put(TAG_COLLECT, new CommonDialogItem(TAG_COLLECT, "收藏到歌单", R.drawable.common_dialog_collect2music_list, null));
+        FULL_ITEMS.put(TAG_COMMENT, new CommonDialogItem(TAG_COMMENT, "评论(999)", R.drawable.common_dialog_comment, null));
+        FULL_ITEMS.put(TAG_SHARE, new CommonDialogItem(TAG_SHARE, "分享", R.drawable.common_dialog_share, null));
+        FULL_ITEMS.put(TAG_UPLOAD, new CommonDialogItem(TAG_UPLOAD, "上传到云盘", R.drawable.common_dialog_upload, null));
+        FULL_ITEMS.put(TAG_ARTIST, new CommonDialogItem(TAG_ARTIST, "歌手: ", R.drawable.common_dialog_artist, null));
+        FULL_ITEMS.put(TAG_ALBUM, new CommonDialogItem(TAG_ALBUM, "专辑: ", R.drawable.common_dialog_album, null));
+        FULL_ITEMS.put(TAG_VIDEO, new CommonDialogItem(TAG_VIDEO, "查看视频", R.drawable.common_dialog_video, null));
+        FULL_ITEMS.put(TAG_DELETE, new CommonDialogItem(TAG_DELETE, "删除", R.drawable.common_dialog_delete, null));
+        FULL_ITEMS.put(TAG_IMPROVE, new CommonDialogItem(TAG_IMPROVE, "音质升级", R.drawable.common_dialog_improve, null));
     }
 
     @BindView(R.id.dc_textView)
@@ -135,11 +143,11 @@ public class CommonDialogFragment extends BaseDialogFragment {
     /**
      * 单曲页面
      */
-    public static CommonDialogFragment ofSingle(long musicId) {
+    public static CommonDialogFragment ofSingle(String musicJson) {
         CommonDialogFragment instance = new CommonDialogFragment();
         instance.flag = FLAG_SINGLE;
         Bundle bundle = new Bundle();
-        bundle.putLong(BUNDLE_KEY_MUSIC_ID, musicId);
+        bundle.putString(BUNDLE_KEY_MUSIC_JSON, musicJson);
         instance.setArguments(bundle);
         return instance;
     }
@@ -161,10 +169,11 @@ public class CommonDialogFragment extends BaseDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_common, container, false);
         ButterKnife.bind(this, view);
-
         this.init();
+        slideToUp(view);
         return view;
     }
+
 
     private void init() {
         switch (this.flag) {
@@ -185,29 +194,23 @@ public class CommonDialogFragment extends BaseDialogFragment {
     }
 
     private void init4single() {
-        int[] tags = new int[]{0, 1, 5, 6, 8};
-        long musicId = getArguments().getLong(BUNDLE_KEY_MUSIC_ID);
-        new Thread(() -> {
-            Music music = this.musicDbService.getById(musicId);
-            LogUtils.e(music);
-        }).start();
-        this.listView.setAdapter(new CommonDialogAdapter(getItemsByTags(tags)));
+        assert getArguments() != null;
+        String musicJson = getArguments().getString(BUNDLE_KEY_MUSIC_JSON);
+        Music music = JsonUtils.json2Bean(musicJson, Music.class);
+        assert music != null;
+
+        List<CommonDialogItem> items = new ArrayList<>();
+        items.add(FULL_ITEMS.get(TAG_PLAY_NEXT).setName(getString(R.string.cdf_play_next)).setData(music));
+        items.add(FULL_ITEMS.get(TAG_COLLECT).setName(getString(R.string.cdf_collect)).setData(music));
+        items.add(FULL_ITEMS.get(TAG_ARTIST).setName(String.format(getString(R.string.cdf_artist), music.getArtist())).setData(music));
+        items.add(FULL_ITEMS.get(TAG_ALBUM).setName(String.format(getString(R.string.cdf_album), music.getAlbum())).setData(music));
+        items.add(FULL_ITEMS.get(TAG_DELETE).setName(getString(R.string.cdf_delete)).setData(music));
+        this.listView.setAdapter(new CommonDialogAdapter(items));
     }
 
     private void init4abd() {
         int[] tags = new int[]{0, 1, 4, 8};
         long musicId = getArguments().getLong(BUNDLE_KEY_MUSIC_ID);
-        this.listView.setAdapter(new CommonDialogAdapter(getItemsByTags(tags)));
-    }
-
-    private List<CommonDialogItem> getItemsByTags(int[] tags) {
-        List<CommonDialogItem> items = new ArrayList<>();
-        for (int tag : tags) {
-            // 索引与tag 是一样的
-            CommonDialogItem item = FULL_ITEMS.get(tag);
-            items.add(item);
-        }
-        return items;
     }
 
     @Override

@@ -54,8 +54,6 @@ public class MainActivity extends BaseActivity {
 
     private List<Fragment> fragments;
 
-    private MusicDbService musicDbService;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +69,6 @@ public class MainActivity extends BaseActivity {
     }
 
     private void init() {
-        this.musicDbService = MusicDbService.of(this);
         this.imageViewMusic.setSelected(true);
         fragments = new ArrayList<>();
         fragments.add(new MusicFragment());
@@ -110,7 +107,7 @@ public class MainActivity extends BaseActivity {
     private class MyFragmentPagerAdapter extends FragmentPagerAdapter {
         private List<Fragment> fragments;
 
-        public MyFragmentPagerAdapter(@NonNull FragmentManager fm, List<Fragment> fragments) {
+        MyFragmentPagerAdapter(@NonNull FragmentManager fm, List<Fragment> fragments) {
             super(fm, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
             this.fragments = fragments;
         }

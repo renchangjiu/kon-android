@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,6 +66,7 @@ public class BaseActivity extends AppCompatActivity {
     private MusicService msService;
 
     private Playlist playlist;
+
     private ImageView imageViewPlayList;
 
     @Override
@@ -78,8 +80,6 @@ public class BaseActivity extends AppCompatActivity {
         this.playlist = app.getPlaylist();
         this.initPlayBar();
         LogUtils.e();
-
-
     }
 
     @Override
@@ -199,27 +199,6 @@ public class BaseActivity extends AppCompatActivity {
 
 
     /**
-     * 根据当前播放状态, 修改playbar 的界面
-     */
-    public void updatePlayBarInterface() {
-        if (this.msService != null) {
-            if (this.msService.isPlaying()) {
-                this.imageViewBtn.setImageResource(R.drawable.playbar_paly);
-            } else {
-                this.imageViewBtn.setImageResource(R.drawable.playbar_pause);
-            }
-        }
-    }
-
-    /**
-     * 当增或删播放列表后需更新viewPager
-     */
-    public void updatePlayBarViewPager() {
-        Optional.of(viewPager.getAdapter()).ifPresent(PagerAdapter::notifyDataSetChanged);
-        viewPager.setCurrentItem(this.playlist.getIndex(), true);
-    }
-
-    /**
      * 使用新的歌曲集合替换当前播放的列表, 并立即播放
      *
      * @param musics musics
@@ -239,8 +218,34 @@ public class BaseActivity extends AppCompatActivity {
      */
     public void nextPlay(Music music) {
         this.msService.nextPlay(music);
+        showPlayBar();
+        if (this.playlist.size() == 1) {
+            this.msService.play();
+        }
         this.updatePlayBarViewPager();
         this.updatePlayBarInterface();
+    }
+
+
+    /**
+     * 根据当前播放状态, 修改playbar 的界面
+     */
+    public void updatePlayBarInterface() {
+        if (this.msService != null) {
+            if (this.msService.isPlaying()) {
+                this.imageViewBtn.setImageResource(R.drawable.playbar_paly);
+            } else {
+                this.imageViewBtn.setImageResource(R.drawable.playbar_pause);
+            }
+        }
+    }
+
+    /**
+     * 当增或删播放列表后需更新viewPager
+     */
+    public void updatePlayBarViewPager() {
+        Optional.of(viewPager.getAdapter()).ifPresent(PagerAdapter::notifyDataSetChanged);
+        viewPager.setCurrentItem(this.playlist.getIndex(), true);
     }
 
     /**
@@ -299,6 +304,9 @@ public class BaseActivity extends AppCompatActivity {
 
         }
 
+        /**
+         * 清空播放列表
+         */
         @Override
         public void onClearBtnClick() {
             msService.clear();

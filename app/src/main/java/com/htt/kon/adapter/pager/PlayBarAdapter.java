@@ -1,6 +1,5 @@
 package com.htt.kon.adapter.pager;
 
-import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,6 +59,8 @@ public class PlayBarAdapter extends PagerAdapter {
         Music music = this.playlist.getMusic(position);
         if (StringUtils.isNotEmpty(music.getImage())) {
             holder.imageViewCover.setImageBitmap(BitmapFactory.decodeFile(music.getImage()));
+        } else {
+            holder.imageViewCover.setImageResource(R.drawable.playbar_cover_image_default);
         }
         holder.textViewTitle.setText(music.getTitle());
         holder.textViewArtist.setText(music.getArtist());

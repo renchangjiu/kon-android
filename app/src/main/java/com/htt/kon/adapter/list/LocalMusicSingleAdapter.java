@@ -15,6 +15,7 @@ import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
 import com.htt.kon.dialog.CommonDialogFragment;
 import com.htt.kon.service.Playlist;
+import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.stream.Optional;
 
@@ -62,11 +63,11 @@ public class LocalMusicSingleAdapter extends BaseAdapter {
 
         // 单击右侧图标
         holder.imageViewOption.setOnClickListener(v -> {
-            CommonDialogFragment dialog = CommonDialogFragment.ofSingle(this.getItem(position).getId());
+            String musicJson = JsonUtils.bean2Json(this.getItem(position));
+            CommonDialogFragment dialog = CommonDialogFragment.ofSingle(musicJson);
             dialog.show(this.activity.getSupportFragmentManager(), "1");
             dialog.setOnClickListener(item -> {
-                // 封装数据后回调方法
-                item.setData(this.getItem(position));
+                // 回调方法
                 Optional.of(this.onOptionClickListener).ifPresent(v1 -> v1.onClick(item));
             });
         });

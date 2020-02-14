@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import com.google.android.material.tabs.TabLayout;
 import com.htt.kon.R;
 import com.htt.kon.adapter.pager.LocalMusicAdapter;
+import com.htt.kon.fragment.music.LocalMusicArtistPagerFragment;
 import com.htt.kon.fragment.music.LocalMusicSinglePagerFragment;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.UiUtils;
@@ -56,7 +57,7 @@ public class LocalMusicActivity extends BaseActivity {
         });
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(LocalMusicSinglePagerFragment.of());
-        fragments.add(LocalMusicSinglePagerFragment.of());
+        fragments.add(LocalMusicArtistPagerFragment.of());
         fragments.add(LocalMusicSinglePagerFragment.of());
         fragments.add(LocalMusicSinglePagerFragment.of());
         List<String> titles = new ArrayList<>();

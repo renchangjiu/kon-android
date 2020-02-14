@@ -2,6 +2,8 @@ package com.htt.kon.util;
 
 import android.util.Log;
 
+import com.htt.kon.service.MusicService;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -71,13 +73,13 @@ public class LogUtils {
         }
     }
 
-    private static void print(int level, String tag, String string) {
-        if (string.length() <= MAX_LENGTH) {
-            print1(level, tag, string);
+    private static void print(int level, String tag, String message) {
+        if (message.length() <= MAX_LENGTH) {
+            print1(level, tag, message);
         } else {
-            while (string.length() > MAX_LENGTH) {
-                print1(level, tag, string.substring(0, MAX_LENGTH));
-                string = string.substring(MAX_LENGTH);
+            while (message.length() > MAX_LENGTH) {
+                print1(level, tag, message.substring(0, MAX_LENGTH));
+                message = message.substring(MAX_LENGTH);
             }
         }
     }
@@ -96,29 +98,28 @@ public class LogUtils {
 
 
     private static String getDefaultTag() {
-        String defTag = getClassName() + "#" + getMethodName();
+        String className = "";
+        String methodName = "";
+        int lineNumber = -1;
+        StackTraceElement[] stackTraces = Thread.currentThread().getStackTrace();
+        if (stackTraces.length >= 5) {
+            className = stackTraces[4].getClassName();
+            className = className.substring(className.lastIndexOf(".") + 1);
+            methodName = stackTraces[4].getMethodName();
+            lineNumber = stackTraces[4].getLineNumber();
+        }
+
+        String defTag = lineNumber + "/" + className + "#" + methodName;
         if (defTag.length() >= 23) {
             defTag = defTag.substring(0, 20) + "...";
+        } else {
+            int diff = 23 - defTag.length();
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < diff; i++) {
+                sb.append("·");
+            }
+            defTag = defTag + sb.toString();
         }
         return defTag;
     }
-
-    private static String getClassName() {
-        StackTraceElement[] stackTraces = Thread.currentThread().getStackTrace();
-        if (stackTraces.length >= 6) {
-            String className = stackTraces[5].getClassName();
-            className = className.substring(className.lastIndexOf(".") + 1);
-            return className;
-        }
-        return "";
-    }
-
-    private static String getMethodName() {
-        StackTraceElement[] stackTraces = Thread.currentThread().getStackTrace();
-        if (stackTraces.length >= 6) {
-            return stackTraces[5].getMethodName();
-        }
-        return "";
-    }
-
 }
