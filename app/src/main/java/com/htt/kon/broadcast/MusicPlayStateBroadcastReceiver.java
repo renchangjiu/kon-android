@@ -20,13 +20,24 @@ public class MusicPlayStateBroadcastReceiver extends BroadcastReceiver {
 
     public static final String ACTION = "COM.HTT.KON.MUSIC.PLAY.STATE.RECEIVER";
 
+    /**
+     * 表示歌曲开始播放
+     */
+    public static final int FLAG_PLAY = 1;
+
+    /**
+     * 表示播放列表被清空
+     */
+    public static final int FLAG_CLEAR = 2;
+
+
     @Setter
     private OnReceiveBroadcastListener onReceiveBroadcastListener;
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Optional.of(this.onReceiveBroadcastListener).ifPresent(v -> v.onReceiveBroadcast(intent.getFlags()));
         LogUtils.e("MusicPlayStateBroadcastReceiver Receive a broadcast.");
-        Optional.of(this.onReceiveBroadcastListener).ifPresent(OnReceiveBroadcastListener::onReceiveBroadcast);
     }
 
 
@@ -56,10 +67,21 @@ public class MusicPlayStateBroadcastReceiver extends BroadcastReceiver {
         LogUtils.e("MusicPlayStateBroadcastReceiver unregister.");
     }
 
+    /**
+     * 发出广播
+     */
+    public static void send(Context context, int flag) {
+        Intent intent = new Intent();
+        intent.setAction(ACTION);
+        intent.setFlags(flag);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        LogUtils.e("Send a broadcast, Action: " + MusicPlayStateBroadcastReceiver.ACTION);
+    }
+
     public interface OnReceiveBroadcastListener {
         /**
          * 当接收到广播时调用
          */
-        void onReceiveBroadcast();
+        void onReceiveBroadcast(int flag);
     }
 }

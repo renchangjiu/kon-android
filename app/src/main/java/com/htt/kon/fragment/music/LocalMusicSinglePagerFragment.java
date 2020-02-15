@@ -58,6 +58,7 @@ public class LocalMusicSinglePagerFragment extends Fragment {
     private LocalMusicActivity activity;
 
     private MusicPlayStateBroadcastReceiver receiver;
+
     private Playlist playlist;
 
     @Override
@@ -76,11 +77,20 @@ public class LocalMusicSinglePagerFragment extends Fragment {
         this.init();
 
         this.receiver = MusicPlayStateBroadcastReceiver.register(this.activity);
-        this.receiver.setOnReceiveBroadcastListener(() -> {
-            Music curMusic = this.playlist.getCurMusic();
-            if (curMusic.getMid().equals(MidConstant.MID_LOCAL_MUSIC)) {
-                UiUtils.getListViewAdapter(this.listView, LocalMusicSingleAdapter.class).notifyDataSetChanged();
+        this.receiver.setOnReceiveBroadcastListener(v -> {
+            switch (v) {
+                case MusicPlayStateBroadcastReceiver.FLAG_PLAY:
+                    Music curMusic = this.playlist.getCurMusic();
+                    if (curMusic.getMid().equals(MidConstant.MID_LOCAL_MUSIC)) {
+                        UiUtils.getListViewAdapter(this.listView, LocalMusicSingleAdapter.class).notifyDataSetChanged();
+                    }
+                    break;
+                case MusicPlayStateBroadcastReceiver.FLAG_CLEAR:
+                    UiUtils.getListViewAdapter(this.listView, LocalMusicSingleAdapter.class).notifyDataSetChanged();
+                    break;
+                default:
             }
+
         });
         return view;
     }

@@ -16,7 +16,6 @@ import com.htt.kon.bean.Music;
 import com.htt.kon.dialog.CommonDialogFragment;
 import com.htt.kon.service.Playlist;
 import com.htt.kon.util.JsonUtils;
-import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.stream.Optional;
 
 import java.util.List;
@@ -54,10 +53,10 @@ public class LocalMusicSingleAdapter extends BaseAdapter {
         } else {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_local_music_single, parent, false);
             holder = new ViewHolder();
-            holder.imageViewPlay = view.findViewById(R.id.lilms_imageViewPlay);
+            holder.imageViewPlay = view.findViewById(R.id.lilma_imageView);
             holder.imageViewOption = view.findViewById(R.id.lilms_imageViewOption);
-            holder.textViewTitle = view.findViewById(R.id.lilms_textViewTitle);
-            holder.textViewArtistAlbum = view.findViewById(R.id.lilms_textViewArtistAlbum);
+            holder.textViewTitle = view.findViewById(R.id.lilma_textViewArtist);
+            holder.textViewArtistAlbum = view.findViewById(R.id.lilma_textViewCount);
             view.setTag(holder);
         }
 

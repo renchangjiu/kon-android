@@ -25,9 +25,12 @@
     <string name="luo"> - 洛天依</string>
     <string name="playlist_title_artist_sep">&#160;-&#160;</string>
     <string name="play_mode_show">%s&#160;&#160;(%d)</string>
-    <string name="dc_textView_example">歌曲: 兔子先生</string>
 
     <!-- CommonDialogFragment -->
+    <string name="cdf_dialog_title_single">歌曲:&#160;&#160;%s</string>
+    <string name="cdf_dialog_title_artist">歌手:&#160;&#160;%s</string>
+    <string name="cdf_dialog_title_album">专辑:&#160;&#160;%s</string>
+    <string name="cdf_dialog_title_dir">文件夹:&#160;&#160;%s</string>
     <string name="cdf_play_next">下一首播放</string>
     <string name="cdf_collect">收藏到歌单</string>
     <string name="cdf_artist">歌手：%s</string>
@@ -50,4 +53,8 @@
     <string name="artist_album">%s - %s</string>
     <string name="QUALITY_IMPROVE">音质升级</string>
     <string name="added_to_next_play">已添加到下一首播放</string>
+
+    <string name="lilma_music_count">%d首</string>
+
+
 </resources>

@@ -1,21 +1,26 @@
 package com.htt.kon.service;
 
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
 
+import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.htt.kon.App;
+import com.htt.kon.R;
+import com.htt.kon.activity.MainActivity;
 import com.htt.kon.bean.Music;
 import com.htt.kon.broadcast.MusicPlayStateBroadcastReceiver;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.stream.Optional;
 
 import java.io.IOException;
+import java.sql.BatchUpdateException;
 import java.util.List;
 
 import lombok.Setter;
@@ -41,12 +46,27 @@ public class MusicService extends Service {
     public MusicService() {
     }
 
+    /**
+     * 创建通知栏, 以保活
+     * TODO: 通知栏样式待完善
+     */
+    private void createNotification() {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, App.NOTIFICATION_CHANNEL_PLAY_ID);
+        builder.setContentTitle("kon");
+        builder.setContentText("TODO");
+        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
+        PendingIntent intent = PendingIntent.getActivity(getApplicationContext(), 1, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(intent);
+
+        Notification notification = builder.build();
+        startForeground(1, notification);
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        // TODO
-        // startForeground(1, new Notification());
+        this.createNotification();
+
         this.playlist = App.getApp().getPlaylist();
         LogUtils.e("MusicService onCreate.");
         this.player = new MediaPlayer();
@@ -165,10 +185,7 @@ public class MusicService extends Service {
                 this.onPreparedListener.onPreparedStart(this.player);
 
                 // 发出广播
-                Intent intent = new Intent();
-                intent.setAction(MusicPlayStateBroadcastReceiver.ACTION);
-                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-                LogUtils.e("Send a broadcast, Action: " + MusicPlayStateBroadcastReceiver.ACTION);
+                MusicPlayStateBroadcastReceiver.send(this, MusicPlayStateBroadcastReceiver.FLAG_PLAY);
             }
         } catch (IOException e) {
             LogUtils.e(e);
@@ -182,6 +199,8 @@ public class MusicService extends Service {
         this.playlist.clear();
         this.player.stop();
         this.player.reset();
+        // 发出广播
+        MusicPlayStateBroadcastReceiver.send(this, MusicPlayStateBroadcastReceiver.FLAG_CLEAR);
         LogUtils.e(this.playlist);
     }
 
@@ -205,6 +224,16 @@ public class MusicService extends Service {
     public void nextPlay(Music music) {
         this.playlist.add(music, this.playlist.getIndex() + 1);
     }
+
+    /**
+     * 下一首播放
+     *
+     * @param musics music list
+     */
+    public void nextPlay(List<Music> musics) {
+        this.playlist.add(musics, this.playlist.getIndex() + 1);
+    }
+
 
     public void setMode(int mode) {
         this.playlist.setMode(mode);

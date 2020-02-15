@@ -12,7 +12,7 @@
             android:layout_height="43dp"
             android:layout_marginStart="9dp"
             android:gravity="center_vertical"
-            android:text="@string/dc_textView_example" />
+            android:text="@string/cdf_dialog_title_single" />
 
     <ListView
             android:id="@+id/dc_listView"

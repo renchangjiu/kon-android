@@ -9,6 +9,8 @@ import androidx.room.PrimaryKey;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 
 /**
  * @author su
@@ -200,5 +202,23 @@ public class Music {
                 "id=" + id +
                 ", path='" + path + '\'' +
                 '}';
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Music music = (Music) o;
+        return Objects.equals(id, music.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

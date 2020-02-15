@@ -7,9 +7,6 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.TranslateAnimation;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -27,9 +24,7 @@ import com.htt.kon.util.UiUtils;
 import com.htt.kon.util.stream.Optional;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,8 +35,12 @@ import lombok.Setter;
  * @date 2020/02/05 17:45
  */
 public class CommonDialogFragment extends BaseDialogFragment {
-    private static final String BUNDLE_KEY_MUSIC_ID = "musicId";
-    private static final String BUNDLE_KEY_MUSIC_JSON = "musicJson";
+    private static final String B_K_FLAG = "flag";
+
+    private static final String B_K_SINGLE_MUSIC_JSON = "musicJson";
+
+    private static final String B_K_ABD_NAME = "abdValue";
+    private static final String B_K_ABD_MUSICS_JSON = "musicsJson";
 
 
     /**
@@ -101,11 +100,19 @@ public class CommonDialogFragment extends BaseDialogFragment {
     private static final String FLAG_SINGLE = "single";
 
     /**
-     * 歌手页面 & 专辑页面 & 文件夹页面
+     * 歌手页面
      */
-    private static final String FLAG_ABD = "abd";
+    private static final String FLAG_ARTIST = "artist";
 
-    private String flag;
+    /**
+     * 专辑页面
+     */
+    private static final String FLAG_ALBUM = "album";
+
+    /**
+     * 文件夹页面
+     */
+    private static final String FLAG_DIR = "dir";
 
 
     private static final SparseArray<CommonDialogItem> FULL_ITEMS = new SparseArray<>();
@@ -125,14 +132,11 @@ public class CommonDialogFragment extends BaseDialogFragment {
     }
 
     @BindView(R.id.dc_textView)
-    TextView textView;
+    TextView textViewTitle;
 
     @BindView(R.id.dc_listView)
     ListView listView;
 
-    private MusicDbService musicDbService;
-
-    private LocalMusicActivity activity;
 
     @Setter
     private OnClickListener onClickListener;
@@ -145,24 +149,44 @@ public class CommonDialogFragment extends BaseDialogFragment {
      */
     public static CommonDialogFragment ofSingle(String musicJson) {
         CommonDialogFragment instance = new CommonDialogFragment();
-        instance.flag = FLAG_SINGLE;
         Bundle bundle = new Bundle();
-        bundle.putString(BUNDLE_KEY_MUSIC_JSON, musicJson);
+        bundle.putString(B_K_FLAG, FLAG_SINGLE);
+        bundle.putString(B_K_SINGLE_MUSIC_JSON, musicJson);
         instance.setArguments(bundle);
         return instance;
     }
 
     /**
-     * 歌手页面 & 专辑页面 & 文件夹页面
+     * 歌手页面
      */
-    public static CommonDialogFragment ofAbd(int musicId) {
+    public static CommonDialogFragment ofArtist(String artist, String musicsJson) {
+        return ofAbd(FLAG_ARTIST, artist, musicsJson);
+    }
+
+    /**
+     * 专辑页面
+     */
+    public static CommonDialogFragment ofAlbum(String album, String musicsJson) {
+        return ofAbd(FLAG_ALBUM, album, musicsJson);
+    }
+
+    /**
+     * 文件夹页面
+     */
+    public static CommonDialogFragment ofDir(String dir, String musicsJson) {
+        return ofAbd(FLAG_DIR, dir, musicsJson);
+    }
+
+    private static CommonDialogFragment ofAbd(String abd, String name, String musicsJson) {
         CommonDialogFragment instance = new CommonDialogFragment();
-        instance.flag = FLAG_ABD;
         Bundle bundle = new Bundle();
-        bundle.putLong(BUNDLE_KEY_MUSIC_ID, musicId);
+        bundle.putString(B_K_FLAG, abd);
+        bundle.putString(B_K_ABD_NAME, name);
+        bundle.putString(B_K_ABD_MUSICS_JSON, musicsJson);
         instance.setArguments(bundle);
         return instance;
     }
+
 
     @Nullable
     @Override
@@ -170,18 +194,20 @@ public class CommonDialogFragment extends BaseDialogFragment {
         View view = inflater.inflate(R.layout.dialog_common, container, false);
         ButterKnife.bind(this, view);
         this.init();
+
         slideToUp(view);
         return view;
     }
 
 
     private void init() {
-        switch (this.flag) {
+        String flag = getArguments().getString(B_K_FLAG);
+        switch (flag) {
             case FLAG_SINGLE:
                 this.init4single();
                 break;
-            case FLAG_ABD:
-                this.init4abd();
+            case FLAG_ARTIST:
+                this.init4Artist();
                 break;
             default:
         }
@@ -195,10 +221,12 @@ public class CommonDialogFragment extends BaseDialogFragment {
 
     private void init4single() {
         assert getArguments() != null;
-        String musicJson = getArguments().getString(BUNDLE_KEY_MUSIC_JSON);
+        String musicJson = getArguments().getString(B_K_SINGLE_MUSIC_JSON);
         Music music = JsonUtils.json2Bean(musicJson, Music.class);
         assert music != null;
 
+        String format = getString(R.string.cdf_dialog_title_single);
+        this.textViewTitle.setText(String.format(format, music.getTitle()));
         List<CommonDialogItem> items = new ArrayList<>();
         items.add(FULL_ITEMS.get(TAG_PLAY_NEXT).setName(getString(R.string.cdf_play_next)).setData(music));
         items.add(FULL_ITEMS.get(TAG_COLLECT).setName(getString(R.string.cdf_collect)).setData(music));
@@ -208,16 +236,25 @@ public class CommonDialogFragment extends BaseDialogFragment {
         this.listView.setAdapter(new CommonDialogAdapter(items));
     }
 
-    private void init4abd() {
-        int[] tags = new int[]{0, 1, 4, 8};
-        long musicId = getArguments().getLong(BUNDLE_KEY_MUSIC_ID);
+    private void init4Artist() {
+        assert getArguments() != null;
+        String artist = getArguments().getString(B_K_ABD_NAME);
+        String musicsJson = getArguments().getString(B_K_ABD_MUSICS_JSON);
+        List<Music> musics = JsonUtils.json2List(musicsJson, Music.class);
+
+        String format = getString(R.string.cdf_dialog_title_artist);
+        this.textViewTitle.setText(String.format(format, artist));
+        List<CommonDialogItem> items = new ArrayList<>();
+        items.add(FULL_ITEMS.get(TAG_PLAY_NEXT).setName(getString(R.string.cdf_play_next)).setData(musics));
+        items.add(FULL_ITEMS.get(TAG_COLLECT).setName(getString(R.string.cdf_collect)).setData(musics));
+        items.add(FULL_ITEMS.get(TAG_DELETE).setName(getString(R.string.cdf_delete)).setData(musics));
+        this.listView.setAdapter(new CommonDialogAdapter(items));
     }
+
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        this.activity = (LocalMusicActivity) context;
-        this.musicDbService = MusicDbService.of(context);
     }
 
     @Override

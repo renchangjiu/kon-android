@@ -4,7 +4,7 @@
         android:layout_height="55dp">
 
     <ImageView
-            android:id="@+id/lilms_imageViewPlay"
+            android:id="@+id/lilma_imageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -12,12 +12,12 @@
             android:src="@drawable/list_item_play" />
 
     <TextView
-            android:id="@+id/lilms_textViewTitle"
+            android:id="@+id/lilma_textViewArtist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="9dp"
-            android:layout_toEndOf="@id/lilms_imageViewPlay"
+            android:layout_toEndOf="@id/lilma_imageView"
             android:ellipsize="marquee"
             android:maxEms="24"
             android:singleLine="true"
@@ -26,14 +26,14 @@
             android:textSize="14sp" />
 
     <TextView
-            android:id="@+id/lilms_textViewArtistAlbum"
+            android:id="@+id/lilma_textViewCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/lilms_textViewTitle"
-            android:layout_alignStart="@id/lilms_textViewTitle"
+            android:layout_below="@id/lilma_textViewArtist"
+            android:layout_alignStart="@id/lilma_textViewArtist"
             android:layout_marginTop="7dp"
             android:layout_marginBottom="6dp"
-            android:layout_toEndOf="@id/lilms_imageViewPlay"
+            android:layout_toEndOf="@id/lilma_imageView"
             android:ellipsize="marquee"
             android:maxEms="24"
             android:singleLine="true"

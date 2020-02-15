@@ -160,6 +160,19 @@ public class Playlist {
         }
     }
 
+    /**
+     * 添加到播放列表的指定位置
+     *
+     * @param musics music list
+     * @param index  index at which to insert the first element from the specified collection
+     */
+    void add(List<Music> musics, int index) {
+        this.musics.addAll(index, musics);
+        if (this.index == -1) {
+            this.index = 0;
+        }
+    }
+
     public Music getCurMusic() {
         if (this.musics.isEmpty()) {
             return null;

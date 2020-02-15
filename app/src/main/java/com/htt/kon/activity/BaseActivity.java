@@ -226,6 +226,21 @@ public class BaseActivity extends AppCompatActivity {
         this.updatePlayBarInterface();
     }
 
+    /**
+     * 下一首播放
+     *
+     * @param musics music list
+     */
+    public void nextPlay(List<Music> musics) {
+        this.msService.nextPlay(musics);
+        showPlayBar();
+        if (this.playlist.size() == 1) {
+            this.msService.play();
+        }
+        this.updatePlayBarViewPager();
+        this.updatePlayBarInterface();
+    }
+
 
     /**
      * 根据当前播放状态, 修改playbar 的界面
