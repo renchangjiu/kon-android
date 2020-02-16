@@ -20,19 +20,19 @@
             android:orientation="vertical">
 
         <TextView
-                android:id="@+id/lilma_textViewArtist"
+                android:id="@+id/lilma_textViewAlbum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:ellipsize="marquee"
                 android:maxEms="24"
                 android:singleLine="true"
-                android:text="@string/artist"
+                android:text="@string/album"
                 android:textColor="@color/lightBlack"
                 android:textSize="14sp" />
 
         <TextView
-                android:id="@+id/lilma_textViewCount"
+                android:id="@+id/lilma_textViewCountArtist"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -40,9 +40,9 @@
                 android:ellipsize="marquee"
                 android:maxEms="24"
                 android:singleLine="true"
-                android:text="@string/lilma_music_count"
+                android:text="@string/lilmal_music_count"
                 android:textColor="@color/grey"
-                android:textSize="12sp" />
+                android:textSize="11sp" />
 
     </LinearLayout>
 

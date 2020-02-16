@@ -110,12 +110,15 @@ public class Playlist {
     /**
      * 根据pos 删除列表中的某一项
      *
-     * @param position pos
+     * @param index pos
      */
-    void remove(int position) {
-        this.musics.remove(position);
-        if (position < this.index) {
+    void remove(int index) {
+        this.musics.remove(index);
+        if (index < this.index) {
             this.index -= 1;
+        }
+        if (this.isEmpty()) {
+            this.index = -1;
         }
     }
 

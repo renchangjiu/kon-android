@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -24,8 +23,8 @@ public class App extends Application {
 
     private static Playlist playlist;
 
-    public static final String NOTIFICATION_CHANNEL_PLAY_ID = "1";
-    public static final String NOTIFICATION_CHANNEL_PLAY_NAME = "play";
+    public static final String N_C_PLAY_ID = "1";
+    public static final String N_C_PLAY_NAME = "play";
 
     @Override
     public void onCreate() {
@@ -60,7 +59,7 @@ public class App extends Application {
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String channelDesc = "kon通知栏";
-            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_PLAY_ID, NOTIFICATION_CHANNEL_PLAY_NAME, NotificationManager.IMPORTANCE_LOW);
+            NotificationChannel channel = new NotificationChannel(N_C_PLAY_ID, N_C_PLAY_NAME, NotificationManager.IMPORTANCE_LOW);
             channel.setDescription(channelDesc);
 
             NotificationManagerCompat manager = NotificationManagerCompat.from(this);

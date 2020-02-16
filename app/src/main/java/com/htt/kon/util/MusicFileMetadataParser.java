@@ -40,7 +40,6 @@ public class MusicFileMetadataParser {
         String duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
         String bitRate = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
 
-        // mmr.extractAlbumArt();
         Mp3Metadata metadata = new Mp3Metadata();
         metadata.setImage(embeddedPicture);
         metadata.setTitle(title);
@@ -48,6 +47,7 @@ public class MusicFileMetadataParser {
         metadata.setAlbum(album);
         metadata.setDuration(Integer.valueOf(duration));
         metadata.setBitRate(Integer.valueOf(bitRate) / 1000);
+        mmr.release();
         return metadata;
     }
 

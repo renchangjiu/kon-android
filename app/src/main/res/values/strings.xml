@@ -38,6 +38,7 @@
     <string name="cdf_delete">删除</string>
 
     <string name="artist">歌手</string>
+    <string name="album">专辑</string>
     <string name="music_title">歌名</string>
     <string name="cancel">取消</string>
     <string name="determine">确定</string>
@@ -55,6 +56,10 @@
     <string name="added_to_next_play">已添加到下一首播放</string>
 
     <string name="lilma_music_count">%d首</string>
+    <string name="lilmal_music_count">%d首&#160;%s</string>
+
+    <string name="artist_unknown">群星</string>
+    <string name="unknown">未知</string>
 
 
 </resources>

@@ -14,11 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.htt.kon.R;
-import com.htt.kon.activity.LocalMusicActivity;
 import com.htt.kon.adapter.list.dialog.CommonDialogAdapter;
 import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
-import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.UiUtils;
 import com.htt.kon.util.stream.Optional;
@@ -207,7 +205,10 @@ public class CommonDialogFragment extends BaseDialogFragment {
                 this.init4single();
                 break;
             case FLAG_ARTIST:
-                this.init4Artist();
+                this.init4artist();
+                break;
+            case FLAG_ALBUM:
+                this.init4album();
                 break;
             default:
         }
@@ -236,14 +237,27 @@ public class CommonDialogFragment extends BaseDialogFragment {
         this.listView.setAdapter(new CommonDialogAdapter(items));
     }
 
-    private void init4Artist() {
-        assert getArguments() != null;
+    private void init4artist() {
+        this.init4abd();
+
         String artist = getArguments().getString(B_K_ABD_NAME);
+        String format = getString(R.string.cdf_dialog_title_artist);
+        this.textViewTitle.setText(String.format(format, artist));
+    }
+
+    private void init4album() {
+        this.init4abd();
+
+        String album = getArguments().getString(B_K_ABD_NAME);
+        String format = getString(R.string.cdf_dialog_title_album);
+        this.textViewTitle.setText(String.format(format, album));
+    }
+
+    private void init4abd() {
+        assert getArguments() != null;
         String musicsJson = getArguments().getString(B_K_ABD_MUSICS_JSON);
         List<Music> musics = JsonUtils.json2List(musicsJson, Music.class);
 
-        String format = getString(R.string.cdf_dialog_title_artist);
-        this.textViewTitle.setText(String.format(format, artist));
         List<CommonDialogItem> items = new ArrayList<>();
         items.add(FULL_ITEMS.get(TAG_PLAY_NEXT).setName(getString(R.string.cdf_play_next)).setData(musics));
         items.add(FULL_ITEMS.get(TAG_COLLECT).setName(getString(R.string.cdf_collect)).setData(musics));

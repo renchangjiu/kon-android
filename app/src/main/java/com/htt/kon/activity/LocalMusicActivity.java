@@ -13,8 +13,10 @@ import android.view.MenuItem;
 import com.google.android.material.tabs.TabLayout;
 import com.htt.kon.R;
 import com.htt.kon.adapter.pager.LocalMusicAdapter;
-import com.htt.kon.fragment.music.LocalMusicArtistPagerFragment;
-import com.htt.kon.fragment.music.LocalMusicSinglePagerFragment;
+import com.htt.kon.fragment.music.AlbumPagerFragment;
+import com.htt.kon.fragment.music.ArtistPagerFragment;
+import com.htt.kon.fragment.music.BaseLocalMusicPagerFragment;
+import com.htt.kon.fragment.music.SinglePagerFragment;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.UiUtils;
 
@@ -55,11 +57,11 @@ public class LocalMusicActivity extends BaseActivity {
         this.toolbar.setNavigationOnClickListener(v -> {
             finish();
         });
-        List<Fragment> fragments = new ArrayList<>();
-        fragments.add(LocalMusicSinglePagerFragment.of());
-        fragments.add(LocalMusicArtistPagerFragment.of());
-        fragments.add(LocalMusicSinglePagerFragment.of());
-        fragments.add(LocalMusicSinglePagerFragment.of());
+        List<BaseLocalMusicPagerFragment> fragments = new ArrayList<>();
+        fragments.add(SinglePagerFragment.of());
+        fragments.add(ArtistPagerFragment.of());
+        fragments.add(AlbumPagerFragment.of());
+        fragments.add(SinglePagerFragment.of());
         List<String> titles = new ArrayList<>();
         titles.add("单曲");
         titles.add("歌手");

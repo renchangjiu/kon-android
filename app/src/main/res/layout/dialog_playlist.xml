@@ -64,7 +64,8 @@
                 android:focusable="true"
                 android:paddingStart="9dp"
                 android:paddingEnd="20dp"
-                android:src="@drawable/playlist_clear" />
+                android:src="@drawable/playlist_clear"
+                android:contentDescription="@string/clear" />
     </LinearLayout>
 
     <ListView

@@ -1,7 +1,6 @@
 package com.htt.kon.fragment.music;
 
 import android.content.Context;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +12,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.htt.kon.App;
 import com.htt.kon.R;
@@ -40,7 +38,7 @@ import butterknife.ButterKnife;
  * @author su
  * @date 2020/02/03 21:00
  */
-public class LocalMusicSinglePagerFragment extends Fragment {
+public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
 
 
     @BindView(R.id.lhs_textViewCount)
@@ -52,46 +50,14 @@ public class LocalMusicSinglePagerFragment extends Fragment {
     @BindView(R.id.flms_listView)
     ListView listView;
 
-
-    private MusicDbService musicDbService;
-
-    private LocalMusicActivity activity;
-
-    private MusicPlayStateBroadcastReceiver receiver;
-
-    private Playlist playlist;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        this.activity = (LocalMusicActivity) context;
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_local_music_single, container, false);
         this.listView = view.findViewById(R.id.flms_listView);
 
-        this.musicDbService = MusicDbService.of(this.activity);
         this.init();
-
-        this.receiver = MusicPlayStateBroadcastReceiver.register(this.activity);
-        this.receiver.setOnReceiveBroadcastListener(v -> {
-            switch (v) {
-                case MusicPlayStateBroadcastReceiver.FLAG_PLAY:
-                    Music curMusic = this.playlist.getCurMusic();
-                    if (curMusic.getMid().equals(MidConstant.MID_LOCAL_MUSIC)) {
-                        UiUtils.getListViewAdapter(this.listView, LocalMusicSingleAdapter.class).notifyDataSetChanged();
-                    }
-                    break;
-                case MusicPlayStateBroadcastReceiver.FLAG_CLEAR:
-                    UiUtils.getListViewAdapter(this.listView, LocalMusicSingleAdapter.class).notifyDataSetChanged();
-                    break;
-                default:
-            }
-
-        });
         return view;
     }
 
@@ -141,9 +107,15 @@ public class LocalMusicSinglePagerFragment extends Fragment {
 
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        MusicPlayStateBroadcastReceiver.unregister(this.activity, this.receiver);
+    public void onReceiveBroadcast(int flag) {
+        switch (flag) {
+            case MusicPlayStateBroadcastReceiver.FLAG_PLAY:
+            case MusicPlayStateBroadcastReceiver.FLAG_CLEAR:
+            case MusicPlayStateBroadcastReceiver.FLAG_REMOVE:
+                UiUtils.getListViewAdapter(this.listView, LocalMusicSingleAdapter.class).notifyDataSetChanged();
+                break;
+            default:
+        }
     }
 
     /**
@@ -152,7 +124,7 @@ public class LocalMusicSinglePagerFragment extends Fragment {
      * @param index 在新的播放列表中的index
      */
     private void setPlaylist(int index) {
-        // 使本地音乐列表成为新的播放列表
+        // 使本地音乐列表替代成为新的播放列表
         new Thread(() -> {
             List<Music> list = this.musicDbService.list(MidConstant.MID_LOCAL_MUSIC);
             this.activity.runOnUiThread(() -> {
@@ -163,12 +135,12 @@ public class LocalMusicSinglePagerFragment extends Fragment {
         }).start();
     }
 
-    private LocalMusicSinglePagerFragment() {
+    private SinglePagerFragment() {
         super();
     }
 
-    public static LocalMusicSinglePagerFragment of() {
-        return new LocalMusicSinglePagerFragment();
+    public static SinglePagerFragment of() {
+        return new SinglePagerFragment();
     }
 
 

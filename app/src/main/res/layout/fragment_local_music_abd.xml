@@ -5,6 +5,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+    <!-- 歌手、专辑、文件夹三个fragment 使用同一个layout -->
+
     <ListView
             android:id="@+id/flma_listView"
             android:layout_width="match_parent"

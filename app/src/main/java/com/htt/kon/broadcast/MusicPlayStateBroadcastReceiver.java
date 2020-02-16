@@ -30,6 +30,11 @@ public class MusicPlayStateBroadcastReceiver extends BroadcastReceiver {
      */
     public static final int FLAG_CLEAR = 2;
 
+    /**
+     * 表示播放列表被删除了一项
+     */
+    public static final int FLAG_REMOVE = 3;
+
 
     @Setter
     private OnReceiveBroadcastListener onReceiveBroadcastListener;

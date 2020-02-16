@@ -9,7 +9,6 @@ import android.os.Binder;
 import android.os.IBinder;
 
 import androidx.core.app.NotificationCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.htt.kon.App;
 import com.htt.kon.R;
@@ -20,7 +19,6 @@ import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.stream.Optional;
 
 import java.io.IOException;
-import java.sql.BatchUpdateException;
 import java.util.List;
 
 import lombok.Setter;
@@ -30,6 +28,14 @@ import lombok.Setter;
  * @date 2020/02/06 20:11
  */
 public class MusicService extends Service {
+    private static final int NOTIFICATION_ID = 1;
+
+    private Notification notification;
+
+    /**
+     * 服务是否在前台
+     */
+    private boolean isForeground = true;
 
     private MusicBinder binder = new MusicBinder();
 
@@ -51,15 +57,15 @@ public class MusicService extends Service {
      * TODO: 通知栏样式待完善
      */
     private void createNotification() {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, App.NOTIFICATION_CHANNEL_PLAY_ID);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, App.N_C_PLAY_ID);
         builder.setContentTitle("kon");
         builder.setContentText("TODO");
         builder.setSmallIcon(R.drawable.ic_launcher_foreground);
         PendingIntent intent = PendingIntent.getActivity(getApplicationContext(), 1, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(intent);
 
-        Notification notification = builder.build();
-        startForeground(1, notification);
+        this.notification = builder.build();
+        startForeground(NOTIFICATION_ID, notification);
     }
 
     @Override
@@ -68,6 +74,10 @@ public class MusicService extends Service {
         this.createNotification();
 
         this.playlist = App.getApp().getPlaylist();
+        if (this.playlist.isEmpty()) {
+            stopForeground(true);
+            this.isForeground = false;
+        }
         LogUtils.e("MusicService onCreate.");
         this.player = new MediaPlayer();
         if (this.playlist.isNotEmpty()) {
@@ -159,7 +169,75 @@ public class MusicService extends Service {
         if (autoPlay) {
             play();
         }
+        if (this.playlist.isEmpty()) {
+            stopForeground(true);
+            this.isForeground = false;
+        }
+
+        MusicPlayStateBroadcastReceiver.send(this, MusicPlayStateBroadcastReceiver.FLAG_REMOVE);
     }
+
+    /**
+     * 清空播放列表
+     */
+    public void clear() {
+        this.playlist.clear();
+        this.player.stop();
+        this.player.reset();
+
+        stopForeground(true);
+        this.isForeground = false;
+
+        MusicPlayStateBroadcastReceiver.send(this, MusicPlayStateBroadcastReceiver.FLAG_CLEAR);
+        LogUtils.e(this.playlist);
+    }
+
+
+    /**
+     * 使用新的歌曲集合替换当前播放的列表, 并立即播放
+     *
+     * @param musics musics
+     * @param index  index
+     */
+    public void replace(List<Music> musics, int index) {
+        this.playlist.replace(musics, index);
+        this.play();
+
+        this.startForegroundIfNot();
+    }
+
+    /**
+     * 添加到下一首播放
+     *
+     * @param music music
+     */
+    public void nextPlay(Music music) {
+        this.playlist.add(music, this.playlist.getIndex() + 1);
+
+        this.startForegroundIfNot();
+    }
+
+    /**
+     * 添加到下一首播放
+     *
+     * @param musics music list
+     */
+    public void nextPlay(List<Music> musics) {
+        this.playlist.add(musics, this.playlist.getIndex() + 1);
+
+        this.startForegroundIfNot();
+    }
+
+    /**
+     * 若当前不在前台, 则设置为前台
+     */
+    private void startForegroundIfNot() {
+        if (!this.isForeground) {
+            startForeground(NOTIFICATION_ID, notification);
+            this.isForeground = true;
+        }
+    }
+
 
     /**
      * 立即播放当前歌曲
@@ -190,48 +268,6 @@ public class MusicService extends Service {
         } catch (IOException e) {
             LogUtils.e(e);
         }
-    }
-
-    /**
-     * 清空播放列表
-     */
-    public void clear() {
-        this.playlist.clear();
-        this.player.stop();
-        this.player.reset();
-        // 发出广播
-        MusicPlayStateBroadcastReceiver.send(this, MusicPlayStateBroadcastReceiver.FLAG_CLEAR);
-        LogUtils.e(this.playlist);
-    }
-
-
-    /**
-     * 使用新的歌曲集合替换当前播放的列表, 并立即播放
-     *
-     * @param musics musics
-     * @param index  index
-     */
-    public void replace(List<Music> musics, int index) {
-        this.playlist.replace(musics, index);
-        this.play();
-    }
-
-    /**
-     * 下一首播放
-     *
-     * @param music music
-     */
-    public void nextPlay(Music music) {
-        this.playlist.add(music, this.playlist.getIndex() + 1);
-    }
-
-    /**
-     * 下一首播放
-     *
-     * @param musics music list
-     */
-    public void nextPlay(List<Music> musics) {
-        this.playlist.add(musics, this.playlist.getIndex() + 1);
     }
 
 
