@@ -64,8 +64,8 @@ public class LocalMusicAlbumAdapter extends BaseAdapter {
 
         ItemData item = this.getItem(position);
 
-        // 单击右侧图标
         List<Music> musics = item.getMusics();
+        // 右侧图标点击事件
         holder.imageViewOption.setOnClickListener(v -> {
             CommonDialogFragment dialog = CommonDialogFragment.ofAlbum(item.getArtist(), JsonUtils.bean2Json(musics));
             dialog.show(this.activity.getSupportFragmentManager(), "1");
@@ -74,8 +74,6 @@ public class LocalMusicAlbumAdapter extends BaseAdapter {
                 Optional.of(this.onOptionClickListener).ifPresent(v1 -> v1.onClick(item1));
             });
         });
-
-        // TODO: 专辑默认图片
 
         if (this.playlist.isNotEmpty() && musics.contains(this.playlist.getCurMusic())) {
             holder.imageViewOption.setImageResource(R.drawable.list_item_play);

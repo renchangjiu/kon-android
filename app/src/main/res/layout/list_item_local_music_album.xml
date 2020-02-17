@@ -8,9 +8,10 @@
     <ImageView
             android:id="@+id/lilma_imageView"
             android:layout_width="49dp"
+            android:scaleType="fitStart"
             android:layout_height="49dp"
             android:layout_marginStart="5dp"
-            android:src="@drawable/local_music_artist_list_item_image_default" />
+            android:src="@drawable/local_music_album_list_item_image_default" />
 
     <LinearLayout
             android:layout_width="0dp"

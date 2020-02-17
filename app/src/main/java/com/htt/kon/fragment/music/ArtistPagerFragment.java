@@ -19,11 +19,7 @@ import com.htt.kon.dialog.CommonDialogFragment;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.UiUtils;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,32 +35,16 @@ import butterknife.ButterKnife;
  */
 public class ArtistPagerFragment extends BaseLocalMusicPagerFragment {
 
-    @BindView(R.id.flma_listView)
-    ListView listView;
-
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_local_music_abd, container, false);
-        ButterKnife.bind(this, view);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
 
         this.init();
         return view;
     }
 
-    @Override
-    public void onReceiveBroadcast(int flag) {
-        switch (flag) {
-            case MusicPlayStateBroadcastReceiver.FLAG_PLAY:
-            case MusicPlayStateBroadcastReceiver.FLAG_CLEAR:
-            case MusicPlayStateBroadcastReceiver.FLAG_REMOVE:
-                UiUtils.getListViewAdapter(this.listView, LocalMusicArtistAdapter.class).notifyDataSetChanged();
-                break;
-            default:
-        }
-    }
 
     private void init() {
         this.initListView();

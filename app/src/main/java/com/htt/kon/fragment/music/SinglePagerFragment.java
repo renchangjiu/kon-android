@@ -1,6 +1,5 @@
 package com.htt.kon.fragment.music;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,18 +10,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.htt.kon.App;
 import com.htt.kon.R;
-import com.htt.kon.activity.LocalMusicActivity;
 import com.htt.kon.adapter.list.LocalMusicSingleAdapter;
 import com.htt.kon.bean.Music;
 import com.htt.kon.broadcast.MusicPlayStateBroadcastReceiver;
 import com.htt.kon.constant.MidConstant;
 import com.htt.kon.dialog.CommonDialogFragment;
-import com.htt.kon.service.Playlist;
-import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.UiUtils;
 
@@ -47,8 +42,7 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
     @BindView(R.id.lhs_textViewMultipleChoice)
     TextView textViewMultipleChoice;
 
-    @BindView(R.id.flms_listView)
-    ListView listView;
+    private ListView listView;
 
     @Nullable
     @Override
