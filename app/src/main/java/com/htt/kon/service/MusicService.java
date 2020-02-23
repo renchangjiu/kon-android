@@ -4,6 +4,8 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
@@ -60,7 +62,7 @@ public class MusicService extends Service {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, App.N_C_PLAY_ID);
         builder.setContentTitle("kon");
         builder.setContentText("TODO");
-        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
+        builder.setSmallIcon(R.mipmap.ic_launcher);
         PendingIntent intent = PendingIntent.getActivity(getApplicationContext(), 1, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(intent);
 

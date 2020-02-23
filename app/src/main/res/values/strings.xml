@@ -39,6 +39,7 @@
 
     <string name="artist">歌手</string>
     <string name="album">专辑</string>
+    <string name="dir">文件夹</string>
     <string name="music_title">歌名</string>
     <string name="cancel">取消</string>
     <string name="determine">确定</string>

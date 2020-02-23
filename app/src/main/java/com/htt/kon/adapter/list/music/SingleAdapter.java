@@ -1,4 +1,4 @@
-package com.htt.kon.adapter.list;
+package com.htt.kon.adapter.list.music;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -26,7 +26,7 @@ import lombok.Setter;
  * @author su
  * @date 2020/02/04 08:33
  */
-public class LocalMusicSingleAdapter extends BaseAdapter {
+public class SingleAdapter extends BaseAdapter implements LocalMusicFragmentAdapter {
 
     private List<Music> res;
 
@@ -37,7 +37,7 @@ public class LocalMusicSingleAdapter extends BaseAdapter {
     @Setter
     private OnOptionClickListener onOptionClickListener;
 
-    public LocalMusicSingleAdapter(List<Music> res, Context activity) {
+    public SingleAdapter(List<Music> res, Context activity) {
         this.res = res;
         this.activity = (LocalMusicActivity) activity;
         this.playlist = App.getApp().getPlaylist();

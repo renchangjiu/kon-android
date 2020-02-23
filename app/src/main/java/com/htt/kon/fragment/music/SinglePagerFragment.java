@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 
 import com.htt.kon.App;
 import com.htt.kon.R;
-import com.htt.kon.adapter.list.LocalMusicSingleAdapter;
+import com.htt.kon.adapter.list.music.SingleAdapter;
 import com.htt.kon.bean.Music;
 import com.htt.kon.broadcast.MusicPlayStateBroadcastReceiver;
 import com.htt.kon.constant.MidConstant;
@@ -65,7 +65,7 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
         new Thread(() -> {
             List<Music> list = this.musicDbService.list(MidConstant.MID_LOCAL_MUSIC);
             this.activity.runOnUiThread(() -> {
-                LocalMusicSingleAdapter adapter = new LocalMusicSingleAdapter(list, this.activity);
+                SingleAdapter adapter = new SingleAdapter(list, this.activity);
                 this.listView.setAdapter(adapter);
                 String format = this.activity.getString(R.string.local_music_count);
                 this.textViewCount.setText(String.format(format, list.size()));
@@ -106,7 +106,7 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
             case MusicPlayStateBroadcastReceiver.FLAG_PLAY:
             case MusicPlayStateBroadcastReceiver.FLAG_CLEAR:
             case MusicPlayStateBroadcastReceiver.FLAG_REMOVE:
-                UiUtils.getListViewAdapter(this.listView, LocalMusicSingleAdapter.class).notifyDataSetChanged();
+                UiUtils.getListViewAdapter(this.listView, SingleAdapter.class).notifyDataSetChanged();
                 break;
             default:
         }
@@ -124,7 +124,7 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
             this.activity.runOnUiThread(() -> {
                 this.activity.replacePlaylist(list, index);
                 // 通知adapter 更改界面
-                UiUtils.getListViewAdapter(this.listView, LocalMusicSingleAdapter.class).notifyDataSetChanged();
+                UiUtils.getListViewAdapter(this.listView, SingleAdapter.class).notifyDataSetChanged();
             });
         }).start();
     }

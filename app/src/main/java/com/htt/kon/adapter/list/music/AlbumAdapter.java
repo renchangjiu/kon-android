@@ -1,4 +1,4 @@
-package com.htt.kon.adapter.list;
+package com.htt.kon.adapter.list.music;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -19,18 +19,16 @@ import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.stream.Optional;
 
 import java.util.List;
-import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.experimental.Accessors;
 
 /**
  * @author su
- * @date 2020/02/15 15:06
+ * @date 2020/02/16 14:34
  */
-public class LocalMusicArtistAdapter extends BaseAdapter {
+public class AlbumAdapter extends BaseAdapter  implements LocalMusicFragmentAdapter{
 
     private List<ItemData> res;
 
@@ -41,7 +39,7 @@ public class LocalMusicArtistAdapter extends BaseAdapter {
     @Setter
     private OnOptionClickListener onOptionClickListener;
 
-    public LocalMusicArtistAdapter(List<ItemData> res, Context context) {
+    public AlbumAdapter(List<ItemData> res, Context context) {
         this.res = res;
         this.activity = (LocalMusicActivity) context;
         this.playlist = App.getApp().getPlaylist();
@@ -55,21 +53,21 @@ public class LocalMusicArtistAdapter extends BaseAdapter {
             view = convertView;
             holder = (ViewHolder) view.getTag();
         } else {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_local_music_artist, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_local_music_album, parent, false);
             holder = new ViewHolder();
             holder.imageView = view.findViewById(R.id.lilma_imageView);
-            holder.textViewArtist = view.findViewById(R.id.lilma_textViewArtist);
-            holder.textViewCount = view.findViewById(R.id.lilma_textViewCount);
+            holder.textViewAlbum = view.findViewById(R.id.lilma_textViewAlbum);
+            holder.textViewCountArtist = view.findViewById(R.id.lilma_textViewCountArtist);
             holder.imageViewOption = view.findViewById(R.id.lilma_imageViewOption);
             view.setTag(holder);
         }
 
         ItemData item = this.getItem(position);
 
-        // 单击右侧图标
         List<Music> musics = item.getMusics();
+        // 右侧图标点击事件
         holder.imageViewOption.setOnClickListener(v -> {
-            CommonDialogFragment dialog = CommonDialogFragment.ofArtist(item.getArtist(), JsonUtils.bean2Json(musics));
+            CommonDialogFragment dialog = CommonDialogFragment.ofAlbum(item.getArtist(), JsonUtils.bean2Json(musics));
             dialog.show(this.activity.getSupportFragmentManager(), "1");
             dialog.setOnClickListener((CommonDialogItem item1) -> {
                 // 回调方法
@@ -82,10 +80,9 @@ public class LocalMusicArtistAdapter extends BaseAdapter {
         } else {
             holder.imageViewOption.setImageResource(R.drawable.list_item_option);
         }
-        holder.textViewArtist.setText(item.getArtist());
-
-        String format = this.activity.getString(R.string.lilma_music_count);
-        holder.textViewCount.setText(String.format(format, musics.size()));
+        holder.textViewAlbum.setText(item.getAlbum());
+        String format = this.activity.getString(R.string.lilmal_music_count);
+        holder.textViewCountArtist.setText(String.format(format, musics.size(), item.getArtist()));
         return view;
     }
 
@@ -106,11 +103,11 @@ public class LocalMusicArtistAdapter extends BaseAdapter {
 
     private class ViewHolder {
         /**
-         * TODO: 歌手头像考虑爬取网易云音乐数据
+         * TODO: 专辑封面图片考虑爬取网易云音乐数据
          */
         private ImageView imageView;
-        private TextView textViewArtist;
-        private TextView textViewCount;
+        private TextView textViewAlbum;
+        private TextView textViewCountArtist;
         private ImageView imageViewOption;
     }
 
@@ -118,6 +115,7 @@ public class LocalMusicArtistAdapter extends BaseAdapter {
     @Setter
     @ToString
     public static class ItemData {
+        private String album;
         private String artist;
         private List<Music> musics;
 

@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment;
 import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
-import com.htt.kon.adapter.list.LocalMusicSingleAdapter;
 import com.htt.kon.broadcast.MusicPlayStateBroadcastReceiver;
 import com.htt.kon.service.Playlist;
 import com.htt.kon.service.database.MusicDbService;

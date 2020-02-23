@@ -210,6 +210,9 @@ public class CommonDialogFragment extends BaseDialogFragment {
             case FLAG_ALBUM:
                 this.init4album();
                 break;
+            case FLAG_DIR:
+                this.init4dir();
+                break;
             default:
         }
         this.listView.setOnItemClickListener((parent, view, position, id) -> {
@@ -251,6 +254,14 @@ public class CommonDialogFragment extends BaseDialogFragment {
         String album = getArguments().getString(B_K_ABD_NAME);
         String format = getString(R.string.cdf_dialog_title_album);
         this.textViewTitle.setText(String.format(format, album));
+    }
+
+    private void init4dir() {
+        this.init4abd();
+
+        String dirName = getArguments().getString(B_K_ABD_NAME);
+        String format = getString(R.string.cdf_dialog_title_dir);
+        this.textViewTitle.setText(String.format(format, dirName));
     }
 
     private void init4abd() {

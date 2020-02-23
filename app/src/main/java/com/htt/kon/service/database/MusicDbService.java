@@ -14,6 +14,7 @@ import com.htt.kon.util.LogUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -127,6 +128,28 @@ public class MusicDbService {
         }
         return map;
     }
+
+    /**
+     * 将给定集合按 dir 分组
+     *
+     * @param list music list.
+     * @return Map<dir, music list>
+     */
+    public Map<String, List<Music>> listGroupByDir(List<Music> list) {
+        Map<String, List<Music>> map = new HashMap<>();
+        for (Music music : list) {
+            String path = new File(music.getPath()).getParent();
+            if (map.containsKey(path)) {
+                map.get(path).add(music);
+            } else {
+                List<Music> r = new LinkedList<>();
+                r.add(music);
+                map.put(path, r);
+            }
+        }
+        return map;
+    }
+
 
     private void setDataIfEmpty(Music music) {
         if (StringUtils.isEmpty(music.getArtist())) {

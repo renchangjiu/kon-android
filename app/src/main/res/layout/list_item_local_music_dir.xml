@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+    <ImageView
+            android:id="@+id/lilmd_imageView"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="5dp"
+            android:src="@drawable/local_music_dir_list_item_image" />
+
+    <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+        <TextView
+                android:id="@+id/lilmd_textViewDirName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:ellipsize="marquee"
+                android:maxEms="24"
+                android:singleLine="true"
+                android:text="@string/dir"
+                android:textColor="@color/lightBlack"
+                android:textSize="14sp" />
+
+        <TextView
+                android:id="@+id/lilmd_textViewCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="10dp"
+                android:ellipsize="marquee"
+                android:maxEms="24"
+                android:singleLine="true"
+                android:text="@string/lilmal_music_count"
+                android:textColor="@color/grey"
+                android:textSize="11sp" />
+
+    </LinearLayout>
+
+    <ImageView
+            android:id="@+id/lilmd_imageViewOption"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:paddingStart="10dp"
+            android:paddingEnd="20dp"
+            android:src="@drawable/list_item_option" />
+</LinearLayout>

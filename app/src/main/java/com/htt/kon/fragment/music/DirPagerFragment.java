@@ -10,7 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.htt.kon.R;
-import com.htt.kon.adapter.list.music.ArtistAdapter;
+import com.htt.kon.adapter.list.music.DirAdapter;
+import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
 import com.htt.kon.constant.MidConstant;
 import com.htt.kon.dialog.CommonDialogFragment;
@@ -22,12 +23,12 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 本地音乐activity 下的歌手tab 页
+ * 本地音乐activity 下的文件夹tab 页
  *
  * @author su
  * @date 2020/02/14 21:44
  */
-public class ArtistPagerFragment extends BaseLocalMusicPagerFragment {
+public class DirPagerFragment extends BaseLocalMusicPagerFragment {
 
 
     @Nullable
@@ -46,25 +47,25 @@ public class ArtistPagerFragment extends BaseLocalMusicPagerFragment {
 
     private void initListView() {
         new Thread(() -> {
-            // 按歌手分类
             List<Music> list = super.musicDbService.list(MidConstant.MID_LOCAL_MUSIC);
-            Map<String, List<Music>> map = super.musicDbService.listGroupByArtist(list);
+            // 按文件夹分类
+            Map<String, List<Music>> map = super.musicDbService.listGroupByDir(list);
 
-            // 封装adapter 参数
-            List<ArtistAdapter.ItemData> res = new ArrayList<>();
+            // 封装参数
+            List<DirAdapter.ItemData> res = new ArrayList<>();
             Set<Map.Entry<String, List<Music>>> entries = map.entrySet();
             for (Map.Entry<String, List<Music>> entry : entries) {
-                ArtistAdapter.ItemData item = new ArtistAdapter.ItemData();
-                item.setArtist(entry.getKey());
+                DirAdapter.ItemData item = new DirAdapter.ItemData();
+                item.setPath(entry.getKey());
                 item.setMusics(entry.getValue());
                 res.add(item);
             }
 
             this.activity.runOnUiThread(() -> {
-                ArtistAdapter adapter = new ArtistAdapter(res, this.activity);
+                DirAdapter adapter = new DirAdapter(res, this.activity);
                 this.listView.setAdapter(adapter);
 
-                adapter.setOnOptionClickListener(item -> {
+                adapter.setOnOptionClickListener((CommonDialogItem item) -> {
                     List<Music> musics = (List<Music>) item.getData();
                     switch (item.getId()) {
                         case CommonDialogFragment.TAG_PLAY_NEXT:
@@ -80,10 +81,10 @@ public class ArtistPagerFragment extends BaseLocalMusicPagerFragment {
     }
 
 
-    private ArtistPagerFragment() {
+    private DirPagerFragment() {
     }
 
-    public static ArtistPagerFragment of() {
-        return new ArtistPagerFragment();
+    public static DirPagerFragment of() {
+        return new DirPagerFragment();
     }
 }

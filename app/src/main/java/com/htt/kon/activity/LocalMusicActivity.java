@@ -16,6 +16,7 @@ import com.htt.kon.adapter.pager.LocalMusicAdapter;
 import com.htt.kon.fragment.music.AlbumPagerFragment;
 import com.htt.kon.fragment.music.ArtistPagerFragment;
 import com.htt.kon.fragment.music.BaseLocalMusicPagerFragment;
+import com.htt.kon.fragment.music.DirPagerFragment;
 import com.htt.kon.fragment.music.SinglePagerFragment;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.UiUtils;
@@ -61,7 +62,7 @@ public class LocalMusicActivity extends BaseActivity {
         fragments.add(SinglePagerFragment.of());
         fragments.add(ArtistPagerFragment.of());
         fragments.add(AlbumPagerFragment.of());
-        fragments.add(SinglePagerFragment.of());
+        fragments.add(DirPagerFragment.of());
         List<String> titles = new ArrayList<>();
         titles.add("单曲");
         titles.add("歌手");
