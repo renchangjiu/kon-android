@@ -16,7 +16,7 @@ import lombok.Setter;
  * @author su
  * @date 2020/02/12 19:39
  */
-public class MusicPlayStateBroadcastReceiver extends BroadcastReceiver {
+public class MusicPlayStateReceiver extends BroadcastReceiver {
 
     public static final String ACTION = "COM.HTT.KON.MUSIC.PLAY.STATE.RECEIVER";
 
@@ -42,24 +42,24 @@ public class MusicPlayStateBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Optional.of(this.onReceiveBroadcastListener).ifPresent(v -> v.onReceiveBroadcast(intent.getFlags()));
-        LogUtils.e("MusicPlayStateBroadcastReceiver Receive a broadcast.");
+        LogUtils.e("MusicPlayStateReceiver Receive a broadcast.");
     }
 
 
-    private MusicPlayStateBroadcastReceiver() {
+    private MusicPlayStateReceiver() {
     }
 
 
     /**
      * 动态注册本广播接收器
      */
-    public static MusicPlayStateBroadcastReceiver register(Context context) {
+    public static MusicPlayStateReceiver register(Context context) {
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(context);
-        MusicPlayStateBroadcastReceiver receiver = new MusicPlayStateBroadcastReceiver();
+        MusicPlayStateReceiver receiver = new MusicPlayStateReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ACTION);
         manager.registerReceiver(receiver, intentFilter);
-        LogUtils.e("MusicPlayStateBroadcastReceiver register.");
+        LogUtils.e("MusicPlayStateReceiver register.");
         return receiver;
     }
 
@@ -69,7 +69,7 @@ public class MusicPlayStateBroadcastReceiver extends BroadcastReceiver {
     public static void unregister(Context context, BroadcastReceiver receiver) {
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(context);
         manager.unregisterReceiver(receiver);
-        LogUtils.e("MusicPlayStateBroadcastReceiver unregister.");
+        LogUtils.e("MusicPlayStateReceiver unregister.");
     }
 
     /**
@@ -80,7 +80,7 @@ public class MusicPlayStateBroadcastReceiver extends BroadcastReceiver {
         intent.setAction(ACTION);
         intent.setFlags(flag);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-        LogUtils.e("Send a broadcast, Action: " + MusicPlayStateBroadcastReceiver.ACTION);
+        LogUtils.e("Send a broadcast, Action: " + MusicPlayStateReceiver.ACTION);
     }
 
     public interface OnReceiveBroadcastListener {

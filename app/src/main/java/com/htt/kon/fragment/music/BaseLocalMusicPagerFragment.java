@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
-import com.htt.kon.broadcast.MusicPlayStateBroadcastReceiver;
+import com.htt.kon.broadcast.MusicPlayStateReceiver;
 import com.htt.kon.service.Playlist;
 import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.util.UiUtils;
@@ -35,7 +35,7 @@ public abstract class BaseLocalMusicPagerFragment extends Fragment {
 
     MusicDbService musicDbService;
 
-    private MusicPlayStateBroadcastReceiver receiver;
+    private MusicPlayStateReceiver receiver;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -54,7 +54,7 @@ public abstract class BaseLocalMusicPagerFragment extends Fragment {
     }
 
     private void init() {
-        this.receiver = MusicPlayStateBroadcastReceiver.register(this.activity);
+        this.receiver = MusicPlayStateReceiver.register(this.activity);
         this.receiver.setOnReceiveBroadcastListener(this::onReceiveBroadcast);
         this.musicDbService = MusicDbService.of(this.activity);
         this.playlist = App.getApp().getPlaylist();
@@ -67,9 +67,9 @@ public abstract class BaseLocalMusicPagerFragment extends Fragment {
      */
     public void onReceiveBroadcast(int flag) {
         switch (flag) {
-            case MusicPlayStateBroadcastReceiver.FLAG_PLAY:
-            case MusicPlayStateBroadcastReceiver.FLAG_CLEAR:
-            case MusicPlayStateBroadcastReceiver.FLAG_REMOVE:
+            case MusicPlayStateReceiver.FLAG_PLAY:
+            case MusicPlayStateReceiver.FLAG_CLEAR:
+            case MusicPlayStateReceiver.FLAG_REMOVE:
                 UiUtils.getListViewAdapter(this.listView, BaseAdapter.class).notifyDataSetChanged();
                 break;
             default:
@@ -79,7 +79,7 @@ public abstract class BaseLocalMusicPagerFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        MusicPlayStateBroadcastReceiver.unregister(this.activity, this.receiver);
+        MusicPlayStateReceiver.unregister(this.activity, this.receiver);
     }
 
 }

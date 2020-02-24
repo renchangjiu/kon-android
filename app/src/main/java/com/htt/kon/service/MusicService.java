@@ -4,19 +4,20 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
+import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.htt.kon.App;
 import com.htt.kon.R;
-import com.htt.kon.activity.MainActivity;
 import com.htt.kon.bean.Music;
-import com.htt.kon.broadcast.MusicPlayStateBroadcastReceiver;
+import com.htt.kon.broadcast.MusicPlayStateReceiver;
+import com.htt.kon.broadcast.PlayNotificationReceiver;
+import com.htt.kon.notification.PlayNotification;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.stream.Optional;
 
@@ -50,24 +51,20 @@ public class MusicService extends Service {
     @Setter
     private OnPreparedListener onPreparedListener;
 
+    private NotificationManagerCompat notificationManager;
+
 
     public MusicService() {
     }
 
     /**
      * 创建通知栏, 以保活
-     * TODO: 通知栏样式待完善
+     * TODO: 通知栏
      */
     private void createNotification() {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, App.N_C_PLAY_ID);
-        builder.setContentTitle("kon");
-        builder.setContentText("TODO");
-        builder.setSmallIcon(R.mipmap.ic_launcher);
-        PendingIntent intent = PendingIntent.getActivity(getApplicationContext(), 1, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(intent);
-
-        this.notification = builder.build();
-        startForeground(NOTIFICATION_ID, notification);
+        this.notification = PlayNotification.of("1", this);
+        this.notificationManager = NotificationManagerCompat.from(this);
+        startForeground(NOTIFICATION_ID, this.notification);
     }
 
     @Override
@@ -149,6 +146,7 @@ public class MusicService extends Service {
     public void next() {
         this.playlist.next();
         this.play();
+        // this.notification.tickerText
     }
 
 
@@ -176,7 +174,7 @@ public class MusicService extends Service {
             this.isForeground = false;
         }
 
-        MusicPlayStateBroadcastReceiver.send(this, MusicPlayStateBroadcastReceiver.FLAG_REMOVE);
+        MusicPlayStateReceiver.send(this, MusicPlayStateReceiver.FLAG_REMOVE);
     }
 
     /**
@@ -190,7 +188,7 @@ public class MusicService extends Service {
         stopForeground(true);
         this.isForeground = false;
 
-        MusicPlayStateBroadcastReceiver.send(this, MusicPlayStateBroadcastReceiver.FLAG_CLEAR);
+        MusicPlayStateReceiver.send(this, MusicPlayStateReceiver.FLAG_CLEAR);
         LogUtils.e(this.playlist);
     }
 
@@ -265,7 +263,7 @@ public class MusicService extends Service {
                 this.onPreparedListener.onPreparedStart(this.player);
 
                 // 发出广播
-                MusicPlayStateBroadcastReceiver.send(this, MusicPlayStateBroadcastReceiver.FLAG_PLAY);
+                MusicPlayStateReceiver.send(this, MusicPlayStateReceiver.FLAG_PLAY);
             }
         } catch (IOException e) {
             LogUtils.e(e);

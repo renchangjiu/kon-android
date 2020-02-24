@@ -15,7 +15,7 @@ import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.adapter.list.music.SingleAdapter;
 import com.htt.kon.bean.Music;
-import com.htt.kon.broadcast.MusicPlayStateBroadcastReceiver;
+import com.htt.kon.broadcast.MusicPlayStateReceiver;
 import com.htt.kon.constant.MidConstant;
 import com.htt.kon.dialog.CommonDialogFragment;
 import com.htt.kon.util.LogUtils;
@@ -103,9 +103,9 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
     @Override
     public void onReceiveBroadcast(int flag) {
         switch (flag) {
-            case MusicPlayStateBroadcastReceiver.FLAG_PLAY:
-            case MusicPlayStateBroadcastReceiver.FLAG_CLEAR:
-            case MusicPlayStateBroadcastReceiver.FLAG_REMOVE:
+            case MusicPlayStateReceiver.FLAG_PLAY:
+            case MusicPlayStateReceiver.FLAG_CLEAR:
+            case MusicPlayStateReceiver.FLAG_REMOVE:
                 UiUtils.getListViewAdapter(this.listView, SingleAdapter.class).notifyDataSetChanged();
                 break;
             default:
