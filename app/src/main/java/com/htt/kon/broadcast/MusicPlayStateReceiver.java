@@ -45,33 +45,6 @@ public class MusicPlayStateReceiver extends BroadcastReceiver {
         LogUtils.e("MusicPlayStateReceiver Receive a broadcast.");
     }
 
-
-    private MusicPlayStateReceiver() {
-    }
-
-
-    /**
-     * 动态注册本广播接收器
-     */
-    public static MusicPlayStateReceiver register(Context context) {
-        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(context);
-        MusicPlayStateReceiver receiver = new MusicPlayStateReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ACTION);
-        manager.registerReceiver(receiver, intentFilter);
-        LogUtils.e("MusicPlayStateReceiver register.");
-        return receiver;
-    }
-
-    /**
-     * 务必注销
-     */
-    public static void unregister(Context context, BroadcastReceiver receiver) {
-        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(context);
-        manager.unregisterReceiver(receiver);
-        LogUtils.e("MusicPlayStateReceiver unregister.");
-    }
-
     /**
      * 发出广播
      */

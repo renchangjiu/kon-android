@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="113dp"
+        android:orientation="horizontal">
+
+    <!--TODO: 默认封面-->
+    <!--TODO: 按钮点击效果-->
+    <ImageView
+            android:id="@+id/np1_imageView"
+            android:layout_width="113dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimary" />
+
+    <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <TextView
+                    android:id="@+id/np1_textViewTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="9dp"
+                    android:text="@string/music_title" />
+
+            <TextView
+                    android:id="@+id/np1_textViewArtist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_below="@id/np1_textViewTitle"
+                    android:layout_alignStart="@id/np1_textViewTitle"
+                    android:text="@string/artist_album" />
+
+            <TextView
+                    android:id="@+id/np1_textViewLine"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/np1_textViewArtist"
+                    android:layout_marginBottom="12dp"
+                    android:background="@color/grey2" />
+
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/np1_textViewTitle"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/common_dialog_share" />
+        </RelativeLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="18dp"
+                    android:paddingEnd="15dp"
+                    android:src="@drawable/note_btn_love_white" />
+
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/note_btn_prev_white" />
+
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/note_btn_play_white" />
+
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/note_btn_next_white" />
+
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/note_btn_lyc_white" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

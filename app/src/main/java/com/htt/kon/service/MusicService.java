@@ -1,20 +1,17 @@
 package com.htt.kon.service;
 
 import android.app.Notification;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
-import android.widget.RemoteViews;
 
-import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.htt.kon.App;
-import com.htt.kon.R;
 import com.htt.kon.bean.Music;
+import com.htt.kon.broadcast.BaseReceiver;
 import com.htt.kon.broadcast.MusicPlayStateReceiver;
 import com.htt.kon.broadcast.PlayNotificationReceiver;
 import com.htt.kon.notification.PlayNotification;
@@ -53,16 +50,24 @@ public class MusicService extends Service {
 
     private NotificationManagerCompat notificationManager;
 
+    private PlayNotificationReceiver receiver;
+
 
     public MusicService() {
     }
 
     /**
-     * 创建通知栏, 以保活
+     * 创建通知栏
      * TODO: 通知栏
      */
     private void createNotification() {
-        this.notification = PlayNotification.of("1", this);
+        this.receiver = new PlayNotificationReceiver();
+        BaseReceiver.register(this, this.receiver, PlayNotificationReceiver.ACTION);
+        this.receiver.setOnReceiveListener(() -> {
+            LogUtils.e(this.playlist);
+        });
+
+        this.notification = PlayNotification.of(PlayNotification.STYLE_1, this, this.playlist.getCurMusic());
         this.notificationManager = NotificationManagerCompat.from(this);
         startForeground(NOTIFICATION_ID, this.notification);
     }
@@ -70,9 +75,9 @@ public class MusicService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        this.createNotification();
-
         this.playlist = App.getApp().getPlaylist();
+
+        this.createNotification();
         if (this.playlist.isEmpty()) {
             stopForeground(true);
             this.isForeground = false;
@@ -124,6 +129,7 @@ public class MusicService extends Service {
     public void onDestroy() {
         LogUtils.e("MusicService onDestroy.");
         super.onDestroy();
+        BaseReceiver.unregister(this, this.receiver);
     }
 
     public void playOrPause() {
@@ -146,7 +152,6 @@ public class MusicService extends Service {
     public void next() {
         this.playlist.next();
         this.play();
-        // this.notification.tickerText
     }
 
 
@@ -264,6 +269,7 @@ public class MusicService extends Service {
 
                 // 发出广播
                 MusicPlayStateReceiver.send(this, MusicPlayStateReceiver.FLAG_PLAY);
+                this.notificationManager.notify(NOTIFICATION_ID, PlayNotification.of(PlayNotification.STYLE_1, this, this.playlist.getCurMusic()));
             }
         } catch (IOException e) {
             LogUtils.e(e);

@@ -2,6 +2,7 @@ package com.htt.kon.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -9,16 +10,23 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.htt.kon.R;
+import com.htt.kon.broadcast.PlayNotificationReceiver;
 import com.htt.kon.fragment.MusicFragment;
 import com.htt.kon.fragment.DiscoverFragment;
 import com.htt.kon.fragment.FriendsFragment;
+import com.htt.kon.notification.PlayNotification;
 import com.htt.kon.service.database.MusicDbService;
+import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.UiUtils;
 
 import java.util.ArrayList;
@@ -52,9 +60,6 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.am_imageViewFriends)
     ImageView imageViewFriends;
 
-    private List<Fragment> fragments;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +75,7 @@ public class MainActivity extends BaseActivity {
 
     private void init() {
         this.imageViewMusic.setSelected(true);
-        fragments = new ArrayList<>();
+        List<Fragment> fragments = new ArrayList<>();
         fragments.add(new MusicFragment());
         fragments.add(new DiscoverFragment());
         fragments.add(new FriendsFragment());
@@ -104,7 +109,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private class MyFragmentPagerAdapter extends FragmentPagerAdapter {
+    private static class MyFragmentPagerAdapter extends FragmentPagerAdapter {
         private List<Fragment> fragments;
 
         MyFragmentPagerAdapter(@NonNull FragmentManager fm, List<Fragment> fragments) {
