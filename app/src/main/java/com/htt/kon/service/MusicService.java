@@ -52,9 +52,8 @@ public class MusicService extends Service {
 
     private PlayNotificationReceiver receiver;
 
-
-    public MusicService() {
-    }
+    @Setter
+    private OnPlayStateChangeListener onPlayStateChangeListener;
 
     /**
      * 创建通知栏
@@ -66,6 +65,10 @@ public class MusicService extends Service {
             LogUtils.e(flag);
             switch (flag) {
                 case CLOSE:
+                    this.pause();
+                    stopForeground(true);
+                    this.notificationManager.cancel(NOTIFICATION_ID);
+                    this.isForeground = false;
                     break;
                 case LIKE:
                     break;
@@ -82,7 +85,6 @@ public class MusicService extends Service {
                 default:
             }
         });
-
         this.notification = PlayNotification.of(PlayNotification.Style.ONE, this, this.playlist.getCurMusic(), this.isPlaying());
         this.notificationManager = NotificationManagerCompat.from(this);
         startForeground(NOTIFICATION_ID, this.notification);
@@ -95,7 +97,7 @@ public class MusicService extends Service {
         this.player = new MediaPlayer();
 
         this.createNotification();
-        if (this.playlist.isEmpty()) {
+        if (this.playlist.isEmpty() || !this.isPlaying()) {
             stopForeground(true);
             this.isForeground = false;
         }
@@ -121,7 +123,9 @@ public class MusicService extends Service {
                 this.playNow = false;
             }
             Optional.of(this.onPreparedListener).ifPresent(v -> v.onPreparedFinish(this.player));
-            this.notificationManager.notify(NOTIFICATION_ID, PlayNotification.of(PlayNotification.Style.ONE, this, this.playlist.getCurMusic(), this.isPlaying()));
+            if (this.isPlaying()) {
+                this.notificationManager.notify(NOTIFICATION_ID, PlayNotification.of(PlayNotification.Style.ONE, this, this.playlist.getCurMusic(), this.isPlaying()));
+            }
         });
     }
 
@@ -152,13 +156,23 @@ public class MusicService extends Service {
 
     public void playOrPause() {
         if (this.player.isPlaying()) {
-            this.player.pause();
+            this.pause();
             LogUtils.e("Play pause, music path: " + this.playlist.getCurMusic().getPath());
         } else {
-            this.player.start();
+            this.start();
             LogUtils.e("Play start, music path: " + this.playlist.getCurMusic().getPath());
         }
         this.notificationManager.notify(NOTIFICATION_ID, PlayNotification.of(PlayNotification.Style.ONE, this, this.playlist.getCurMusic(), this.isPlaying()));
+    }
+
+    public void pause() {
+        this.player.pause();
+        this.onPlayStateChangeListener.onChange();
+    }
+
+    public void start() {
+        this.player.start();
+        this.onPlayStateChangeListener.onChange();
     }
 
     public boolean isPlaying() {
@@ -195,6 +209,7 @@ public class MusicService extends Service {
         }
         if (this.playlist.isEmpty()) {
             stopForeground(true);
+            this.notificationManager.cancel(NOTIFICATION_ID);
             this.isForeground = false;
         }
 
@@ -210,6 +225,7 @@ public class MusicService extends Service {
         this.player.reset();
 
         stopForeground(true);
+        this.notificationManager.cancel(NOTIFICATION_ID);
         this.isForeground = false;
 
         MusicPlayStateReceiver.send(this, MusicPlayStateReceiver.Flag.CLEAR);
@@ -288,6 +304,7 @@ public class MusicService extends Service {
 
                 // 发出广播
                 MusicPlayStateReceiver.send(this, MusicPlayStateReceiver.Flag.PLAY);
+                this.onPlayStateChangeListener.onChange();
             }
         } catch (IOException e) {
             LogUtils.e(e);
@@ -317,5 +334,17 @@ public class MusicService extends Service {
          */
         void onPreparedFinish(MediaPlayer mp);
     }
+
+    /**
+     * 当播放状态变化的回调接口
+     */
+    public interface OnPlayStateChangeListener {
+        /**
+         * // * @param isModifiedPlaylist 是否修改了播放列表内容, 若为 true, 则需更新viewPager
+         */
+        // void onChange(boolean isModifiedPlaylist);
+        void onChange();
+    }
+
 
 }

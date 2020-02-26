@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.htt.kon.notification.PlayNotification;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.stream.Optional;
 

@@ -4,16 +4,15 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.widget.RemoteViews;
 
-import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.activity.MainActivity;
+import com.htt.kon.activity.MusicPlayActivity;
 import com.htt.kon.bean.Music;
 import com.htt.kon.broadcast.PlayNotificationReceiver;
 
@@ -25,7 +24,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class PlayNotification {
 
-    public static Notification of(Style style, Context context, @Nullable Music music, boolean isPlaying) {
+    public static Notification of(Style style, Context context, Music music, boolean isPlaying) {
         switch (style) {
             case ONE:
                 return of(new RemoteViews(context.getPackageName(), R.layout.notification_play_1), context, music, isPlaying);
@@ -49,14 +48,13 @@ public class PlayNotification {
             view.setTextViewText(R.id.np_textViewArtist, String.format(format, music.getArtist(), music.getAlbum()));
         }
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, App.N_C_PLAY_ID);
-        Intent intent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         return builder
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setCustomContentView(view)
                 .setCustomBigContentView(view)
                 .setWhen(System.currentTimeMillis())
-                .setContentIntent(pendingIntent)
+                .setOngoing(true)
+                .setContentIntent(PendingIntent.getActivity(context, 1, new Intent(context, MusicPlayActivity.class), PendingIntent.FLAG_UPDATE_CURRENT))
                 .build();
     }
 

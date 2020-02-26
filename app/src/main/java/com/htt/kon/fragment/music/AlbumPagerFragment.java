@@ -69,6 +69,7 @@ public class AlbumPagerFragment extends BaseLocalMusicPagerFragment {
                 adapter.setOnOptionClickListener((CommonDialogItem item) -> {
                     List<Music> musics = (List<Music>) item.getData();
                     switch (item.getId()) {
+                        // TODO: 通知栏有bug
                         case CommonDialogFragment.TAG_PLAY_NEXT:
                             super.activity.nextPlay(musics);
                             Toast.makeText(this.activity, this.activity.getString(R.string.added_to_next_play), Toast.LENGTH_SHORT).show();
