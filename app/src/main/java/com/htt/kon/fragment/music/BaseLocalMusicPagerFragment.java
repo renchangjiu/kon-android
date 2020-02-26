@@ -57,7 +57,7 @@ public abstract class BaseLocalMusicPagerFragment extends Fragment {
     private void init() {
         this.receiver = new MusicPlayStateReceiver();
         BaseReceiver.registerLocal(this.activity, this.receiver, MusicPlayStateReceiver.ACTION);
-        this.receiver.setOnReceiveBroadcastListener(this::onReceiveBroadcast);
+        this.receiver.setOnReceiveListener(this::onReceiveBroadcast);
         this.musicDbService = MusicDbService.of(this.activity);
         this.playlist = App.getApp().getPlaylist();
     }
@@ -67,11 +67,11 @@ public abstract class BaseLocalMusicPagerFragment extends Fragment {
      *
      * @param flag MusicPlayStateBroadcastReceiver.FLAG_PLAY or MusicPlayStateBroadcastReceiver.FLAG_CLEAR, etc
      */
-    public void onReceiveBroadcast(int flag) {
+    public void onReceiveBroadcast(MusicPlayStateReceiver.Flag flag) {
         switch (flag) {
-            case MusicPlayStateReceiver.FLAG_PLAY:
-            case MusicPlayStateReceiver.FLAG_CLEAR:
-            case MusicPlayStateReceiver.FLAG_REMOVE:
+            case PLAY:
+            case CLEAR:
+            case REMOVE:
                 UiUtils.getListViewAdapter(this.listView, BaseAdapter.class).notifyDataSetChanged();
                 break;
             default:

@@ -4,13 +4,11 @@
         android:layout_height="113dp"
         android:orientation="horizontal">
 
-    <!--TODO: 默认封面-->
-    <!--TODO: 按钮点击效果-->
     <ImageView
-            android:id="@+id/np1_imageView"
+            android:id="@+id/np_imageView"
             android:layout_width="113dp"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary" />
+            android:src="@drawable/playbar_cover_image_default" />
 
     <LinearLayout
             android:layout_width="0dp"
@@ -23,67 +21,111 @@
                 android:layout_height="wrap_content">
 
             <TextView
-                    android:id="@+id/np1_textViewTitle"
+                    android:id="@+id/np_textViewTitle"
                     android:layout_width="wrap_content"
-                    android:layout_height="25dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="9dp"
-                    android:text="@string/music_title" />
+                    android:layout_marginTop="13dp"
+                    android:layout_marginBottom="9dp"
+                    android:ellipsize="end"
+                    android:maxEms="15"
+                    android:maxLines="1"
+                    android:text="@string/music_title"
+                    android:textColor="@color/lightBlack" />
 
             <TextView
-                    android:id="@+id/np1_textViewArtist"
+                    android:id="@+id/np_textViewArtist"
                     android:layout_width="wrap_content"
                     android:layout_height="32dp"
-                    android:layout_below="@id/np1_textViewTitle"
-                    android:layout_alignStart="@id/np1_textViewTitle"
-                    android:text="@string/artist_album" />
+                    android:layout_below="@id/np_textViewTitle"
+                    android:layout_alignStart="@id/np_textViewTitle"
+                    android:ellipsize="end"
+                    android:maxEms="15"
+                    android:maxLines="1"
+                    android:text="@string/artist_album"
+                    android:textColor="@color/lightBlack"
+                    android:textSize="12sp" />
 
             <TextView
-                    android:id="@+id/np1_textViewLine"
+                    android:id="@+id/np_textViewLine"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_below="@id/np1_textViewArtist"
-                    android:layout_marginBottom="12dp"
+                    android:layout_below="@id/np_textViewArtist"
                     android:background="@color/grey2" />
 
             <ImageView
+                    android:id="@+id/np_imageViewClose"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/np1_textViewTitle"
+                    android:layout_height="match_parent"
+                    android:layout_alignBottom="@id/np_textViewTitle"
                     android:layout_alignParentEnd="true"
-                    android:src="@drawable/common_dialog_share" />
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="@drawable/selectable_item_background_borderless"
+                    android:paddingStart="13dp"
+                    android:paddingEnd="13dp"
+                    android:src="@drawable/note_btn_close_white" />
         </RelativeLayout>
 
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
             <ImageView
+                    android:id="@+id/np_imageViewLike"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="18dp"
-                    android:paddingEnd="15dp"
+                    android:layout_height="match_parent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="@drawable/selectable_item_background_borderless"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
                     android:src="@drawable/note_btn_love_white" />
 
             <ImageView
+                    android:id="@+id/np_imageViewPrev"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="@drawable/selectable_item_background_borderless"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="15dp"
                     android:src="@drawable/note_btn_prev_white" />
 
             <ImageView
+                    android:id="@+id/np_imageViewPlay"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="@drawable/selectable_item_background_borderless"
+                    android:paddingStart="18dp"
+                    android:paddingEnd="18dp"
                     android:src="@drawable/note_btn_play_white" />
 
             <ImageView
+                    android:id="@+id/np_imageViewNext"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="@drawable/selectable_item_background_borderless"
+                    android:paddingStart="18dp"
+                    android:paddingEnd="18dp"
                     android:src="@drawable/note_btn_next_white" />
 
             <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/np_imageViewLyc"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="@drawable/selectable_item_background_borderless"
+                    android:paddingStart="18dp"
+                    android:paddingEnd="18dp"
+                    android:scaleType="center"
                     android:src="@drawable/note_btn_lyc_white" />
         </LinearLayout>
     </LinearLayout>

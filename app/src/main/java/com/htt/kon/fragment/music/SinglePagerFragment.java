@@ -101,11 +101,11 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
 
 
     @Override
-    public void onReceiveBroadcast(int flag) {
+    public void onReceiveBroadcast(MusicPlayStateReceiver.Flag flag) {
         switch (flag) {
-            case MusicPlayStateReceiver.FLAG_PLAY:
-            case MusicPlayStateReceiver.FLAG_CLEAR:
-            case MusicPlayStateReceiver.FLAG_REMOVE:
+            case PLAY:
+            case CLEAR:
+            case REMOVE:
                 UiUtils.getListViewAdapter(this.listView, SingleAdapter.class).notifyDataSetChanged();
                 break;
             default:

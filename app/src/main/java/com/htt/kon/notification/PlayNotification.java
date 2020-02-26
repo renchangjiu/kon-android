@@ -4,15 +4,20 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.widget.RemoteViews;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.htt.kon.App;
 import com.htt.kon.R;
+import com.htt.kon.activity.MainActivity;
 import com.htt.kon.bean.Music;
 import com.htt.kon.broadcast.PlayNotificationReceiver;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author su
@@ -20,29 +25,72 @@ import com.htt.kon.broadcast.PlayNotificationReceiver;
  */
 public class PlayNotification {
 
-    /**
-     * 样式一
-     */
-    public static final String STYLE_1 = "1";
-
-    public static Notification of(String style, Context context, Music music) {
-        RemoteViews view = new RemoteViews(context.getPackageName(), R.layout.notification_play_1);
-        Intent intent = new Intent();
-        intent.setAction(PlayNotificationReceiver.ACTION);
-        PendingIntent intent1 = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        view.setOnClickPendingIntent(R.id.textView, intent1);
-
-        if (music != null) {
-            view.setImageViewBitmap(R.id.np1_imageView, BitmapFactory.decodeFile(music.getImage()));
+    public static Notification of(Style style, Context context, @Nullable Music music, boolean isPlaying) {
+        switch (style) {
+            case ONE:
+                return of(new RemoteViews(context.getPackageName(), R.layout.notification_play_1), context, music, isPlaying);
+            case TWO:
+            default:
+                return of(new RemoteViews(context.getPackageName(), R.layout.notification_play_2), context, music, isPlaying);
         }
+    }
 
+    private static Notification of(RemoteViews view, Context context, Music music, boolean isPlaying) {
+        setPendingIntent(view, context);
+        if (music != null) {
+            if (StringUtils.isNotEmpty(music.getImage())) {
+                view.setImageViewBitmap(R.id.np_imageView, BitmapFactory.decodeFile(music.getImage()));
+            } else {
+                view.setImageViewResource(R.id.np_imageView, R.drawable.playbar_cover_image_default);
+            }
+            view.setImageViewResource(R.id.np_imageViewPlay, isPlaying ? R.drawable.note_btn_play_white : R.drawable.note_btn_pause_white);
+            view.setTextViewText(R.id.np_textViewTitle, music.getTitle());
+            String format = context.getString(R.string.artist_album);
+            view.setTextViewText(R.id.np_textViewArtist, String.format(format, music.getArtist(), music.getAlbum()));
+        }
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, App.N_C_PLAY_ID);
+        Intent intent = new Intent(context, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         return builder
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setCustomContentView(view)
                 .setCustomBigContentView(view)
                 .setWhen(System.currentTimeMillis())
+                .setContentIntent(pendingIntent)
                 .build();
+    }
+
+
+    private static void setPendingIntent(RemoteViews view, Context context) {
+        Intent intent1 = PlayNotificationReceiver.getIntent(PlayNotificationReceiver.Flag.CLOSE);
+        view.setOnClickPendingIntent(R.id.np_imageViewClose, PendingIntent.getBroadcast(context, PlayNotificationReceiver.Flag.CLOSE.ordinal(), intent1, PendingIntent.FLAG_UPDATE_CURRENT));
+
+        Intent intent2 = PlayNotificationReceiver.getIntent(PlayNotificationReceiver.Flag.LIKE);
+        view.setOnClickPendingIntent(R.id.np_imageViewLike, PendingIntent.getBroadcast(context, PlayNotificationReceiver.Flag.LIKE.ordinal(), intent2, PendingIntent.FLAG_UPDATE_CURRENT));
+
+        Intent intent3 = PlayNotificationReceiver.getIntent(PlayNotificationReceiver.Flag.PREV);
+        view.setOnClickPendingIntent(R.id.np_imageViewPrev, PendingIntent.getBroadcast(context, PlayNotificationReceiver.Flag.PREV.ordinal(), intent3, PendingIntent.FLAG_UPDATE_CURRENT));
+
+        Intent intent4 = PlayNotificationReceiver.getIntent(PlayNotificationReceiver.Flag.PLAY);
+        view.setOnClickPendingIntent(R.id.np_imageViewPlay, PendingIntent.getBroadcast(context, PlayNotificationReceiver.Flag.PLAY.ordinal(), intent4, PendingIntent.FLAG_UPDATE_CURRENT));
+
+        Intent intent5 = PlayNotificationReceiver.getIntent(PlayNotificationReceiver.Flag.NEXT);
+        view.setOnClickPendingIntent(R.id.np_imageViewNext, PendingIntent.getBroadcast(context, PlayNotificationReceiver.Flag.NEXT.ordinal(), intent5, PendingIntent.FLAG_UPDATE_CURRENT));
+
+        Intent intent6 = PlayNotificationReceiver.getIntent(PlayNotificationReceiver.Flag.LRC);
+        view.setOnClickPendingIntent(R.id.np_imageViewLyc, PendingIntent.getBroadcast(context, PlayNotificationReceiver.Flag.LRC.ordinal(), intent6, PendingIntent.FLAG_UPDATE_CURRENT));
+    }
+
+    public enum Style {
+        /**
+         * 样式一
+         */
+        ONE,
+
+        /**
+         * 样式二
+         */
+        TWO
     }
 
 }

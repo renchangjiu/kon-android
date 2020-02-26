@@ -24,6 +24,7 @@ public interface BaseReceiver {
             filter.addAction(action);
         }
         context.registerReceiver(receiver, filter);
+        LogUtils.e(receiver.getClass().getSimpleName() + " register.");
     }
 
     static void registerLocal(Context context, BroadcastReceiver receiver, String... actions) {

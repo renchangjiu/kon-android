@@ -58,16 +58,32 @@ public class MusicService extends Service {
 
     /**
      * 创建通知栏
-     * TODO: 通知栏
      */
     private void createNotification() {
         this.receiver = new PlayNotificationReceiver();
         BaseReceiver.register(this, this.receiver, PlayNotificationReceiver.ACTION);
-        this.receiver.setOnReceiveListener(() -> {
-            LogUtils.e(this.playlist);
+        this.receiver.setOnReceiveListener((flag) -> {
+            LogUtils.e(flag);
+            switch (flag) {
+                case CLOSE:
+                    break;
+                case LIKE:
+                    break;
+                case PREV:
+                    this.prev();
+                    break;
+                case PLAY:
+                    this.playOrPause();
+                    break;
+                case NEXT:
+                    this.next();
+                case LRC:
+                    break;
+                default:
+            }
         });
 
-        this.notification = PlayNotification.of(PlayNotification.STYLE_1, this, this.playlist.getCurMusic());
+        this.notification = PlayNotification.of(PlayNotification.Style.ONE, this, this.playlist.getCurMusic(), this.isPlaying());
         this.notificationManager = NotificationManagerCompat.from(this);
         startForeground(NOTIFICATION_ID, this.notification);
     }
@@ -76,6 +92,7 @@ public class MusicService extends Service {
     public void onCreate() {
         super.onCreate();
         this.playlist = App.getApp().getPlaylist();
+        this.player = new MediaPlayer();
 
         this.createNotification();
         if (this.playlist.isEmpty()) {
@@ -83,7 +100,7 @@ public class MusicService extends Service {
             this.isForeground = false;
         }
         LogUtils.e("MusicService onCreate.");
-        this.player = new MediaPlayer();
+
         if (this.playlist.isNotEmpty()) {
             try {
                 this.player.setDataSource(this.playlist.getCurMusic().getPath());
@@ -104,6 +121,7 @@ public class MusicService extends Service {
                 this.playNow = false;
             }
             Optional.of(this.onPreparedListener).ifPresent(v -> v.onPreparedFinish(this.player));
+            this.notificationManager.notify(NOTIFICATION_ID, PlayNotification.of(PlayNotification.Style.ONE, this, this.playlist.getCurMusic(), this.isPlaying()));
         });
     }
 
@@ -140,6 +158,7 @@ public class MusicService extends Service {
             this.player.start();
             LogUtils.e("Play start, music path: " + this.playlist.getCurMusic().getPath());
         }
+        this.notificationManager.notify(NOTIFICATION_ID, PlayNotification.of(PlayNotification.Style.ONE, this, this.playlist.getCurMusic(), this.isPlaying()));
     }
 
     public boolean isPlaying() {
@@ -179,7 +198,7 @@ public class MusicService extends Service {
             this.isForeground = false;
         }
 
-        MusicPlayStateReceiver.send(this, MusicPlayStateReceiver.FLAG_REMOVE);
+        MusicPlayStateReceiver.send(this, MusicPlayStateReceiver.Flag.REMOVE);
     }
 
     /**
@@ -193,7 +212,7 @@ public class MusicService extends Service {
         stopForeground(true);
         this.isForeground = false;
 
-        MusicPlayStateReceiver.send(this, MusicPlayStateReceiver.FLAG_CLEAR);
+        MusicPlayStateReceiver.send(this, MusicPlayStateReceiver.Flag.CLEAR);
         LogUtils.e(this.playlist);
     }
 
@@ -268,8 +287,7 @@ public class MusicService extends Service {
                 this.onPreparedListener.onPreparedStart(this.player);
 
                 // 发出广播
-                MusicPlayStateReceiver.send(this, MusicPlayStateReceiver.FLAG_PLAY);
-                this.notificationManager.notify(NOTIFICATION_ID, PlayNotification.of(PlayNotification.STYLE_1, this, this.playlist.getCurMusic()));
+                MusicPlayStateReceiver.send(this, MusicPlayStateReceiver.Flag.PLAY);
             }
         } catch (IOException e) {
             LogUtils.e(e);
