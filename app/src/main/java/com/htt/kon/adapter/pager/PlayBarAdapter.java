@@ -104,7 +104,7 @@ public class PlayBarAdapter extends PagerAdapter {
         return view == object;
     }
 
-    private class ViewHolder {
+    private static class ViewHolder {
         private ImageView imageViewCover;
         private TextView textViewTitle;
         private TextView textViewArtist;

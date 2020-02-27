@@ -17,7 +17,7 @@ import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
 import com.htt.kon.broadcast.BaseReceiver;
-import com.htt.kon.broadcast.MusicPlayStateReceiver;
+import com.htt.kon.broadcast.PlayStateChangeReceiver;
 import com.htt.kon.service.Playlist;
 import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.util.UiUtils;
@@ -36,7 +36,7 @@ public abstract class BaseLocalMusicPagerFragment extends Fragment {
 
     MusicDbService musicDbService;
 
-    private MusicPlayStateReceiver receiver;
+    private PlayStateChangeReceiver receiver;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -55,8 +55,8 @@ public abstract class BaseLocalMusicPagerFragment extends Fragment {
     }
 
     private void init() {
-        this.receiver = new MusicPlayStateReceiver();
-        BaseReceiver.registerLocal(this.activity, this.receiver, MusicPlayStateReceiver.ACTION);
+        this.receiver = new PlayStateChangeReceiver();
+        BaseReceiver.registerLocal(this.activity, this.receiver, PlayStateChangeReceiver.ACTION);
         this.receiver.setOnReceiveListener(this::onReceiveBroadcast);
         this.musicDbService = MusicDbService.of(this.activity);
         this.playlist = App.getApp().getPlaylist();
@@ -67,7 +67,7 @@ public abstract class BaseLocalMusicPagerFragment extends Fragment {
      *
      * @param flag MusicPlayStateBroadcastReceiver.FLAG_PLAY or MusicPlayStateBroadcastReceiver.FLAG_CLEAR, etc
      */
-    public void onReceiveBroadcast(MusicPlayStateReceiver.Flag flag) {
+    public void onReceiveBroadcast(PlayStateChangeReceiver.Flag flag) {
         switch (flag) {
             case PLAY:
             case CLEAR:

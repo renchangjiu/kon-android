@@ -15,7 +15,7 @@ import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.adapter.list.music.SingleAdapter;
 import com.htt.kon.bean.Music;
-import com.htt.kon.broadcast.MusicPlayStateReceiver;
+import com.htt.kon.broadcast.PlayStateChangeReceiver;
 import com.htt.kon.constant.MidConstant;
 import com.htt.kon.dialog.CommonDialogFragment;
 import com.htt.kon.util.LogUtils;
@@ -101,7 +101,7 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
 
 
     @Override
-    public void onReceiveBroadcast(MusicPlayStateReceiver.Flag flag) {
+    public void onReceiveBroadcast(PlayStateChangeReceiver.Flag flag) {
         switch (flag) {
             case PLAY:
             case CLEAR:

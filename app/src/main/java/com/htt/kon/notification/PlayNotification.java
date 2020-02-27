@@ -11,7 +11,6 @@ import androidx.core.app.NotificationCompat;
 
 import com.htt.kon.App;
 import com.htt.kon.R;
-import com.htt.kon.activity.MainActivity;
 import com.htt.kon.activity.MusicPlayActivity;
 import com.htt.kon.bean.Music;
 import com.htt.kon.broadcast.PlayNotificationReceiver;
@@ -27,35 +26,58 @@ public class PlayNotification {
     public static Notification of(Style style, Context context, Music music, boolean isPlaying) {
         switch (style) {
             case ONE:
-                return of(new RemoteViews(context.getPackageName(), R.layout.notification_play_1), context, music, isPlaying);
+                return of(new RemoteViews(context.getPackageName(), R.layout.notification_play_1_big), context, music, isPlaying);
             case TWO:
             default:
-                return of(new RemoteViews(context.getPackageName(), R.layout.notification_play_2), context, music, isPlaying);
+                return of(new RemoteViews(context.getPackageName(), R.layout.notification_play_2_big), context, music, isPlaying);
         }
     }
 
     private static Notification of(RemoteViews view, Context context, Music music, boolean isPlaying) {
         setPendingIntent(view, context);
-        if (music != null) {
-            if (StringUtils.isNotEmpty(music.getImage())) {
-                view.setImageViewBitmap(R.id.np_imageView, BitmapFactory.decodeFile(music.getImage()));
-            } else {
-                view.setImageViewResource(R.id.np_imageView, R.drawable.playbar_cover_image_default);
-            }
-            view.setImageViewResource(R.id.np_imageViewPlay, isPlaying ? R.drawable.note_btn_play_white : R.drawable.note_btn_pause_white);
-            view.setTextViewText(R.id.np_textViewTitle, music.getTitle());
-            String format = context.getString(R.string.artist_album);
-            view.setTextViewText(R.id.np_textViewArtist, String.format(format, music.getArtist(), music.getAlbum()));
-        }
+
+        RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_play);
+
+        Intent intent1 = PlayNotificationReceiver.getIntent(PlayNotificationReceiver.Flag.CLOSE);
+        contentView.setOnClickPendingIntent(R.id.np_imageViewClose, PendingIntent.getBroadcast(context, PlayNotificationReceiver.Flag.CLOSE.ordinal(), intent1, PendingIntent.FLAG_UPDATE_CURRENT));
+
+        initViewData(view, contentView, context, music, isPlaying);
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, App.N_C_PLAY_ID);
         return builder
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setCustomContentView(view)
+                .setCustomContentView(contentView)
                 .setCustomBigContentView(view)
                 .setWhen(System.currentTimeMillis())
                 .setOngoing(true)
                 .setContentIntent(PendingIntent.getActivity(context, 1, new Intent(context, MusicPlayActivity.class), PendingIntent.FLAG_UPDATE_CURRENT))
                 .build();
+    }
+
+    /**
+     * 设置 view 显示的数据
+     */
+    private static void initViewData(RemoteViews view, RemoteViews contentView, Context context, Music music, boolean isPlaying) {
+        if (music == null) {
+            return;
+        }
+        if (StringUtils.isNotEmpty(music.getImage())) {
+            view.setImageViewBitmap(R.id.np_imageView, BitmapFactory.decodeFile(music.getImage()));
+            contentView.setImageViewBitmap(R.id.np_imageView, BitmapFactory.decodeFile(music.getImage()));
+        } else {
+            view.setImageViewResource(R.id.np_imageView, R.drawable.playbar_cover_image_default);
+            contentView.setImageViewResource(R.id.np_imageView, R.drawable.playbar_cover_image_default);
+        }
+
+        view.setImageViewResource(R.id.np_imageViewPlay, isPlaying ? R.drawable.note_btn_play_white : R.drawable.note_btn_pause_white);
+        contentView.setImageViewResource(R.id.np_imageViewPlay, isPlaying ? R.drawable.note_btn_play_white : R.drawable.note_btn_pause_white);
+
+        view.setTextViewText(R.id.np_textViewTitle, music.getTitle());
+        contentView.setTextViewText(R.id.np_textViewTitle, music.getTitle());
+
+        String format = context.getString(R.string.artist_album);
+        view.setTextViewText(R.id.np_textViewArtist, String.format(format, music.getArtist(), music.getAlbum()));
+        contentView.setTextViewText(R.id.np_textViewArtist, String.format(format, music.getArtist(), music.getAlbum()));
     }
 
 
@@ -78,6 +100,7 @@ public class PlayNotification {
         Intent intent6 = PlayNotificationReceiver.getIntent(PlayNotificationReceiver.Flag.LRC);
         view.setOnClickPendingIntent(R.id.np_imageViewLyc, PendingIntent.getBroadcast(context, PlayNotificationReceiver.Flag.LRC.ordinal(), intent6, PendingIntent.FLAG_UPDATE_CURRENT));
     }
+
 
     public enum Style {
         /**

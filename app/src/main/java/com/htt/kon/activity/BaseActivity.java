@@ -35,7 +35,8 @@ import java.util.List;
 
 
 /**
- * 自定义基类，实现底部播放栏及处理音乐播放相关功能
+ * TODO: 做歌单功能
+ * base activity, 实现底部播放栏及处理音乐播放相关功能
  *
  * @author su
  * @date 2020/02/04 09:59
@@ -65,7 +66,7 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ViewGroup mDecorView = (ViewGroup) getWindow().getDecorView();
         this.contentContainer = (FrameLayout) ((ViewGroup) mDecorView.getChildAt(0)).getChildAt(1);
-        this.playBar = LayoutInflater.from(this).inflate(R.layout.layout_play_bar, null);
+        this.playBar = LayoutInflater.from(this).inflate(R.layout.play_bar, contentContainer, false);
 
         App app = App.getApp();
         this.playlist = app.getPlaylist();
@@ -107,9 +108,7 @@ public class BaseActivity extends AppCompatActivity {
 
         this.viewPager.setCurrentItem(this.playlist.getIndex(), true);
 
-        this.imageViewPlay.setOnClickListener(v -> {
-            this.msService.playOrPause();
-        });
+        this.imageViewPlay.setOnClickListener(v -> this.msService.playOrPause());
 
         // 点击弹出播放列表对话框
         imageViewPlayList.setOnClickListener(v -> {
@@ -194,39 +193,24 @@ public class BaseActivity extends AppCompatActivity {
      */
     public void replacePlaylist(List<Music> musics, int index) {
         this.msService.replace(musics, index);
-        this.updatePlayBarViewPager();
-        this.updatePlayBarInterface();
-        this.showPlayBar();
     }
 
     /**
-     * 下一首播放
+     * 添加到下一首播放
      *
      * @param music music
      */
     public void nextPlay(Music music) {
         this.msService.nextPlay(music);
-        showPlayBar();
-        if (this.playlist.size() == 1) {
-            this.msService.play();
-        }
-        this.updatePlayBarViewPager();
-        this.updatePlayBarInterface();
     }
 
     /**
-     * 下一首播放
+     * 添加到下一首播放
      *
      * @param musics music list
      */
     public void nextPlay(List<Music> musics) {
         this.msService.nextPlay(musics);
-        showPlayBar();
-        if (this.playlist.size() == 1) {
-            this.msService.play();
-        }
-        this.updatePlayBarViewPager();
-        this.updatePlayBarInterface();
     }
 
 
@@ -265,16 +249,6 @@ public class BaseActivity extends AppCompatActivity {
         this.playBar.setVisibility(View.VISIBLE);
     }
 
-    /**
-     * 显示或隐藏播放栏
-     */
-    public void togglePlayBar() {
-        if (this.playBar.getVisibility() == View.VISIBLE) {
-            this.playBar.setVisibility(View.GONE);
-        } else {
-            this.playBar.setVisibility(View.VISIBLE);
-        }
-    }
 
     /**
      * 处理播放列表弹出框的所有事件
@@ -289,7 +263,6 @@ public class BaseActivity extends AppCompatActivity {
         public void onItemClick(int position) {
             if (position != playlist.getIndex() || !msService.isPlaying()) {
                 BaseActivity.this.msService.play(position);
-                viewPager.setCurrentItem(playlist.getIndex());
             }
         }
 
@@ -313,8 +286,6 @@ public class BaseActivity extends AppCompatActivity {
         @Override
         public void onClearBtnClick() {
             msService.clear();
-            Optional.of(viewPager.getAdapter()).ifPresent(PagerAdapter::notifyDataSetChanged);
-            hidePlayBar();
         }
 
         /**
@@ -331,21 +302,10 @@ public class BaseActivity extends AppCompatActivity {
          * 当item 的删除按钮被点击时回调, 删除播放列表中的某一个
          *
          * @param position pos
-         * @return playlist's index.
          */
         @Override
-        public int onDeleteBtnClick(int position) {
-            int index = playlist.getIndex();
-            msService.remove(position, false);
-            Optional.of(viewPager.getAdapter()).ifPresent(PagerAdapter::notifyDataSetChanged);
-            if (msService.isPlaying() && position == index) {
-                msService.play();
-            }
-            if (playlist.isEmpty()) {
-                hidePlayBar();
-            }
-            LogUtils.e(playlist);
-            return playlist.getIndex();
+        public void onDeleteBtnClick(int position) {
+            msService.remove(position);
         }
     }
 
@@ -360,11 +320,6 @@ public class BaseActivity extends AppCompatActivity {
             msService.setOnPreparedListener(new MusicService.OnPreparedListener() {
                 @Override
                 public void onPreparedStart(MediaPlayer mp) {
-                    updatePlayBarViewPager();
-                    // 使playbar 显示当前播放的歌曲的信息
-                    viewPager.setCurrentItem(playlist.getIndex(), true);
-                    imageViewPlay.setImageResource(R.drawable.playbar_paly);
-
                     PlayListDialogFragment dialog = (PlayListDialogFragment) getSupportFragmentManager()
                             .findFragmentByTag(FragmentTagConstant.PLAYLIST_FRAGMENT);
                     if (dialog != null) {
@@ -378,7 +333,18 @@ public class BaseActivity extends AppCompatActivity {
                 }
             });
 
-            msService.setOnPlayStateChangeListener(() -> {
+            msService.setOnPlayStateChangeListener((flag) -> {
+                switch (flag) {
+                    case MusicService.OnPlayStateChangeListener.FLAG_2:
+                        viewPager.setCurrentItem(playlist.getIndex(), true);
+                        break;
+                    case MusicService.OnPlayStateChangeListener.FLAG_3:
+                        Optional.of(viewPager.getAdapter()).ifPresent(PagerAdapter::notifyDataSetChanged);
+                        viewPager.setCurrentItem(playlist.getIndex(), true);
+                        playBar.setVisibility(playlist.isNotEmpty() ? View.VISIBLE : View.GONE);
+                        break;
+                    default:
+                }
                 updatePlayBarInterface();
             });
 

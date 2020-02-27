@@ -131,7 +131,7 @@ public class PlaylistDialogAdapter extends BaseAdapter {
         void onDeleteBtnClick(int position);
     }
 
-    private class ViewHolder {
+    private static class ViewHolder {
         private ImageView imageViewPlay;
         private TextView textViewTitle;
         private TextView textViewArtist;

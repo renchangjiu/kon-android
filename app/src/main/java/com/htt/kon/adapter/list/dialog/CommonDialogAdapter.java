@@ -60,7 +60,7 @@ public class CommonDialogAdapter extends BaseAdapter {
         return this.getItem(position).getId();
     }
 
-    private class ViewHolder {
+    private static class ViewHolder {
         private ImageView imageViewIcon;
         private TextView textView;
     }

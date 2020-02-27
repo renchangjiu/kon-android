@@ -103,7 +103,7 @@ public class DirAdapter extends BaseAdapter implements LocalMusicFragmentAdapter
         return 0;
     }
 
-    private class ViewHolder {
+    private static class ViewHolder {
         private TextView textViewDirName;
         private TextView textViewCount;
         private ImageView imageViewOption;

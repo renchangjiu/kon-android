@@ -1,6 +1,5 @@
 package com.htt.kon.service;
 
-import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -12,7 +11,7 @@ import androidx.core.app.NotificationManagerCompat;
 import com.htt.kon.App;
 import com.htt.kon.bean.Music;
 import com.htt.kon.broadcast.BaseReceiver;
-import com.htt.kon.broadcast.MusicPlayStateReceiver;
+import com.htt.kon.broadcast.PlayStateChangeReceiver;
 import com.htt.kon.broadcast.PlayNotificationReceiver;
 import com.htt.kon.notification.PlayNotification;
 import com.htt.kon.util.LogUtils;
@@ -24,13 +23,14 @@ import java.util.List;
 import lombok.Setter;
 
 /**
+ * music play service.
+ * 使用 OnPlayStateChangeListener 回调接口与 BaseActivity 通信, 使用 PlayStateChangeReceiver 广播与各组件通信
+ *
  * @author su
  * @date 2020/02/06 20:11
  */
 public class MusicService extends Service {
     private static final int NOTIFICATION_ID = 1;
-
-    private Notification notification;
 
     /**
      * 服务是否在前台
@@ -43,8 +43,6 @@ public class MusicService extends Service {
 
     private Playlist playlist;
 
-    private volatile boolean playNow;
-
     @Setter
     private OnPreparedListener onPreparedListener;
 
@@ -54,6 +52,11 @@ public class MusicService extends Service {
 
     @Setter
     private OnPlayStateChangeListener onPlayStateChangeListener;
+
+    /**
+     * 在 onCreate 方法中 调用 prepare 方法, 不会立即播放
+     */
+    private static volatile boolean FLAG_NOT_ON_CREATE = false;
 
     /**
      * 创建通知栏
@@ -85,9 +88,8 @@ public class MusicService extends Service {
                 default:
             }
         });
-        this.notification = PlayNotification.of(PlayNotification.Style.ONE, this, this.playlist.getCurMusic(), this.isPlaying());
         this.notificationManager = NotificationManagerCompat.from(this);
-        startForeground(NOTIFICATION_ID, this.notification);
+        startForeground(NOTIFICATION_ID, PlayNotification.of(PlayNotification.Style.ONE, this, this.playlist.getCurMusic(), this.isPlaying()));
     }
 
     @Override
@@ -101,7 +103,6 @@ public class MusicService extends Service {
             stopForeground(true);
             this.isForeground = false;
         }
-        LogUtils.e("MusicService onCreate.");
 
         if (this.playlist.isNotEmpty()) {
             try {
@@ -113,20 +114,21 @@ public class MusicService extends Service {
         }
         // 监听播放完毕事件
         this.player.setOnCompletionListener(mp -> {
-            LogUtils.e("Music play finished.");
             this.next();
+            LogUtils.e("One music play finished.");
         });
 
         this.player.setOnPreparedListener(mp -> {
-            if (this.playNow) {
+            if (FLAG_NOT_ON_CREATE) {
                 mp.start();
-                this.playNow = false;
             }
-            Optional.of(this.onPreparedListener).ifPresent(v -> v.onPreparedFinish(this.player));
+
+            Optional.of(this.onPreparedListener).ifPresent(v -> v.onPreparedFinish(mp));
             if (this.isPlaying()) {
                 this.notificationManager.notify(NOTIFICATION_ID, PlayNotification.of(PlayNotification.Style.ONE, this, this.playlist.getCurMusic(), this.isPlaying()));
             }
         });
+        LogUtils.e("MusicService onCreate.");
     }
 
     @Override
@@ -167,14 +169,17 @@ public class MusicService extends Service {
 
     public void pause() {
         this.player.pause();
-        this.onPlayStateChangeListener.onChange();
+        this.onPlayStateChangeListener.onChange(OnPlayStateChangeListener.FLAG_1);
     }
 
     public void start() {
         this.player.start();
-        this.onPlayStateChangeListener.onChange();
+        this.onPlayStateChangeListener.onChange(OnPlayStateChangeListener.FLAG_1);
     }
 
+    /**
+     * 因为存在 player#prepareAsync 的情况, 所以该方法并不一定准确
+     */
     public boolean isPlaying() {
         return this.player.isPlaying();
     }
@@ -185,6 +190,7 @@ public class MusicService extends Service {
     public void next() {
         this.playlist.next();
         this.play();
+        this.onPlayStateChangeListener.onChange(OnPlayStateChangeListener.FLAG_2);
     }
 
 
@@ -194,18 +200,18 @@ public class MusicService extends Service {
     public void prev() {
         this.playlist.prev();
         this.play();
+        this.onPlayStateChangeListener.onChange(OnPlayStateChangeListener.FLAG_2);
     }
 
 
     /**
      * 移除指定位置的歌曲
-     *
-     * @param autoPlay 移除后, 是否立即播放当前index 的歌曲
      */
-    public void remove(int position, boolean autoPlay) {
+    public void remove(int position) {
+        int index = playlist.getIndex();
         this.playlist.remove(position);
-        if (autoPlay) {
-            play();
+        if (this.isPlaying() && position == index) {
+            this.play();
         }
         if (this.playlist.isEmpty()) {
             stopForeground(true);
@@ -213,7 +219,8 @@ public class MusicService extends Service {
             this.isForeground = false;
         }
 
-        MusicPlayStateReceiver.send(this, MusicPlayStateReceiver.Flag.REMOVE);
+        PlayStateChangeReceiver.send(this, PlayStateChangeReceiver.Flag.REMOVE);
+        this.onPlayStateChangeListener.onChange(OnPlayStateChangeListener.FLAG_3);
     }
 
     /**
@@ -228,8 +235,8 @@ public class MusicService extends Service {
         this.notificationManager.cancel(NOTIFICATION_ID);
         this.isForeground = false;
 
-        MusicPlayStateReceiver.send(this, MusicPlayStateReceiver.Flag.CLEAR);
-        LogUtils.e(this.playlist);
+        PlayStateChangeReceiver.send(this, PlayStateChangeReceiver.Flag.CLEAR);
+        this.onPlayStateChangeListener.onChange(OnPlayStateChangeListener.FLAG_3);
     }
 
 
@@ -244,28 +251,38 @@ public class MusicService extends Service {
         this.play();
 
         this.startForegroundIfNot();
+        this.onPlayStateChangeListener.onChange(OnPlayStateChangeListener.FLAG_3);
     }
 
     /**
-     * 添加到下一首播放
+     * 添加到下一首播放, 若添加之前播放列表为空, 则立即播放
      *
      * @param music music
      */
     public void nextPlay(Music music) {
         this.playlist.add(music, this.playlist.getIndex() + 1);
 
+        if (this.playlist.size() == 1) {
+            this.play();
+        }
+
         this.startForegroundIfNot();
+        this.onPlayStateChangeListener.onChange(OnPlayStateChangeListener.FLAG_3);
     }
 
     /**
-     * 添加到下一首播放
+     * 添加到下一首播放, 若添加之前播放列表为空, 则立即播放
      *
      * @param musics music list
      */
     public void nextPlay(List<Music> musics) {
+        boolean empty = this.playlist.isEmpty();
         this.playlist.add(musics, this.playlist.getIndex() + 1);
-
+        if (empty) {
+            this.play();
+        }
         this.startForegroundIfNot();
+        this.onPlayStateChangeListener.onChange(OnPlayStateChangeListener.FLAG_3);
     }
 
     /**
@@ -273,7 +290,7 @@ public class MusicService extends Service {
      */
     private void startForegroundIfNot() {
         if (!this.isForeground) {
-            startForeground(NOTIFICATION_ID, notification);
+            startForeground(NOTIFICATION_ID, PlayNotification.of(PlayNotification.Style.ONE, this, this.playlist.getCurMusic(), this.isPlaying()));
             this.isForeground = true;
         }
     }
@@ -288,7 +305,7 @@ public class MusicService extends Service {
 
 
     /**
-     * 播放指定位置的歌曲
+     * 停止正在播放的歌曲(如果有), 然后从头播放指定位置的歌曲
      */
     public void play(int position) {
         this.playlist.setIndex(position);
@@ -298,13 +315,14 @@ public class MusicService extends Service {
             this.player.reset();
             if (curMusic != null) {
                 this.player.setDataSource(curMusic.getPath());
+                // 准备结束后, 总是立即播放
+                FLAG_NOT_ON_CREATE = true;
                 this.player.prepareAsync();
-                this.playNow = true;
                 this.onPreparedListener.onPreparedStart(this.player);
 
                 // 发出广播
-                MusicPlayStateReceiver.send(this, MusicPlayStateReceiver.Flag.PLAY);
-                this.onPlayStateChangeListener.onChange();
+                PlayStateChangeReceiver.send(this, PlayStateChangeReceiver.Flag.PLAY);
+                this.onPlayStateChangeListener.onChange(OnPlayStateChangeListener.FLAG_1);
             }
         } catch (IOException e) {
             LogUtils.e(e);
@@ -326,11 +344,14 @@ public class MusicService extends Service {
     public interface OnPreparedListener {
         /**
          * 当 MediaPlayer 开始准备时调用
+         *
+         * @param mp MediaPlayer
          */
         void onPreparedStart(MediaPlayer mp);
 
         /**
          * 当 MediaPlayer 准备完成后调用
+         * * @param mp MediaPlayer
          */
         void onPreparedFinish(MediaPlayer mp);
     }
@@ -340,10 +361,21 @@ public class MusicService extends Service {
      */
     public interface OnPlayStateChangeListener {
         /**
-         * // * @param isModifiedPlaylist 是否修改了播放列表内容, 若为 true, 则需更新viewPager
+         * 1. 开始播放或暂停播放                                 -> updatePlayBarInterface
          */
-        // void onChange(boolean isModifiedPlaylist);
-        void onChange();
+        int FLAG_1 = 1;
+
+        /**
+         * 2. 停止当前播放, 然后开始播放上一首或下一首或播放任一首  -> updatePlayBarInterface & viewPager#setCurrentItem
+         */
+        int FLAG_2 = 2;
+
+        /**
+         * 3. 修改了播放列表的内容                               -> updatePlayBarInterface & viewPager#setCurrentItem  & viewPager.notify...
+         */
+        int FLAG_3 = 3;
+
+        void onChange(int flag);
     }
 
 

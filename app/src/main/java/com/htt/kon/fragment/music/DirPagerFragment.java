@@ -15,6 +15,7 @@ import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
 import com.htt.kon.constant.MidConstant;
 import com.htt.kon.dialog.CommonDialogFragment;
+import com.htt.kon.util.GenericUtils;
 import com.htt.kon.util.LogUtils;
 
 import java.util.ArrayList;
@@ -66,7 +67,7 @@ public class DirPagerFragment extends BaseLocalMusicPagerFragment {
                 this.listView.setAdapter(adapter);
 
                 adapter.setOnOptionClickListener((CommonDialogItem item) -> {
-                    List<Music> musics = (List<Music>) item.getData();
+                    List<Music> musics = GenericUtils.ofList(item.getData(), Music.class);
                     switch (item.getId()) {
                         case CommonDialogFragment.TAG_PLAY_NEXT:
                             super.activity.nextPlay(musics);

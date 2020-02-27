@@ -116,13 +116,13 @@ public class LocalManagerAdapter extends BaseAdapter {
         return 0;
     }
 
-    private class ViewHolder {
+    private static class ViewHolder {
         private ImageView imageView;
         private TextView textViewTitle;
         private TextView textViewCount;
     }
 
-    private class ItemData {
+    private static class ItemData {
         private int imageId;
         private String itemTitle;
         private int count;

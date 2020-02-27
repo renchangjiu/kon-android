@@ -182,8 +182,7 @@ public class PlayListDialogFragment extends BaseDialogFragment {
          * 当item 的删除按钮被点击时回调, 删除播放列表中的某一个
          *
          * @param position pos
-         * @return playlist's index.
          */
-        int onDeleteBtnClick(int position);
+        void onDeleteBtnClick(int position);
     }
 }

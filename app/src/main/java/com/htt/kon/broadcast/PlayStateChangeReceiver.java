@@ -17,7 +17,7 @@ import lombok.Setter;
  * @author su
  * @date 2020/02/12 19:39
  */
-public class MusicPlayStateReceiver extends BroadcastReceiver {
+public class PlayStateChangeReceiver extends BroadcastReceiver {
 
     public static final String ACTION = "COM.HTT.KON.MUSIC.PLAY.STATE.RECEIVER";
 
@@ -40,7 +40,7 @@ public class MusicPlayStateReceiver extends BroadcastReceiver {
         intent.setAction(ACTION);
         intent.putExtra("key", flag);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-        LogUtils.e("Send a broadcast, Action: " + MusicPlayStateReceiver.ACTION);
+        LogUtils.e("Send a broadcast, Action: " + PlayStateChangeReceiver.ACTION);
     }
 
     public interface OnReceiveListener {

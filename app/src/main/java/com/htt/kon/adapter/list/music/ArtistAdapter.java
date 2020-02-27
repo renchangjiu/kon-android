@@ -104,7 +104,7 @@ public class ArtistAdapter extends BaseAdapter implements LocalMusicFragmentAdap
         return 0;
     }
 
-    private class ViewHolder {
+    private static class ViewHolder {
         /**
          * TODO: 歌手头像考虑爬取网易云音乐数据
          */

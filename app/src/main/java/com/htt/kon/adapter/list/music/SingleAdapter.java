@@ -99,7 +99,7 @@ public class SingleAdapter extends BaseAdapter implements LocalMusicFragmentAdap
         return this.getItem(position).getId();
     }
 
-    private class ViewHolder {
+    private static class ViewHolder {
         private ImageView imageViewPlay;
         private TextView textViewTitle;
         private TextView textViewArtistAlbum;
