@@ -18,7 +18,9 @@ import com.htt.kon.service.Playlist;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.stream.Optional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 import lombok.Setter;
 
@@ -47,11 +49,12 @@ public class SingleAdapter extends BaseAdapter implements LocalMusicFragmentAdap
     public View getView(int position, View convertView, ViewGroup parent) {
         View view;
         ViewHolder holder;
+        Context context = parent.getContext();
         if (convertView != null) {
             view = convertView;
             holder = (ViewHolder) view.getTag();
         } else {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_local_music_single, parent, false);
+            view = LayoutInflater.from(context).inflate(R.layout.list_item_local_music_single, parent, false);
             holder = new ViewHolder();
             holder.imageViewPlay = view.findViewById(R.id.lilma_imageView);
             holder.imageViewOption = view.findViewById(R.id.lilms_imageViewOption);
@@ -60,18 +63,26 @@ public class SingleAdapter extends BaseAdapter implements LocalMusicFragmentAdap
             view.setTag(holder);
         }
 
-        // 单击右侧图标
+        Music item = this.getItem(position);
+
+        // 右侧按钮点击事件
         holder.imageViewOption.setOnClickListener(v -> {
-            String musicJson = JsonUtils.bean2Json(this.getItem(position));
-            CommonDialogFragment dialog = CommonDialogFragment.ofSingle(musicJson);
+            String format = context.getString(R.string.cdf_dialog_title_single);
+            List<CommonDialogItem> items = new ArrayList<>();
+            items.add(new CommonDialogItem(CommonDialogFragment.TAG_PLAY_NEXT, context.getString(R.string.cdf_play_next), R.drawable.common_dialog_play_next, item));
+            items.add(new CommonDialogItem(CommonDialogFragment.TAG_COLLECT, context.getString(R.string.cdf_collect), R.drawable.common_dialog_collect2music_list, item));
+            items.add(new CommonDialogItem(CommonDialogFragment.TAG_ARTIST, String.format(context.getString(R.string.cdf_artist), item.getArtist()), R.drawable.common_dialog_artist, item));
+            items.add(new CommonDialogItem(CommonDialogFragment.TAG_ALBUM, String.format(context.getString(R.string.cdf_album), item.getAlbum()), R.drawable.common_dialog_album, item));
+            items.add(new CommonDialogItem(CommonDialogFragment.TAG_DELETE, context.getString(R.string.cdf_delete), R.drawable.common_dialog_delete, item));
+
+            CommonDialogFragment dialog = CommonDialogFragment.of(String.format(format, item.getTitle()), items);
             dialog.show(this.activity.getSupportFragmentManager(), "1");
-            dialog.setOnClickListener(item -> {
+            dialog.setOnClickListener((CommonDialogItem vv) -> {
                 // 回调方法
-                Optional.of(this.onOptionClickListener).ifPresent(v1 -> v1.onClick(item));
+                Optional.of(this.onOptionClickListener).ifPresent(v1 -> v1.onClick(vv));
             });
         });
 
-        Music item = this.getItem(position);
 
         if (this.playlist.isNotEmpty() && this.playlist.getCurMusic().getId().equals(item.getId())) {
             holder.imageViewPlay.setVisibility(View.VISIBLE);

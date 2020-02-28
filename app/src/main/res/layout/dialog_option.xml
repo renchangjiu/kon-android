@@ -2,20 +2,29 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="120dp"
+        android:minHeight="180dp"
         android:orientation="vertical">
 
-    <TextView
-            android:id="@+id/do_textViewMessage"
+    <FrameLayout
+            android:id="@+id/do_frameLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginStart="18dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="22dp"
-            android:layout_weight="1"
-            android:text="@string/sure_to_clear_playlist"
-            android:textColor="@color/grey"
-            android:textSize="15sp" />
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_weight="1">
+
+        <TextView
+                android:id="@+id/do_textViewMessage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="25dp"
+                android:textColor="@color/grey"
+                android:textSize="15sp"
+                android:visibility="gone" />
+    </FrameLayout>
+
 
     <LinearLayout
             android:layout_width="match_parent"
@@ -47,6 +56,7 @@
                 android:id="@+id/do_textViewPositiveBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
                 android:layout_marginBottom="12dp"
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"

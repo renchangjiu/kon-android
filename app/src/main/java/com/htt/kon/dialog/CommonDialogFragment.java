@@ -91,11 +91,21 @@ public class CommonDialogFragment extends BaseDialogFragment {
      */
     public static final int TAG_IMPROVE = 9;
 
+    /**
+     * 歌单创建
+     */
+    public static final int TAG_MUSIC_LIST_CREATE = 10;
 
     /**
-     * 表示打开弹出框的是哪个页面: 单曲页面
+     * 歌单管理
      */
-    private static final String FLAG_SINGLE = "single";
+    public static final int TAG_MUSIC_LIST_MANAGE = 11;
+
+    /**
+     * 歌单恢复
+     */
+    public static final int TAG_MUSIC_LIST_RESTORE = 12;
+
 
     /**
      * 歌手页面
@@ -139,19 +149,21 @@ public class CommonDialogFragment extends BaseDialogFragment {
     @Setter
     private OnClickListener onClickListener;
 
+
+    private static final String B_K_TITLE = "title";
+    private static final String B_K_ITEMS = "items";
+
     private CommonDialogFragment() {
     }
 
-    /**
-     * 单曲页面
-     */
-    public static CommonDialogFragment ofSingle(String musicJson) {
-        CommonDialogFragment instance = new CommonDialogFragment();
+
+    public static CommonDialogFragment of(String title, List<CommonDialogItem> items) {
+        CommonDialogFragment of = new CommonDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(B_K_FLAG, FLAG_SINGLE);
-        bundle.putString(B_K_SINGLE_MUSIC_JSON, musicJson);
-        instance.setArguments(bundle);
-        return instance;
+        bundle.putString(B_K_TITLE, title);
+        bundle.putString(B_K_ITEMS, JsonUtils.bean2Json(items));
+        of.setArguments(bundle);
+        return of;
     }
 
     /**
@@ -200,21 +212,26 @@ public class CommonDialogFragment extends BaseDialogFragment {
 
     private void init() {
         String flag = getArguments().getString(B_K_FLAG);
-        switch (flag) {
-            case FLAG_SINGLE:
-                this.init4single();
-                break;
-            case FLAG_ARTIST:
-                this.init4artist();
-                break;
-            case FLAG_ALBUM:
-                this.init4album();
-                break;
-            case FLAG_DIR:
-                this.init4dir();
-                break;
-            default:
+        if (flag != null) {
+            switch (flag) {
+                case FLAG_ARTIST:
+                    this.init4artist();
+                    break;
+                case FLAG_ALBUM:
+                    this.init4album();
+                    break;
+                case FLAG_DIR:
+                    this.init4dir();
+                    break;
+                default:
+            }
+        } else {
+            this.textViewTitle.setText(getArguments().getString(B_K_TITLE));
+            String string = getArguments().getString(B_K_ITEMS);
+            List<CommonDialogItem> items = JsonUtils.json2List(string, CommonDialogItem.class);
+            this.listView.setAdapter(new CommonDialogAdapter(items));
         }
+
         this.listView.setOnItemClickListener((parent, view, position, id) -> {
             // 回调方法
             CommonDialogItem item = UiUtils.getListViewAdapter(this.listView, CommonDialogAdapter.class).getItem(position);
@@ -274,33 +291,6 @@ public class CommonDialogFragment extends BaseDialogFragment {
         items.add(FULL_ITEMS.get(TAG_COLLECT).setName(getString(R.string.cdf_collect)).setData(musics));
         items.add(FULL_ITEMS.get(TAG_DELETE).setName(getString(R.string.cdf_delete)).setData(musics));
         this.listView.setAdapter(new CommonDialogAdapter(items));
-    }
-
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        return super.onCreateDialog(savedInstanceState);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
     }
 
 

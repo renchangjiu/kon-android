@@ -28,8 +28,6 @@ public class ListViewSeparateLayout extends LinearLayout {
 
     private ImageView imageViewSetting;
 
-    private OnClickListener listener;
-
     private static final String ARROW_DIRECTION_DOWN = "down";
     private static final String ARROW_DIRECTION_RIGHT = "right";
 
@@ -42,9 +40,9 @@ public class ListViewSeparateLayout extends LinearLayout {
     public ListViewSeparateLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         View view = LayoutInflater.from(context).inflate(R.layout.layout_list_view_separate, this);
-        imageView = view.findViewById(R.id.imageView);
-        textView = view.findViewById(R.id.textView);
-        imageViewSetting = view.findViewById(R.id.imageViewSetting);
+        this.imageView = view.findViewById(R.id.imageView);
+        this.textView = view.findViewById(R.id.textView);
+        this.imageViewSetting = view.findViewById(R.id.imageViewSetting);
 
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.ListViewSeparateLayout);
         String text = ta.getString(R.styleable.ListViewSeparateLayout_text);
@@ -70,14 +68,13 @@ public class ListViewSeparateLayout extends LinearLayout {
      * 设置布局点击事件
      */
     public void setOnClickListener(OnClickListener listener) {
-        this.listener = listener;
         View.OnClickListener cl = v -> {
             changeArrayDirection();
             listener.onCommonClick(v);
         };
         this.imageView.setOnClickListener(cl);
         this.textView.setOnClickListener(cl);
-        this.imageViewSetting.setOnClickListener(this.listener::onSettingImageClick);
+        this.imageViewSetting.setOnClickListener(listener::onSettingImageClick);
     }
 
     /**

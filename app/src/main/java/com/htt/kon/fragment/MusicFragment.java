@@ -1,11 +1,15 @@
 package com.htt.kon.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -18,8 +22,18 @@ import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
 import com.htt.kon.activity.MainActivity;
 import com.htt.kon.adapter.list.LocalManagerAdapter;
+import com.htt.kon.bean.CommonDialogItem;
+import com.htt.kon.dialog.CommonDialogFragment;
+import com.htt.kon.dialog.OptionDialog;
 import com.htt.kon.service.database.MusicDbService;
+import com.htt.kon.util.LogUtils;
+import com.htt.kon.util.TextWatcherWrapper;
 import com.htt.kon.view.ListViewSeparateLayout;
+
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -95,6 +109,48 @@ public class MusicFragment extends Fragment {
 
             @Override
             public void onSettingImageClick(View v) {
+                List<CommonDialogItem> items = new ArrayList<>();
+                items.add(new CommonDialogItem(CommonDialogFragment.TAG_MUSIC_LIST_CREATE, "创建新歌单", R.drawable.common_dialog_play_next, null));
+                items.add(new CommonDialogItem(CommonDialogFragment.TAG_MUSIC_LIST_MANAGE, "歌单管理", R.drawable.common_dialog_play_next, null));
+                items.add(new CommonDialogItem(CommonDialogFragment.TAG_MUSIC_LIST_RESTORE, "恢复歌单", R.drawable.common_dialog_play_next, null));
+                CommonDialogFragment fragment = CommonDialogFragment.of("创建的歌单", items);
+                fragment.show(activity.getSupportFragmentManager(), "1");
+                fragment.setOnClickListener(item -> {
+                    switch (item.getId()) {
+                        case CommonDialogFragment.TAG_MUSIC_LIST_CREATE:
+                            OptionDialog of = OptionDialog.of(activity)
+                                    .setChild(LayoutInflater.from(activity).inflate(R.layout.dialog_child_create_music_list, null))
+                                    .setTitle(getString(R.string.create_music_list))
+                                    .disabled(DialogInterface.BUTTON_POSITIVE)
+                                    .setPositiveButton(getString(R.string.submit), (child) -> {
+                                        EditText et = child.findViewById(R.id.dccml_editText);
+                                        String s = et.getText().toString();
+                                        LogUtils.e();
+                                    })
+                                    .setNegativeButton(child -> {
+                                    })
+                                    .end();
+                            EditText et = of.getChild().findViewById(R.id.dccml_editText);
+                            et.addTextChangedListener(new TextWatcherWrapper() {
+                                @Override
+                                public void afterTextChanged(Editable s) {
+                                    String str = s.toString();
+                                    if (StringUtils.isNotEmpty(str)) {
+                                        of.enabled(DialogInterface.BUTTON_POSITIVE);
+                                    } else {
+                                        of.disabled(DialogInterface.BUTTON_POSITIVE);
+                                    }
+                                }
+                            });
+                            of.show();
+                            break;
+                        case CommonDialogFragment.TAG_MUSIC_LIST_MANAGE:
+                            break;
+                        case CommonDialogFragment.TAG_MUSIC_LIST_RESTORE:
+                            break;
+                        default:
+                    }
+                });
             }
         });
 

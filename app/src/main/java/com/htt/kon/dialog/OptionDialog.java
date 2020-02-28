@@ -1,85 +1,143 @@
 package com.htt.kon.dialog;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 
 import com.htt.kon.R;
 import com.htt.kon.util.stream.Optional;
 
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
+
+import lombok.Getter;
+
 /**
- * 封装了包含两个按钮的对话框
+ * 封装了对话框, 包含两个按钮, 可以设置 message 或 view (二选一)
  *
  * @author su
  * @date 2020/02/10 13:07
  */
 public class OptionDialog {
+
     private Context context;
 
     private AlertDialog dialog;
 
-    private View view;
+    private FrameLayout container;
 
-    private TextView textViewMessage;
+    @Getter
+    private View child;
 
-    private TextView textViewPositiveBtn;
+    private TextView message;
 
-    private TextView textViewNegativeBtn;
+    @Getter
+    private TextView positiveBtn;
+    private OnClickListener positiveListener;
 
-    public static OptionDialog of(Context context, String content) {
-        OptionDialog instance = new OptionDialog();
+    @Getter
+    private TextView negativeBtn;
+    private OnClickListener negativeListener;
+
+
+    public static OptionDialog of(Context context) {
+        OptionDialog of = new OptionDialog();
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_option, null);
-        TextView textViewMessage = view.findViewById(R.id.do_textViewMessage);
-        TextView textViewPositiveBtn = view.findViewById(R.id.do_textViewPositiveBtn);
-        TextView textViewNegativeBtn = view.findViewById(R.id.do_textViewNegativeBtn);
-        textViewPositiveBtn.setVisibility(View.GONE);
-        textViewNegativeBtn.setVisibility(View.GONE);
-
-        textViewMessage.setText(content);
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setView(view);
-
-        instance.dialog = builder.create();
-        instance.context = context;
-        instance.view = view;
-        instance.textViewMessage = textViewMessage;
-        instance.textViewPositiveBtn = textViewPositiveBtn;
-        instance.textViewNegativeBtn = textViewNegativeBtn;
-        return instance;
+        of.context = context;
+        of.container = view.findViewById(R.id.do_frameLayout);
+        of.message = view.findViewById(R.id.do_textViewMessage);
+        of.positiveBtn = view.findViewById(R.id.do_textViewPositiveBtn);
+        of.negativeBtn = view.findViewById(R.id.do_textViewNegativeBtn);
+        of.dialog = new AlertDialog.Builder(context).setView(view).create();
+        return of;
     }
 
-    public OptionDialog setPositiveButton(final OnClickListener listener) {
-        return this.setPositiveButton(this.context.getString(R.string.determine), listener);
-    }
-
-    public OptionDialog setPositiveButton(String text, final OnClickListener listener) {
-        this.textViewPositiveBtn.setText(text);
-        this.textViewPositiveBtn.setVisibility(View.VISIBLE);
-        this.textViewPositiveBtn.setOnClickListener(v -> {
-            this.dialog.dismiss();
-            Optional.of(listener).ifPresent(OnClickListener::onClick);
-        });
+    public OptionDialog setTitle(CharSequence title) {
+        this.dialog.setTitle(title);
         return this;
     }
 
-    public OptionDialog setNegativeButton(final OnClickListener listener) {
+    public OptionDialog setContent(String content) {
+        this.message.setText(content);
+        this.message.setVisibility(View.VISIBLE);
+        return this;
+    }
+
+    public OptionDialog setChild(View child) {
+        this.container.addView(child);
+        this.child = child;
+        return this;
+    }
+
+
+    public OptionDialog disabled(int whichButton) {
+        TextView tv = whichButton == DialogInterface.BUTTON_NEGATIVE ? this.negativeBtn : this.positiveBtn;
+        tv.setTextColor(ContextCompat.getColor(this.context, R.color.pink));
+        tv.setOnClickListener(null);
+        tv.setClickable(false);
+        return this;
+    }
+
+    public OptionDialog enabled(int whichButton) {
+        TextView tv = whichButton == DialogInterface.BUTTON_NEGATIVE ? this.negativeBtn : this.positiveBtn;
+        tv.setTextColor(ContextCompat.getColor(this.context, R.color.red1));
+        this.setClickListener(tv, whichButton == DialogInterface.BUTTON_NEGATIVE ? this.negativeListener : this.positiveListener);
+        return this;
+    }
+
+    public OptionDialog setPositiveButton(@NonNull final OnClickListener listener) {
+        return this.setPositiveButton(this.context.getString(R.string.determine), listener);
+    }
+
+    public OptionDialog setPositiveButton(@NonNull String text, final OnClickListener listener) {
+        this.positiveListener = listener;
+        this.positiveBtn.setText(text);
+        this.positiveBtn.setVisibility(View.VISIBLE);
+        if (this.positiveBtn.isClickable()) {
+            this.setClickListener(this.positiveBtn, listener);
+        }
+        return this;
+    }
+
+    public OptionDialog setNegativeButton(@NonNull final OnClickListener listener) {
         return this.setNegativeButton(this.context.getString(R.string.cancel), listener);
     }
 
-    public OptionDialog setNegativeButton(String text, final OnClickListener listener) {
-        this.textViewNegativeBtn.setText(text);
-        this.textViewNegativeBtn.setVisibility(View.VISIBLE);
-        this.textViewNegativeBtn.setOnClickListener(v -> {
+    public OptionDialog setNegativeButton(@NonNull String text, final OnClickListener listener) {
+        this.negativeListener = listener;
+        this.negativeBtn.setText(text);
+        this.negativeBtn.setVisibility(View.VISIBLE);
+        if (this.negativeBtn.isClickable()) {
+            this.setClickListener(this.negativeBtn, listener);
+        }
+        return this;
+    }
+
+    private void setClickListener(TextView btn, final OnClickListener listener) {
+        btn.setOnClickListener(v -> {
             this.dialog.dismiss();
-            Optional.of(listener).ifPresent(OnClickListener::onClick);
+            Optional.of(listener).ifPresent(vv -> vv.onClick(this.child != null ? this.child : this.message));
         });
+    }
+
+    public OptionDialog end() {
         return this;
     }
 
     public OptionDialog show() {
+        if (StringUtils.isNotEmpty(this.message.getText()) && this.child != null) {
+            throw new RuntimeException();
+        }
+        this.negativeBtn.setVisibility(this.negativeListener != null ? View.VISIBLE : View.GONE);
+        this.positiveBtn.setVisibility(this.positiveListener != null ? View.VISIBLE : View.GONE);
         this.dialog.show();
         return this;
     }
@@ -88,7 +146,7 @@ public class OptionDialog {
     }
 
     public interface OnClickListener {
-        void onClick();
+        void onClick(View child);
     }
 
 }

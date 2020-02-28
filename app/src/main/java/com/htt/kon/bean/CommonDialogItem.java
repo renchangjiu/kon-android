@@ -2,25 +2,27 @@ package com.htt.kon.bean;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
 /**
- * 普通对话框的item data
+ * 普通对话框的item
  *
  * @author su
  * @date 2020/02/05 20:14
  */
 @Getter
+@Setter
 @ToString
 @Accessors(chain = true)
 @AllArgsConstructor
+@NoArgsConstructor
 public class CommonDialogItem {
 
     private int id;
 
-    @Setter
     private String name;
 
     private int imageId;
@@ -28,7 +30,6 @@ public class CommonDialogItem {
     /**
      * 携带的数据
      */
-    @Setter
     private Object data;
 
 }

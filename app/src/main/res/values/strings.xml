@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">kon</string>
     <string name="search">搜索</string>
+    <string name="empty_str" />
 
     <string name="local_music">本地音乐</string>
     <string name="recently_played">最近播放</string>
@@ -61,6 +62,10 @@
 
     <string name="artist_unknown">群星</string>
     <string name="unknown">未知</string>
+
+    <string name="create_music_list">新建歌单</string>
+    <string name="submit">提交</string>
+    <string name="enter_musiclist_title">请输入歌单标题</string>
 
 
 </resources>

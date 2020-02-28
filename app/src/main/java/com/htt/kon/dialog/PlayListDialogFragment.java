@@ -123,14 +123,15 @@ public class PlayListDialogFragment extends BaseDialogFragment {
 
         //  清空按钮的点击事件
         this.imageViewClear.setOnClickListener(v -> {
-            OptionDialog of = OptionDialog.of(context, getString(R.string.sure_to_clear_playlist));
-            of.setPositiveButton(getString(R.string.clear), () -> {
+            OptionDialog of = OptionDialog.of(context).setContent(getString(R.string.sure_to_clear_playlist));
+            of.setPositiveButton(getString(R.string.clear), (child) -> {
                 assert onClickListener != null;
                 onClickListener.onClearBtnClick();
                 UiUtils.getListViewAdapter(this.listView, PlaylistDialogAdapter.class).notifyDataSetChanged();
                 dismiss();
             });
-            of.setNegativeButton(null);
+            of.setNegativeButton(child -> {
+            });
             of.show();
         });
     }
