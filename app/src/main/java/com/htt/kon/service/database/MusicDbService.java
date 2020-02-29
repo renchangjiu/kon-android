@@ -2,23 +2,26 @@ package com.htt.kon.service.database;
 
 import android.content.Context;
 
-import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.bean.Music;
-import com.htt.kon.constant.MidConstant;
 import com.htt.kon.dao.AppDatabase;
 import com.htt.kon.dao.MusicDao;
 import com.htt.kon.dao.MusicListDao;
-import com.htt.kon.util.LogUtils;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import kotlin.jvm.Throws;
+import okhttp3.Call;
+import okhttp3.Response;
 
 /**
  * @author su
@@ -30,28 +33,49 @@ public class MusicDbService {
 
     private MusicDao musicDao;
 
-    private static volatile MusicDbService instance = null;
+    private static volatile MusicDbService of = null;
 
     private Context context;
 
     public static MusicDbService of(Context context) {
-        if (instance == null) {
+        if (of == null) {
             synchronized (MusicDbService.class) {
-                if (instance == null) {
-                    instance = new MusicDbService();
-                    instance.context = context.getApplicationContext();
-                    instance.musicListDao = AppDatabase.of(context).musicListDao();
-                    instance.musicDao = AppDatabase.of(context).musicDao();
+                if (of == null) {
+                    of = new MusicDbService();
+                    of.context = context.getApplicationContext();
+                    of.musicListDao = AppDatabase.of(context).musicListDao();
+                    of.musicDao = AppDatabase.of(context).musicDao();
                 }
             }
         }
-        return instance;
+        return of;
     }
 
     public List<Music> list() {
         List<Music> list = this.musicDao.list();
         this.putData(list);
         return list;
+    }
+
+    public void list(Callback callback) {
+        new Thread(() -> {
+            try {
+                List<Music> list = this.musicDao.list();
+                this.putData(list);
+                callback.onSuccess(list);
+            } catch (Exception e) {
+                callback.onFailure(e);
+            }
+        }).start();
+    }
+
+    /**
+     * 局限: 不能通用, 每个方法都要声明一个接口
+     */
+    public interface Callback {
+        void onFailure(@NotNull Exception e);
+
+        void onSuccess(@NotNull List<Music> data);
     }
 
     /**

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
+import com.htt.kon.adapter.list.dialog.CommonDialogAdapter;
 import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
 import com.htt.kon.dialog.CommonDialogFragment;
@@ -18,6 +19,7 @@ import com.htt.kon.service.Playlist;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.stream.Optional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +53,7 @@ public class ArtistAdapter extends BaseAdapter implements LocalMusicFragmentAdap
     public View getView(int position, View convertView, ViewGroup parent) {
         View view;
         ViewHolder holder;
+        Context context = parent.getContext();
         if (convertView != null) {
             view = convertView;
             holder = (ViewHolder) view.getTag();
@@ -69,7 +72,15 @@ public class ArtistAdapter extends BaseAdapter implements LocalMusicFragmentAdap
         // 单击右侧图标
         List<Music> musics = item.getMusics();
         holder.imageViewOption.setOnClickListener(v -> {
-            CommonDialogFragment dialog = CommonDialogFragment.ofArtist(item.getArtist(), JsonUtils.bean2Json(musics));
+            String format = context.getString(R.string.cdf_dialog_title_single);
+
+            List<CommonDialogItem> items = new ArrayList<>();
+            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_PLAY_NEXT).setName(context.getString(R.string.cdf_play_next)).setData(musics));
+            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_COLLECT).setName(context.getString(R.string.cdf_collect)).setData(musics));
+            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_SHARE).setName(context.getString(R.string.cdf_share)).setData(musics));
+            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_DELETE).setName(context.getString(R.string.cdf_delete)).setData(musics));
+
+            CommonDialogFragment dialog = CommonDialogFragment.of(String.format(format, item.getArtist()), items);
             dialog.show(this.activity.getSupportFragmentManager(), "1");
             dialog.setOnClickListener((CommonDialogItem item1) -> {
                 // 回调方法

@@ -8,6 +8,8 @@ import androidx.room.Query;
 import com.htt.kon.bean.Music;
 import com.htt.kon.bean.MusicList;
 
+import java.util.List;
+
 /**
  * @author su
  * @date 2020/02/07 14:15
@@ -25,5 +27,5 @@ public interface MusicListDao {
     void logicDelete(long id);
 
     @Query("SELECT * FROM MUSIC_LIST where DEL_FLAG = 2")
-    MusicList[] list();
+    List<MusicList> list();
 }

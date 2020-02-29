@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommonDialogItem {
+public class CommonDialogItem<T> {
 
     private int id;
 

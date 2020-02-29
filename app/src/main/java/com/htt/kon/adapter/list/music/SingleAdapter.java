@@ -69,11 +69,11 @@ public class SingleAdapter extends BaseAdapter implements LocalMusicFragmentAdap
         holder.imageViewOption.setOnClickListener(v -> {
             String format = context.getString(R.string.cdf_dialog_title_single);
             List<CommonDialogItem> items = new ArrayList<>();
-            items.add(new CommonDialogItem(CommonDialogFragment.TAG_PLAY_NEXT, context.getString(R.string.cdf_play_next), R.drawable.common_dialog_play_next, item));
-            items.add(new CommonDialogItem(CommonDialogFragment.TAG_COLLECT, context.getString(R.string.cdf_collect), R.drawable.common_dialog_collect2music_list, item));
-            items.add(new CommonDialogItem(CommonDialogFragment.TAG_ARTIST, String.format(context.getString(R.string.cdf_artist), item.getArtist()), R.drawable.common_dialog_artist, item));
-            items.add(new CommonDialogItem(CommonDialogFragment.TAG_ALBUM, String.format(context.getString(R.string.cdf_album), item.getAlbum()), R.drawable.common_dialog_album, item));
-            items.add(new CommonDialogItem(CommonDialogFragment.TAG_DELETE, context.getString(R.string.cdf_delete), R.drawable.common_dialog_delete, item));
+            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_PLAY_NEXT).setName(context.getString(R.string.cdf_play_next)).setData(item));
+            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_COLLECT).setName(context.getString(R.string.cdf_collect)).setData(item));
+            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_ARTIST).setName(String.format(context.getString(R.string.cdf_artist), item.getArtist())).setData(item));
+            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_ALBUM).setName(String.format(context.getString(R.string.cdf_album), item.getAlbum())).setData(item));
+            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_DELETE).setName(context.getString(R.string.cdf_delete)).setData(item));
 
             CommonDialogFragment dialog = CommonDialogFragment.of(String.format(format, item.getTitle()), items);
             dialog.show(this.activity.getSupportFragmentManager(), "1");

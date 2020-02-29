@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,17 +25,24 @@ import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.dialog.CommonDialogFragment;
 import com.htt.kon.dialog.OptionDialog;
 import com.htt.kon.service.database.MusicDbService;
+import com.htt.kon.service.database.MusicListDbService;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.TextWatcherWrapper;
+import com.htt.kon.util.requests.Requests;
 import com.htt.kon.view.ListViewSeparateLayout;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * MainActivity 下的MusicFragment
@@ -49,6 +55,8 @@ public class MusicFragment extends Fragment {
     private MainActivity activity;
 
     private MusicDbService musicDbService;
+
+    private MusicListDbService musicListDbService;
 
 
     @BindView(R.id.fm_swipeRefreshLayout)
@@ -79,6 +87,17 @@ public class MusicFragment extends Fragment {
 
     private void init() {
         this.musicDbService = MusicDbService.of(this.activity);
+        this.musicListDbService = MusicListDbService.of(this.activity);
+
+        this.listViewSeparateLayout.setText("");
+        new Thread(() -> {
+            int count = this.musicListDbService.list().size() - 1;
+            this.activity.runOnUiThread(() -> {
+                String format = this.activity.getString(R.string.created_music_list);
+                this.listViewSeparateLayout.setText(String.format(format, count));
+            });
+        }).start();
+
         this.listView.setAdapter(new LocalManagerAdapter(this.activity));
         this.listView.setOnItemClickListener((parent, view, position, id) -> {
             switch (position) {
@@ -110,43 +129,23 @@ public class MusicFragment extends Fragment {
             @Override
             public void onSettingImageClick(View v) {
                 List<CommonDialogItem> items = new ArrayList<>();
-                items.add(new CommonDialogItem(CommonDialogFragment.TAG_MUSIC_LIST_CREATE, "创建新歌单", R.drawable.common_dialog_play_next, null));
-                items.add(new CommonDialogItem(CommonDialogFragment.TAG_MUSIC_LIST_MANAGE, "歌单管理", R.drawable.common_dialog_play_next, null));
-                items.add(new CommonDialogItem(CommonDialogFragment.TAG_MUSIC_LIST_RESTORE, "恢复歌单", R.drawable.common_dialog_play_next, null));
+
+                items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_MUSIC_LIST_CREATE).setName(getString(R.string.create_new_music_list)));
+                items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_MUSIC_LIST_MANAGE).setName(getString(R.string.music_list_manage)));
+                items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_MUSIC_LIST_RESTORE).setName(getString(R.string.music_list_restore)));
+
                 CommonDialogFragment fragment = CommonDialogFragment.of("创建的歌单", items);
                 fragment.show(activity.getSupportFragmentManager(), "1");
                 fragment.setOnClickListener(item -> {
                     switch (item.getId()) {
                         case CommonDialogFragment.TAG_MUSIC_LIST_CREATE:
-                            OptionDialog of = OptionDialog.of(activity)
-                                    .setChild(LayoutInflater.from(activity).inflate(R.layout.dialog_child_create_music_list, null))
-                                    .setTitle(getString(R.string.create_music_list))
-                                    .disabled(DialogInterface.BUTTON_POSITIVE)
-                                    .setPositiveButton(getString(R.string.submit), (child) -> {
-                                        EditText et = child.findViewById(R.id.dccml_editText);
-                                        String s = et.getText().toString();
-                                        LogUtils.e();
-                                    })
-                                    .setNegativeButton(child -> {
-                                    })
-                                    .end();
-                            EditText et = of.getChild().findViewById(R.id.dccml_editText);
-                            et.addTextChangedListener(new TextWatcherWrapper() {
-                                @Override
-                                public void afterTextChanged(Editable s) {
-                                    String str = s.toString();
-                                    if (StringUtils.isNotEmpty(str)) {
-                                        of.enabled(DialogInterface.BUTTON_POSITIVE);
-                                    } else {
-                                        of.disabled(DialogInterface.BUTTON_POSITIVE);
-                                    }
-                                }
-                            });
-                            of.show();
+                            caseCreateMusicList();
                             break;
                         case CommonDialogFragment.TAG_MUSIC_LIST_MANAGE:
+                            Toast.makeText(activity, "敬请期待", Toast.LENGTH_SHORT).show();
                             break;
                         case CommonDialogFragment.TAG_MUSIC_LIST_RESTORE:
+                            Toast.makeText(activity, "敬请期待", Toast.LENGTH_SHORT).show();
                             break;
                         default:
                     }
@@ -171,4 +170,34 @@ public class MusicFragment extends Fragment {
             }).start();
         });
     }
+
+    private void caseCreateMusicList() {
+        OptionDialog of = OptionDialog.of(activity)
+                .setChild(LayoutInflater.from(activity).inflate(R.layout.dialog_child_create_music_list, null))
+                .setTitle(getString(R.string.create_music_list))
+                .disabled(DialogInterface.BUTTON_POSITIVE)
+                .setPositiveButton(getString(R.string.submit), (child) -> {
+                    EditText et = child.findViewById(R.id.dccml_editText);
+                    String s = et.getText().toString();
+                    LogUtils.e();
+                })
+                .setNegativeButton(child -> {
+                })
+                .end();
+        EditText et = of.getChild().findViewById(R.id.dccml_editText);
+        et.addTextChangedListener(new TextWatcherWrapper() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                String str = s.toString();
+                if (StringUtils.isNotEmpty(str)) {
+                    of.enabled(DialogInterface.BUTTON_POSITIVE);
+                } else {
+                    of.disabled(DialogInterface.BUTTON_POSITIVE);
+                }
+            }
+        });
+        of.show();
+    }
+
+
 }

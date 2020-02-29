@@ -34,6 +34,7 @@
     <string name="cdf_dialog_title_dir">文件夹:&#160;&#160;%s</string>
     <string name="cdf_play_next">下一首播放</string>
     <string name="cdf_collect">收藏到歌单</string>
+    <string name="cdf_share">上传到云盘</string>
     <string name="cdf_artist">歌手：%s</string>
     <string name="cdf_album">专辑：%s</string>
     <string name="cdf_delete">删除</string>
@@ -63,7 +64,11 @@
     <string name="artist_unknown">群星</string>
     <string name="unknown">未知</string>
 
+    <string name="created_music_list">创建的歌单(%d)</string>
     <string name="create_music_list">新建歌单</string>
+    <string name="create_new_music_list">创建新歌单</string>
+    <string name="music_list_manage">歌单管理</string>
+    <string name="music_list_restore">恢复创建</string>
     <string name="submit">提交</string>
     <string name="enter_musiclist_title">请输入歌单标题</string>
 

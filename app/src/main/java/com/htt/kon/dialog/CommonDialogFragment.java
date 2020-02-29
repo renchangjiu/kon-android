@@ -1,7 +1,5 @@
 package com.htt.kon.dialog;
 
-import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -108,11 +106,6 @@ public class CommonDialogFragment extends BaseDialogFragment {
 
 
     /**
-     * 歌手页面
-     */
-    private static final String FLAG_ARTIST = "artist";
-
-    /**
      * 专辑页面
      */
     private static final String FLAG_ALBUM = "album";
@@ -123,7 +116,7 @@ public class CommonDialogFragment extends BaseDialogFragment {
     private static final String FLAG_DIR = "dir";
 
 
-    private static final SparseArray<CommonDialogItem> FULL_ITEMS = new SparseArray<>();
+    public static final SparseArray<CommonDialogItem> FULL_ITEMS = new SparseArray<>();
 
     // 初始化item 列表
     static {
@@ -137,6 +130,10 @@ public class CommonDialogFragment extends BaseDialogFragment {
         FULL_ITEMS.put(TAG_VIDEO, new CommonDialogItem(TAG_VIDEO, "查看视频", R.drawable.common_dialog_video, null));
         FULL_ITEMS.put(TAG_DELETE, new CommonDialogItem(TAG_DELETE, "删除", R.drawable.common_dialog_delete, null));
         FULL_ITEMS.put(TAG_IMPROVE, new CommonDialogItem(TAG_IMPROVE, "音质升级", R.drawable.common_dialog_improve, null));
+
+        FULL_ITEMS.put(TAG_MUSIC_LIST_CREATE, new CommonDialogItem(TAG_MUSIC_LIST_CREATE, "创建新歌单", R.drawable.common_dialog_improve, null));
+        FULL_ITEMS.put(TAG_MUSIC_LIST_MANAGE, new CommonDialogItem(TAG_MUSIC_LIST_MANAGE, "歌单管理", R.drawable.common_dialog_improve, null));
+        FULL_ITEMS.put(TAG_MUSIC_LIST_RESTORE, new CommonDialogItem(TAG_MUSIC_LIST_RESTORE, "恢复歌单", R.drawable.common_dialog_improve, null));
     }
 
     @BindView(R.id.dc_textView)
@@ -166,12 +163,6 @@ public class CommonDialogFragment extends BaseDialogFragment {
         return of;
     }
 
-    /**
-     * 歌手页面
-     */
-    public static CommonDialogFragment ofArtist(String artist, String musicsJson) {
-        return ofAbd(FLAG_ARTIST, artist, musicsJson);
-    }
 
     /**
      * 专辑页面
@@ -214,9 +205,6 @@ public class CommonDialogFragment extends BaseDialogFragment {
         String flag = getArguments().getString(B_K_FLAG);
         if (flag != null) {
             switch (flag) {
-                case FLAG_ARTIST:
-                    this.init4artist();
-                    break;
                 case FLAG_ALBUM:
                     this.init4album();
                     break;
@@ -240,30 +228,6 @@ public class CommonDialogFragment extends BaseDialogFragment {
         });
     }
 
-    private void init4single() {
-        assert getArguments() != null;
-        String musicJson = getArguments().getString(B_K_SINGLE_MUSIC_JSON);
-        Music music = JsonUtils.json2Bean(musicJson, Music.class);
-        assert music != null;
-
-        String format = getString(R.string.cdf_dialog_title_single);
-        this.textViewTitle.setText(String.format(format, music.getTitle()));
-        List<CommonDialogItem> items = new ArrayList<>();
-        items.add(FULL_ITEMS.get(TAG_PLAY_NEXT).setName(getString(R.string.cdf_play_next)).setData(music));
-        items.add(FULL_ITEMS.get(TAG_COLLECT).setName(getString(R.string.cdf_collect)).setData(music));
-        items.add(FULL_ITEMS.get(TAG_ARTIST).setName(String.format(getString(R.string.cdf_artist), music.getArtist())).setData(music));
-        items.add(FULL_ITEMS.get(TAG_ALBUM).setName(String.format(getString(R.string.cdf_album), music.getAlbum())).setData(music));
-        items.add(FULL_ITEMS.get(TAG_DELETE).setName(getString(R.string.cdf_delete)).setData(music));
-        this.listView.setAdapter(new CommonDialogAdapter(items));
-    }
-
-    private void init4artist() {
-        this.init4abd();
-
-        String artist = getArguments().getString(B_K_ABD_NAME);
-        String format = getString(R.string.cdf_dialog_title_artist);
-        this.textViewTitle.setText(String.format(format, artist));
-    }
 
     private void init4album() {
         this.init4abd();
