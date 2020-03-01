@@ -20,6 +20,7 @@ import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.stream.Optional;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -51,11 +52,12 @@ public class DirAdapter extends BaseAdapter implements LocalMusicFragmentAdapter
     public View getView(int position, View convertView, ViewGroup parent) {
         View view;
         ViewHolder holder;
+        Context context = parent.getContext();
         if (convertView != null) {
             view = convertView;
             holder = (ViewHolder) view.getTag();
         } else {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_local_music_dir, parent, false);
+            view = LayoutInflater.from(context).inflate(R.layout.list_item_local_music_dir, parent, false);
             holder = new ViewHolder();
             holder.textViewDirName = view.findViewById(R.id.lilmd_textViewDirName);
             holder.textViewCount = view.findViewById(R.id.lilmd_textViewCount);
@@ -68,7 +70,15 @@ public class DirAdapter extends BaseAdapter implements LocalMusicFragmentAdapter
         List<Music> musics = item.getMusics();
         // 右侧图标点击事件
         holder.imageViewOption.setOnClickListener(v -> {
-            CommonDialogFragment dialog = CommonDialogFragment.ofDir(file.getName(), JsonUtils.bean2Json(musics));
+            String format = context.getString(R.string.cdf_dialog_title_dir);
+
+            List<CommonDialogItem> items = new ArrayList<>();
+            String data = JsonUtils.bean2Json(item);
+            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_PLAY_NEXT).setName(context.getString(R.string.cdf_play_next)).setData(data));
+            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_COLLECT).setName(context.getString(R.string.cdf_collect)).setData(data));
+            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_DELETE).setName(context.getString(R.string.cdf_delete)).setData(data));
+            CommonDialogFragment dialog = CommonDialogFragment.of(String.format(format, item.getPath()), items);
+
             dialog.show(this.activity.getSupportFragmentManager(), "1");
             dialog.setOnClickListener((CommonDialogItem item1) -> {
                 // 回调方法

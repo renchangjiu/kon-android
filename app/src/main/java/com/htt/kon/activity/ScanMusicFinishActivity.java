@@ -2,12 +2,14 @@ package com.htt.kon.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.text.HtmlCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Html;
+import android.text.Spanned;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -50,11 +52,10 @@ public class ScanMusicFinishActivity extends AppCompatActivity {
 
     private Handler handler = new Handler((msg) -> {
         if (msg.what == HANDLER_WHAT_FINISH) {
-            LogUtils.e("收到结果");
             // 扫描结束
             int count = (int) msg.obj;
             String source = String.format(getString(R.string.scan_result_count), count);
-            this.textViewResult.setText(Html.fromHtml(source));
+            this.textViewResult.setText(HtmlCompat.fromHtml(source, HtmlCompat.FROM_HTML_MODE_LEGACY));
             this.textViewCancelScan.setVisibility(View.GONE);
             this.textViewBack.setVisibility(View.VISIBLE);
             this.textViewLyric.setVisibility(View.VISIBLE);
@@ -177,7 +178,6 @@ public class ScanMusicFinishActivity extends AppCompatActivity {
                 msg.what = HANDLER_WHAT_FINISH;
                 msg.obj = paths.size();
                 handler.sendMessage(msg);
-                LogUtils.e("发出结果");
             }
         }
 
@@ -188,6 +188,9 @@ public class ScanMusicFinishActivity extends AppCompatActivity {
             handler.sendMessage(msg);
         }
 
+        /**
+         * 提取出音乐标签数据, 转换成 Music 对象
+         */
         private Optional<Music> convert2music(String path, String imageRootPath) {
             try {
                 Mp3Metadata metadata = MusicFileMetadataParser.parse(path);

@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommonDialogItem<T> {
+public class CommonDialogItem {
 
     private int id;
 
@@ -28,8 +28,8 @@ public class CommonDialogItem<T> {
     private int imageId;
 
     /**
-     * 携带的数据
+     * 携带的数据, json 格式
      */
-    private Object data;
+    private String data;
 
 }

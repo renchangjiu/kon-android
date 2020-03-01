@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.htt.kon.R;
 import com.htt.kon.bean.Music;
+import com.htt.kon.bean.MusicList;
 import com.htt.kon.dao.AppDatabase;
 import com.htt.kon.dao.MusicDao;
 import com.htt.kon.dao.MusicListDao;
@@ -57,25 +58,10 @@ public class MusicDbService {
         return list;
     }
 
-    public void list(Callback callback) {
+    public void list(Callback<List<Music>> call) {
         new Thread(() -> {
-            try {
-                List<Music> list = this.musicDao.list();
-                this.putData(list);
-                callback.onSuccess(list);
-            } catch (Exception e) {
-                callback.onFailure(e);
-            }
+            call.on(this.list());
         }).start();
-    }
-
-    /**
-     * 局限: 不能通用, 每个方法都要声明一个接口
-     */
-    public interface Callback {
-        void onFailure(@NotNull Exception e);
-
-        void onSuccess(@NotNull List<Music> data);
     }
 
     /**
@@ -87,16 +73,17 @@ public class MusicDbService {
         return list;
     }
 
+
+    public void insert(Music music) {
+        this.setDataIfEmpty(music);
+        this.musicDao.insert(music);
+    }
+
     public void insert(List<Music> list) {
         for (Music music : list) {
             this.setDataIfEmpty(music);
         }
         this.musicDao.insert(list);
-    }
-
-    public void insert(Music music) {
-        this.setDataIfEmpty(music);
-        this.musicDao.insert(music);
     }
 
     public Music getById(long id) {

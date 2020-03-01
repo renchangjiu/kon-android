@@ -18,6 +18,7 @@ import com.htt.kon.bean.Music;
 import com.htt.kon.broadcast.PlayStateChangeReceiver;
 import com.htt.kon.constant.MidConstant;
 import com.htt.kon.dialog.CommonDialogFragment;
+import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.UiUtils;
 
@@ -71,7 +72,7 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
                 this.textViewCount.setText(String.format(format, list.size()));
 
                 adapter.setOnOptionClickListener(item -> {
-                    Music data = (Music) item.getData();
+                    Music data = JsonUtils.json2Bean(item.getData(), Music.class);
                     switch (item.getId()) {
                         case CommonDialogFragment.TAG_PLAY_NEXT:
                             this.activity.nextPlay(data);

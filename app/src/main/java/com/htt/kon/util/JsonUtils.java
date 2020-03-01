@@ -42,7 +42,7 @@ public class JsonUtils {
             return MAPPER.readValue(jsonData, beanType);
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
@@ -55,7 +55,7 @@ public class JsonUtils {
             return MAPPER.readValue(jsonData, javaType);
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 

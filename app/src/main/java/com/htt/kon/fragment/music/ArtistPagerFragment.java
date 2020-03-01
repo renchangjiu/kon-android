@@ -15,6 +15,7 @@ import com.htt.kon.bean.Music;
 import com.htt.kon.constant.MidConstant;
 import com.htt.kon.dialog.CommonDialogFragment;
 import com.htt.kon.util.GenericUtils;
+import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.LogUtils;
 
 import java.util.ArrayList;
@@ -66,7 +67,7 @@ public class ArtistPagerFragment extends BaseLocalMusicPagerFragment {
                 this.listView.setAdapter(adapter);
 
                 adapter.setOnOptionClickListener(item -> {
-                    List<Music> musics = GenericUtils.ofList(item.getData(), Music.class);
+                    List<Music> musics = JsonUtils.json2List(item.getData(), Music.class);
                     switch (item.getId()) {
                         case CommonDialogFragment.TAG_PLAY_NEXT:
                             super.activity.nextPlay(musics);

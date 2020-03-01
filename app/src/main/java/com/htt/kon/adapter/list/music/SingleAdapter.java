@@ -69,11 +69,12 @@ public class SingleAdapter extends BaseAdapter implements LocalMusicFragmentAdap
         holder.imageViewOption.setOnClickListener(v -> {
             String format = context.getString(R.string.cdf_dialog_title_single);
             List<CommonDialogItem> items = new ArrayList<>();
-            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_PLAY_NEXT).setName(context.getString(R.string.cdf_play_next)).setData(item));
-            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_COLLECT).setName(context.getString(R.string.cdf_collect)).setData(item));
-            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_ARTIST).setName(String.format(context.getString(R.string.cdf_artist), item.getArtist())).setData(item));
-            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_ALBUM).setName(String.format(context.getString(R.string.cdf_album), item.getAlbum())).setData(item));
-            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_DELETE).setName(context.getString(R.string.cdf_delete)).setData(item));
+            String data = JsonUtils.bean2Json(item);
+            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_PLAY_NEXT).setName(context.getString(R.string.cdf_play_next)).setData(data));
+            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_COLLECT).setName(context.getString(R.string.cdf_collect)).setData(data));
+            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_ARTIST).setName(String.format(context.getString(R.string.cdf_artist), item.getArtist())).setData(data));
+            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_ALBUM).setName(String.format(context.getString(R.string.cdf_album), item.getAlbum())).setData(data));
+            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_DELETE).setName(context.getString(R.string.cdf_delete)).setData(data));
 
             CommonDialogFragment dialog = CommonDialogFragment.of(String.format(format, item.getTitle()), items);
             dialog.show(this.activity.getSupportFragmentManager(), "1");

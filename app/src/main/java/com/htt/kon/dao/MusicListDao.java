@@ -5,7 +5,6 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import com.htt.kon.bean.Music;
 import com.htt.kon.bean.MusicList;
 
 import java.util.List;
@@ -17,8 +16,12 @@ import java.util.List;
 @Dao
 public interface MusicListDao {
 
+
     @Insert
-    void insert(MusicList... musics);
+    void insert(List<MusicList> musics);
+
+    @Insert
+    void insert(MusicList musics);
 
     @Delete
     void delete(MusicList... musics);
@@ -28,4 +31,7 @@ public interface MusicListDao {
 
     @Query("SELECT * FROM MUSIC_LIST where DEL_FLAG = 2")
     List<MusicList> list();
+
+    @Query("SELECT * FROM MUSIC_LIST where id = :id")
+    MusicList selectByKey(long id);
 }

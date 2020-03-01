@@ -31,13 +31,8 @@ import lombok.Setter;
  * @date 2020/02/05 17:45
  */
 public class CommonDialogFragment extends BaseDialogFragment {
-    private static final String B_K_FLAG = "flag";
-
-    private static final String B_K_SINGLE_MUSIC_JSON = "musicJson";
-
-    private static final String B_K_ABD_NAME = "abdValue";
-    private static final String B_K_ABD_MUSICS_JSON = "musicsJson";
-
+    private static final String B_K_TITLE = "title";
+    private static final String B_K_ITEMS = "items";
 
     /**
      * 下一首播放
@@ -105,17 +100,6 @@ public class CommonDialogFragment extends BaseDialogFragment {
     public static final int TAG_MUSIC_LIST_RESTORE = 12;
 
 
-    /**
-     * 专辑页面
-     */
-    private static final String FLAG_ALBUM = "album";
-
-    /**
-     * 文件夹页面
-     */
-    private static final String FLAG_DIR = "dir";
-
-
     public static final SparseArray<CommonDialogItem> FULL_ITEMS = new SparseArray<>();
 
     // 初始化item 列表
@@ -146,10 +130,6 @@ public class CommonDialogFragment extends BaseDialogFragment {
     @Setter
     private OnClickListener onClickListener;
 
-
-    private static final String B_K_TITLE = "title";
-    private static final String B_K_ITEMS = "items";
-
     private CommonDialogFragment() {
     }
 
@@ -161,31 +141,6 @@ public class CommonDialogFragment extends BaseDialogFragment {
         bundle.putString(B_K_ITEMS, JsonUtils.bean2Json(items));
         of.setArguments(bundle);
         return of;
-    }
-
-
-    /**
-     * 专辑页面
-     */
-    public static CommonDialogFragment ofAlbum(String album, String musicsJson) {
-        return ofAbd(FLAG_ALBUM, album, musicsJson);
-    }
-
-    /**
-     * 文件夹页面
-     */
-    public static CommonDialogFragment ofDir(String dir, String musicsJson) {
-        return ofAbd(FLAG_DIR, dir, musicsJson);
-    }
-
-    private static CommonDialogFragment ofAbd(String abd, String name, String musicsJson) {
-        CommonDialogFragment instance = new CommonDialogFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(B_K_FLAG, abd);
-        bundle.putString(B_K_ABD_NAME, name);
-        bundle.putString(B_K_ABD_MUSICS_JSON, musicsJson);
-        instance.setArguments(bundle);
-        return instance;
     }
 
 
@@ -202,23 +157,10 @@ public class CommonDialogFragment extends BaseDialogFragment {
 
 
     private void init() {
-        String flag = getArguments().getString(B_K_FLAG);
-        if (flag != null) {
-            switch (flag) {
-                case FLAG_ALBUM:
-                    this.init4album();
-                    break;
-                case FLAG_DIR:
-                    this.init4dir();
-                    break;
-                default:
-            }
-        } else {
-            this.textViewTitle.setText(getArguments().getString(B_K_TITLE));
-            String string = getArguments().getString(B_K_ITEMS);
-            List<CommonDialogItem> items = JsonUtils.json2List(string, CommonDialogItem.class);
-            this.listView.setAdapter(new CommonDialogAdapter(items));
-        }
+        this.textViewTitle.setText(getArguments().getString(B_K_TITLE));
+        String string = getArguments().getString(B_K_ITEMS);
+        List<CommonDialogItem> items = JsonUtils.json2List(string, CommonDialogItem.class);
+        this.listView.setAdapter(new CommonDialogAdapter(items));
 
         this.listView.setOnItemClickListener((parent, view, position, id) -> {
             // 回调方法
@@ -226,35 +168,6 @@ public class CommonDialogFragment extends BaseDialogFragment {
             Optional.of(this.onClickListener).ifPresent(v -> v.onClick(item));
             dismiss();
         });
-    }
-
-
-    private void init4album() {
-        this.init4abd();
-
-        String album = getArguments().getString(B_K_ABD_NAME);
-        String format = getString(R.string.cdf_dialog_title_album);
-        this.textViewTitle.setText(String.format(format, album));
-    }
-
-    private void init4dir() {
-        this.init4abd();
-
-        String dirName = getArguments().getString(B_K_ABD_NAME);
-        String format = getString(R.string.cdf_dialog_title_dir);
-        this.textViewTitle.setText(String.format(format, dirName));
-    }
-
-    private void init4abd() {
-        assert getArguments() != null;
-        String musicsJson = getArguments().getString(B_K_ABD_MUSICS_JSON);
-        List<Music> musics = JsonUtils.json2List(musicsJson, Music.class);
-
-        List<CommonDialogItem> items = new ArrayList<>();
-        items.add(FULL_ITEMS.get(TAG_PLAY_NEXT).setName(getString(R.string.cdf_play_next)).setData(musics));
-        items.add(FULL_ITEMS.get(TAG_COLLECT).setName(getString(R.string.cdf_collect)).setData(musics));
-        items.add(FULL_ITEMS.get(TAG_DELETE).setName(getString(R.string.cdf_delete)).setData(musics));
-        this.listView.setAdapter(new CommonDialogAdapter(items));
     }
 
 

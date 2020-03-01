@@ -3,13 +3,16 @@ package com.htt.kon.service.database;
 import android.content.Context;
 
 
-import com.htt.kon.bean.Music;
+import androidx.annotation.Nullable;
+
 import com.htt.kon.bean.MusicList;
 import com.htt.kon.dao.AppDatabase;
 import com.htt.kon.dao.MusicDao;
 import com.htt.kon.dao.MusicListDao;
+import com.htt.kon.util.stream.Optional;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -45,6 +48,35 @@ public class MusicListDbService {
         return list;
     }
 
+    public void list(Callback<List<MusicList>> call) {
+        new Thread(() -> {
+            call.on(this.list());
+        }).start();
+    }
+
+    public void insert(MusicList music) {
+        this.musicListDao.insert(music);
+    }
+
+    public void insert(MusicList musicList, @Nullable Callback<MusicList> call) {
+        new Thread(() -> {
+            this.insert(musicList);
+            Optional.of(call).ifPresent(v -> v.on(musicList));
+        }).start();
+    }
+
+
+    public MusicList getById(long id) {
+        return this.musicListDao.selectByKey(id);
+    }
+
+    public void getById(long id, Callback<MusicList> call) {
+        new Thread(() -> {
+            call.on(this.getById(id));
+        }).start();
+
+
+    }
 
     private void putData(List<MusicList> list) {
         if (CollectionUtils.isEmpty(list)) {

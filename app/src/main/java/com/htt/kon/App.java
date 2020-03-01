@@ -10,9 +10,20 @@ import android.os.Build;
 
 import androidx.core.app.NotificationManagerCompat;
 
+import com.htt.kon.bean.Music;
+import com.htt.kon.bean.MusicList;
+import com.htt.kon.constant.MidConstant;
 import com.htt.kon.service.Playlist;
 import com.htt.kon.service.MusicService;
+import com.htt.kon.service.database.Callback;
+import com.htt.kon.service.database.MusicDbService;
+import com.htt.kon.service.database.MusicListDbService;
 import com.htt.kon.util.LogUtils;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * @author su
@@ -30,7 +41,9 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         this.createNotificationChannel();
+        this.createLocalMusicListIfNotExist();
         LogUtils.e("App onCreate.");
+
         app = getApplicationContext();
 
         playlist = Playlist.init(this);
@@ -65,5 +78,21 @@ public class App extends Application {
             NotificationManagerCompat manager = NotificationManagerCompat.from(this);
             manager.createNotificationChannel(channel);
         }
+    }
+
+
+    private void createLocalMusicListIfNotExist() {
+        MusicListDbService service = MusicListDbService.of(this);
+        service.getById(MidConstant.MID_LOCAL_MUSIC, musicList -> {
+            if (service.getById(MidConstant.MID_LOCAL_MUSIC) == null) {
+                MusicList ml = new MusicList();
+                ml.setId(MidConstant.MID_LOCAL_MUSIC);
+                ml.setName(getString(R.string.local_music));
+                ml.setCreateTime(System.currentTimeMillis());
+                ml.setPlayCount(0);
+                ml.setDelFlag(2);
+                service.insert(ml);
+            }
+        });
     }
 }

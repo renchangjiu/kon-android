@@ -22,10 +22,14 @@ import com.htt.kon.activity.LocalMusicActivity;
 import com.htt.kon.activity.MainActivity;
 import com.htt.kon.adapter.list.LocalManagerAdapter;
 import com.htt.kon.bean.CommonDialogItem;
+import com.htt.kon.bean.MusicList;
+import com.htt.kon.constant.MidConstant;
 import com.htt.kon.dialog.CommonDialogFragment;
 import com.htt.kon.dialog.OptionDialog;
+import com.htt.kon.service.database.Callback;
 import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.service.database.MusicListDbService;
+import com.htt.kon.util.IdWorker;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.TextWatcherWrapper;
 import com.htt.kon.util.requests.Requests;
@@ -41,7 +45,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.Response;
 
 /**
@@ -53,8 +56,6 @@ import okhttp3.Response;
 public class MusicFragment extends Fragment {
 
     private MainActivity activity;
-
-    private MusicDbService musicDbService;
 
     private MusicListDbService musicListDbService;
 
@@ -86,17 +87,9 @@ public class MusicFragment extends Fragment {
     }
 
     private void init() {
-        this.musicDbService = MusicDbService.of(this.activity);
         this.musicListDbService = MusicListDbService.of(this.activity);
 
-        this.listViewSeparateLayout.setText("");
-        new Thread(() -> {
-            int count = this.musicListDbService.list().size() - 1;
-            this.activity.runOnUiThread(() -> {
-                String format = this.activity.getString(R.string.created_music_list);
-                this.listViewSeparateLayout.setText(String.format(format, count));
-            });
-        }).start();
+        this.updateInterface();
 
         this.listView.setAdapter(new LocalManagerAdapter(this.activity));
         this.listView.setOnItemClickListener((parent, view, position, id) -> {
@@ -171,6 +164,7 @@ public class MusicFragment extends Fragment {
         });
     }
 
+
     private void caseCreateMusicList() {
         OptionDialog of = OptionDialog.of(activity)
                 .setChild(LayoutInflater.from(activity).inflate(R.layout.dialog_child_create_music_list, null))
@@ -178,8 +172,19 @@ public class MusicFragment extends Fragment {
                 .disabled(DialogInterface.BUTTON_POSITIVE)
                 .setPositiveButton(getString(R.string.submit), (child) -> {
                     EditText et = child.findViewById(R.id.dccml_editText);
-                    String s = et.getText().toString();
-                    LogUtils.e();
+                    String name = et.getText().toString();
+
+                    MusicList ml = new MusicList();
+                    ml.setId(IdWorker.singleNextId());
+                    ml.setName(name);
+                    ml.setCreateTime(System.currentTimeMillis());
+                    ml.setPlayCount(0);
+                    ml.setDelFlag(2);
+                    musicListDbService.insert(ml, v -> {
+                        // 刷新页面
+                        updateInterface();
+
+                    });
                 })
                 .setNegativeButton(child -> {
                 })
@@ -199,5 +204,14 @@ public class MusicFragment extends Fragment {
         of.show();
     }
 
+    private void updateInterface() {
+        this.musicListDbService.list(v -> {
+            int count = v.size() - 1;
+            this.activity.runOnUiThread(() -> {
+                String format = this.activity.getString(R.string.created_music_list);
+                this.listViewSeparateLayout.setText(String.format(format, count));
+            });
+        });
+    }
 
 }

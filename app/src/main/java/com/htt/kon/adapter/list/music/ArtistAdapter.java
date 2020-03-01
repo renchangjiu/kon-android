@@ -75,10 +75,11 @@ public class ArtistAdapter extends BaseAdapter implements LocalMusicFragmentAdap
             String format = context.getString(R.string.cdf_dialog_title_single);
 
             List<CommonDialogItem> items = new ArrayList<>();
-            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_PLAY_NEXT).setName(context.getString(R.string.cdf_play_next)).setData(musics));
-            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_COLLECT).setName(context.getString(R.string.cdf_collect)).setData(musics));
-            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_SHARE).setName(context.getString(R.string.cdf_share)).setData(musics));
-            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_DELETE).setName(context.getString(R.string.cdf_delete)).setData(musics));
+            String data = JsonUtils.bean2Json(musics);
+            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_PLAY_NEXT).setName(context.getString(R.string.cdf_play_next)).setData(data));
+            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_COLLECT).setName(context.getString(R.string.cdf_collect)).setData(data));
+            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_SHARE).setName(context.getString(R.string.cdf_share)).setData(data));
+            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_DELETE).setName(context.getString(R.string.cdf_delete)).setData(data));
 
             CommonDialogFragment dialog = CommonDialogFragment.of(String.format(format, item.getArtist()), items);
             dialog.show(this.activity.getSupportFragmentManager(), "1");

@@ -18,6 +18,7 @@ import com.htt.kon.service.Playlist;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.stream.Optional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -28,7 +29,7 @@ import lombok.ToString;
  * @author su
  * @date 2020/02/16 14:34
  */
-public class AlbumAdapter extends BaseAdapter  implements LocalMusicFragmentAdapter{
+public class AlbumAdapter extends BaseAdapter implements LocalMusicFragmentAdapter {
 
     private List<ItemData> res;
 
@@ -49,11 +50,12 @@ public class AlbumAdapter extends BaseAdapter  implements LocalMusicFragmentAdap
     public View getView(int position, View convertView, ViewGroup parent) {
         View view;
         ViewHolder holder;
+        Context context = parent.getContext();
         if (convertView != null) {
             view = convertView;
             holder = (ViewHolder) view.getTag();
         } else {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_local_music_album, parent, false);
+            view = LayoutInflater.from(context).inflate(R.layout.list_item_local_music_album, parent, false);
             holder = new ViewHolder();
             holder.imageView = view.findViewById(R.id.lilma_imageView);
             holder.textViewAlbum = view.findViewById(R.id.lilma_textViewAlbum);
@@ -67,7 +69,15 @@ public class AlbumAdapter extends BaseAdapter  implements LocalMusicFragmentAdap
         List<Music> musics = item.getMusics();
         // 右侧图标点击事件
         holder.imageViewOption.setOnClickListener(v -> {
-            CommonDialogFragment dialog = CommonDialogFragment.ofAlbum(item.getArtist(), JsonUtils.bean2Json(musics));
+            String format = context.getString(R.string.cdf_dialog_title_album);
+
+            List<CommonDialogItem> items = new ArrayList<>();
+            String data = JsonUtils.bean2Json(item);
+            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_PLAY_NEXT).setName(context.getString(R.string.cdf_play_next)).setData(data));
+            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_COLLECT).setName(context.getString(R.string.cdf_collect)).setData(data));
+            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_DELETE).setName(context.getString(R.string.cdf_delete)).setData(data));
+            CommonDialogFragment dialog = CommonDialogFragment.of(String.format(format, item.getAlbum()), items);
+
             dialog.show(this.activity.getSupportFragmentManager(), "1");
             dialog.setOnClickListener((CommonDialogItem item1) -> {
                 // 回调方法
