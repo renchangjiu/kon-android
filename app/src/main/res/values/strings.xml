@@ -71,6 +71,7 @@
     <string name="music_list_restore">恢复创建</string>
     <string name="submit">提交</string>
     <string name="enter_musiclist_title">请输入歌单标题</string>
+    <string name="set_as_private_music_list">设置为隐私歌单</string>
 
 
 </resources>

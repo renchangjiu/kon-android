@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:gravity="center"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:gravity="center">
 
     <EditText
             android:id="@+id/dccml_editText"
@@ -11,4 +11,22 @@
             android:hint="@string/enter_musiclist_title"
             android:inputType="text"
             android:maxLines="1" />
-</LinearLayout>
+
+    <CheckBox
+            android:id="@+id/dccml_checkBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/dccml_editText"
+            android:layout_alignStart="@id/dccml_editText"
+            android:text="@string/set_as_private_music_list"
+            android:textSize="12sp" />
+
+    <TextView
+            android:id="@+id/dccml_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/dccml_editText"
+            android:layout_alignParentEnd="true"
+            android:text="0/40"
+            android:textColor="@color/grey" />
+</RelativeLayout>
