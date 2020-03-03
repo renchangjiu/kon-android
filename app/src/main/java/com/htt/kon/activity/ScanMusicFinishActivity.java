@@ -8,8 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.Html;
-import android.text.Spanned;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -44,7 +42,7 @@ import butterknife.ButterKnife;
  */
 public class ScanMusicFinishActivity extends AppCompatActivity {
 
-    private MusicDbService musicDbService;
+    private MusicDbService service;
 
     private static final int HANDLER_WHAT_FINISH = 1;
 
@@ -108,7 +106,7 @@ public class ScanMusicFinishActivity extends AppCompatActivity {
     }
 
     private void init() {
-        this.musicDbService = MusicDbService.of(this);
+        this.service = MusicDbService.of(this);
         this.toolbar.setNavigationOnClickListener(v -> {
             finish();
         });
@@ -150,26 +148,18 @@ public class ScanMusicFinishActivity extends AppCompatActivity {
             // }
 
             List<String> paths = MusicFileSearcher.search(ScanMusicFinishActivity.this);
-            List<Music> oldMusics = musicDbService.list(MidConstant.MID_LOCAL_MUSIC);
+            List<Music> oldMusics = service.list(MidConstant.MID_LOCAL_MUSIC);
             List<String> newPaths = new ArrayList<>();
             for (String path : paths) {
                 if (!this.contains(path, oldMusics)) {
                     newPaths.add(path);
                 }
             }
-            String root = ScanMusicFinishActivity.this.getExternalFilesDir(null).getAbsolutePath();
-            File dir = new File(root + "/image/");
-            if (!dir.exists()) {
-                dir.mkdir();
-            }
             for (String path : newPaths) {
                 if (stopFlag) {
                     break;
                 }
-                Optional<Music> opt = this.convert2music(path, dir.getAbsolutePath());
-                if (opt.isPresent()) {
-                    Music music = opt.get();
-                    musicDbService.insert(music);
+                if (service.insert(path, MidConstant.MID_LOCAL_MUSIC)) {
                     this.sendProcessMsg(path);
                 }
             }
@@ -186,43 +176,6 @@ public class ScanMusicFinishActivity extends AppCompatActivity {
             msg.what = HANDLER_WHAT_PROCESS;
             msg.obj = path;
             handler.sendMessage(msg);
-        }
-
-        /**
-         * 提取出音乐标签数据, 转换成 Music 对象
-         */
-        private Optional<Music> convert2music(String path, String imageRootPath) {
-            try {
-                Mp3Metadata metadata = MusicFileMetadataParser.parse(path);
-                Music music = new Music();
-                music.setId(IdWorker.singleNextId());
-                music.setMid(MidConstant.MID_LOCAL_MUSIC);
-                music.setPath(path);
-                music.setSize(new File(path).length());
-                if (metadata.getImage() != null) {
-                    File imageFile = new File(imageRootPath + "/" + music.getId() + ".png");
-                    FileOutputStream out = new FileOutputStream(imageFile);
-                    out.write(metadata.getImage());
-                    out.flush();
-                    out.close();
-                    music.setImage(imageFile.getAbsolutePath());
-                }
-                music.setTitle(metadata.getTitle());
-                music.setArtist(metadata.getArtist());
-                music.setAlbum(metadata.getAlbum());
-                music.setDuration(metadata.getDuration());
-                music.setBitRate(metadata.getBitRate());
-                music.setCreateTime(System.currentTimeMillis());
-                music.setDelFlag(2);
-
-                if (StringUtils.isEmpty(music.getTitle())) {
-                    return Optional.of(null);
-                }
-                return Optional.of(music);
-            } catch (IOException e) {
-                LogUtils.e(e);
-                return Optional.of(null);
-            }
         }
 
 

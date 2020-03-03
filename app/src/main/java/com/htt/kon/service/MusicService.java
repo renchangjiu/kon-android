@@ -25,6 +25,7 @@ import lombok.Setter;
 /**
  * music play service.
  * 使用 OnPlayStateChangeListener 回调接口与 BaseActivity 通信, 使用 PlayStateChangeReceiver 广播与各组件通信
+ * FIXME: OnPlayStateChangeListener 或存在重复回调的情况
  *
  * @author su
  * @date 2020/02/06 20:11
@@ -308,6 +309,7 @@ public class MusicService extends Service {
      * 停止正在播放的歌曲(如果有), 然后从头播放指定位置的歌曲
      */
     public void play(int position) {
+        int oldIndex = this.playlist.getIndex();
         this.playlist.setIndex(position);
         Music curMusic = this.playlist.getCurMusic();
         try {
@@ -322,7 +324,11 @@ public class MusicService extends Service {
 
                 // 发出广播
                 PlayStateChangeReceiver.send(this, PlayStateChangeReceiver.Flag.PLAY);
-                this.onPlayStateChangeListener.onChange(OnPlayStateChangeListener.FLAG_1);
+                if (oldIndex == position) {
+                    this.onPlayStateChangeListener.onChange(OnPlayStateChangeListener.FLAG_1);
+                } else {
+                    this.onPlayStateChangeListener.onChange(OnPlayStateChangeListener.FLAG_2);
+                }
             }
         } catch (IOException e) {
             LogUtils.e(e);

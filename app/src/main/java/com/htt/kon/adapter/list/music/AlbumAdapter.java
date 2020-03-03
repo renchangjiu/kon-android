@@ -1,6 +1,7 @@
 package com.htt.kon.adapter.list.music;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import com.htt.kon.dialog.CommonDialogFragment;
 import com.htt.kon.service.Playlist;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.stream.Optional;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +88,14 @@ public class AlbumAdapter extends BaseAdapter implements LocalMusicFragmentAdapt
             });
         });
 
+        // 专辑图片使用专辑内第一首歌曲的封面
+        String albumImage = musics.get(0).getImage();
+        if (StringUtils.isNotEmpty(albumImage)) {
+            holder.imageView.setImageBitmap(BitmapFactory.decodeFile(albumImage));
+        } else {
+            holder.imageView.setImageResource(R.drawable.list_item_album_def);
+        }
+
         if (this.playlist.isNotEmpty() && musics.contains(this.playlist.getCurMusic())) {
             holder.imageViewOption.setImageResource(R.drawable.list_item_play);
         } else {
@@ -113,7 +124,7 @@ public class AlbumAdapter extends BaseAdapter implements LocalMusicFragmentAdapt
 
     private static class ViewHolder {
         /**
-         * TODO: 专辑封面图片考虑爬取网易云音乐数据
+         * 专辑图片
          */
         private ImageView imageView;
         private TextView textViewAlbum;

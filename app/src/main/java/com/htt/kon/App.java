@@ -18,11 +18,17 @@ import com.htt.kon.service.MusicService;
 import com.htt.kon.service.database.Callback;
 import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.service.database.MusicListDbService;
+import com.htt.kon.util.AppPathManger;
 import com.htt.kon.util.LogUtils;
+import com.htt.kon.util.SpUtils;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -40,8 +46,10 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        AppPathManger.initPaths(this);
         this.createNotificationChannel();
         this.createLocalMusicListIfNotExist();
+        this.whenInstall();
         LogUtils.e("App onCreate.");
 
         app = getApplicationContext();
@@ -94,5 +102,34 @@ public class App extends Application {
                 service.insert(ml);
             }
         });
+    }
+
+    /**
+     * 安装应用后做些操作
+     */
+    private void whenInstall() {
+        new Thread(() -> {
+            try {
+                String key = "INSTALL_FLAG";
+                String builtInMusic = "放課後ティータイム - Listen!!.mp3";
+                boolean installFlag = SpUtils.getBoolean(this, key, true);
+                if (!installFlag) {
+                    return;
+                }
+                InputStream in = getAssets().open(builtInMusic);
+                String path = AppPathManger.pathBuiltInMusic + builtInMusic;
+                FileOutputStream out = new FileOutputStream(path);
+                IOUtils.copy(in, out);
+                in.close();
+                out.close();
+
+                MusicDbService service = MusicDbService.of(this);
+
+                service.insert(path, MidConstant.MID_LOCAL_MUSIC);
+                SpUtils.putBoolean(this, key, false);
+            } catch (IOException e) {
+                LogUtils.e(e);
+            }
+        }).start();
     }
 }

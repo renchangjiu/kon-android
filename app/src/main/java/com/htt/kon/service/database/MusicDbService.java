@@ -3,26 +3,26 @@ package com.htt.kon.service.database;
 import android.content.Context;
 
 import com.htt.kon.R;
+import com.htt.kon.bean.Mp3Metadata;
 import com.htt.kon.bean.Music;
-import com.htt.kon.bean.MusicList;
 import com.htt.kon.dao.AppDatabase;
 import com.htt.kon.dao.MusicDao;
 import com.htt.kon.dao.MusicListDao;
+import com.htt.kon.util.AppPathManger;
+import com.htt.kon.util.IdWorker;
+import com.htt.kon.util.LogUtils;
+import com.htt.kon.util.MusicFileMetadataParser;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import kotlin.jvm.Throws;
-import okhttp3.Call;
-import okhttp3.Response;
 
 /**
  * @author su
@@ -84,6 +84,48 @@ public class MusicDbService {
             this.setDataIfEmpty(music);
         }
         this.musicDao.insert(list);
+    }
+
+    /**
+     * 解析指定路径的音乐文件, 然后插入数据库
+     *
+     * @param path path
+     * @param mid  music list id
+     * @return success or failed
+     */
+    public boolean insert(String path, long mid) {
+        try {
+            Mp3Metadata metadata = MusicFileMetadataParser.parse(path);
+            Music music = new Music();
+            music.setId(IdWorker.singleNextId());
+            music.setMid(mid);
+            music.setPath(path);
+            music.setSize(new File(path).length());
+            if (metadata.getImage() != null) {
+                File imageFile = new File(AppPathManger.pathCoverImage + music.getId() + ".png");
+                FileOutputStream out = new FileOutputStream(imageFile);
+                out.write(metadata.getImage());
+                out.flush();
+                out.close();
+                music.setImage(imageFile.getAbsolutePath());
+            }
+            music.setTitle(metadata.getTitle());
+            music.setArtist(metadata.getArtist());
+            music.setAlbum(metadata.getAlbum());
+            music.setDuration(metadata.getDuration());
+            music.setBitRate(metadata.getBitRate());
+            music.setCreateTime(System.currentTimeMillis());
+            music.setDelFlag(2);
+            if (StringUtils.isEmpty(music.getTitle())) {
+                return false;
+            } else {
+                this.insert(music);
+                return true;
+            }
+        } catch (IOException e) {
+            LogUtils.e(e);
+            return false;
+        }
     }
 
     public Music getById(long id) {

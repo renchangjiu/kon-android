@@ -254,8 +254,9 @@ public class BaseActivity extends AppCompatActivity {
      * 处理播放列表弹出框的所有事件
      */
     private class PlayListDialogFragmentOnClickListener implements PlayListDialogFragment.OnClickListener {
+
         /**
-         * 当播放列表的item 被点击时回调
+         * 当点击播放列表的某一项时
          *
          * @param position position
          */

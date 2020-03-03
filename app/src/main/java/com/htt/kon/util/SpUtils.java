@@ -9,7 +9,7 @@ import android.content.SharedPreferences;
  * @author su
  * @date 2020/01/23 20:22
  */
-public class SharedPreferencesUtils {
+public class SpUtils {
 
     /**
      * SharedPreferences file key
