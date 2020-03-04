@@ -8,9 +8,10 @@
     <ImageView
             android:id="@+id/lilma_imageView"
             android:layout_width="49dp"
-            android:scaleType="fitStart"
             android:layout_height="49dp"
             android:layout_marginStart="5dp"
+            android:contentDescription="@string/empty_str"
+            android:scaleType="fitStart"
             android:src="@drawable/list_item_album_def" />
 
     <LinearLayout
@@ -53,6 +54,7 @@
             android:layout_height="match_parent"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
+            android:contentDescription="@string/empty_str"
             android:paddingStart="10dp"
             android:paddingEnd="20dp"
             android:src="@drawable/list_item_option" />

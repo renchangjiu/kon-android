@@ -12,7 +12,8 @@ import androidx.annotation.Nullable;
 import com.htt.kon.R;
 import com.htt.kon.adapter.list.music.ArtistAdapter;
 import com.htt.kon.bean.Music;
-import com.htt.kon.constant.MidConstant;
+
+import com.htt.kon.constant.CommonConstant;
 import com.htt.kon.dialog.CommonDialogFragment;
 import com.htt.kon.util.GenericUtils;
 import com.htt.kon.util.JsonUtils;
@@ -49,7 +50,7 @@ public class ArtistPagerFragment extends BaseLocalMusicPagerFragment {
     private void initListView() {
         new Thread(() -> {
             // 按歌手分类
-            List<Music> list = super.musicDbService.list(MidConstant.MID_LOCAL_MUSIC);
+            List<Music> list = super.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC);
             Map<String, List<Music>> map = super.musicDbService.listGroupByArtist(list);
 
             // 封装adapter 参数

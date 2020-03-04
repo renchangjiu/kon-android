@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.htt.kon.R;
 import com.htt.kon.activity.MainActivity;
-import com.htt.kon.constant.MidConstant;
+import com.htt.kon.constant.CommonConstant;
 import com.htt.kon.service.database.MusicDbService;
 
 import java.util.ArrayList;
@@ -67,7 +67,7 @@ public class LocalManagerAdapter extends BaseAdapter {
         item1.imageId = R.drawable.music_icon_local;
         item1.itemTitle = this.activity.getString(R.string.local_music);
         new Thread(() -> {
-            item1.count = this.musicDbService.list(MidConstant.MID_LOCAL_MUSIC).size();
+            item1.count = this.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC).size();
             this.activity.runOnUiThread(this::notifyDataSetChanged);
         }).start();
 

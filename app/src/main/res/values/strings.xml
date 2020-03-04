@@ -73,5 +73,8 @@
     <string name="enter_musiclist_title">请输入歌单标题</string>
     <string name="set_as_private_music_list">设置为隐私歌单</string>
 
+    <string name="music_list_name">歌单名</string>
+    <string name="music_list_music_count">%d首</string>
+
 
 </resources>

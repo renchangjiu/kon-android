@@ -14,9 +14,9 @@ import com.htt.kon.adapter.list.music.AlbumAdapter;
 import com.htt.kon.adapter.list.music.DirAdapter;
 import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
-import com.htt.kon.constant.MidConstant;
+import com.htt.kon.constant.CommonConstant;
+
 import com.htt.kon.dialog.CommonDialogFragment;
-import com.htt.kon.util.GenericUtils;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.LogUtils;
 
@@ -50,7 +50,7 @@ public class DirPagerFragment extends BaseLocalMusicPagerFragment {
 
     private void initListView() {
         new Thread(() -> {
-            List<Music> list = super.musicDbService.list(MidConstant.MID_LOCAL_MUSIC);
+            List<Music> list = super.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC);
             // 按文件夹分类
             Map<String, List<Music>> map = super.musicDbService.listGroupByDir(list);
 

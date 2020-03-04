@@ -13,7 +13,7 @@ import com.htt.kon.R;
 import com.htt.kon.adapter.list.music.AlbumAdapter;
 import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
-import com.htt.kon.constant.MidConstant;
+import com.htt.kon.constant.CommonConstant;
 import com.htt.kon.dialog.CommonDialogFragment;
 import com.htt.kon.util.GenericUtils;
 import com.htt.kon.util.JsonUtils;
@@ -49,7 +49,7 @@ public class AlbumPagerFragment extends BaseLocalMusicPagerFragment {
 
     private void initListView() {
         new Thread(() -> {
-            List<Music> list = super.musicDbService.list(MidConstant.MID_LOCAL_MUSIC);
+            List<Music> list = super.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC);
             // 按歌手分类
             Map<String, List<Music>> map = super.musicDbService.listGroupByAlbum(list);
 

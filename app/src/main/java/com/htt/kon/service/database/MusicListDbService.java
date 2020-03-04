@@ -5,6 +5,7 @@ import android.content.Context;
 
 import androidx.annotation.Nullable;
 
+import com.htt.kon.bean.Music;
 import com.htt.kon.bean.MusicList;
 import com.htt.kon.dao.AppDatabase;
 import com.htt.kon.dao.MusicDao;
@@ -25,6 +26,7 @@ import java.util.List;
 public class MusicListDbService {
 
     private MusicListDao musicListDao;
+
     private MusicDao musicDao;
 
     private static volatile MusicListDbService instance = null;
@@ -67,7 +69,9 @@ public class MusicListDbService {
 
 
     public MusicList getById(long id) {
-        return this.musicListDao.selectByKey(id);
+        MusicList ret = this.musicListDao.selectByKey(id);
+        this.putData(ret);
+        return ret;
     }
 
     public void getById(long id, Callback<MusicList> call) {
@@ -91,6 +95,8 @@ public class MusicListDbService {
         if (musicList == null) {
             return;
         }
+        List<Music> list = this.musicDao.list(musicList.getId());
+        musicList.setMusics(list);
     }
 
 }

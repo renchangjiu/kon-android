@@ -21,9 +21,10 @@ import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
 import com.htt.kon.activity.MainActivity;
 import com.htt.kon.adapter.list.LocalManagerAdapter;
+import com.htt.kon.adapter.list.MusicListAdapter;
 import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.MusicList;
-import com.htt.kon.constant.MidConstant;
+
 import com.htt.kon.dialog.CommonDialogFragment;
 import com.htt.kon.dialog.OptionDialog;
 import com.htt.kon.service.database.Callback;
@@ -32,6 +33,7 @@ import com.htt.kon.service.database.MusicListDbService;
 import com.htt.kon.util.IdWorker;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.TextWatcherWrapper;
+import com.htt.kon.util.UiUtils;
 import com.htt.kon.util.requests.Requests;
 import com.htt.kon.view.ListViewSeparateLayout;
 
@@ -67,6 +69,9 @@ public class MusicFragment extends Fragment {
     @BindView(R.id.fm_listViewManager)
     ListView listView;
 
+    @BindView(R.id.fm_listViewMusicList)
+    ListView listViewMusicList;
+
     @BindView(R.id.fm_listViewSeparateLayout)
     ListViewSeparateLayout listViewSeparateLayout;
 
@@ -89,8 +94,6 @@ public class MusicFragment extends Fragment {
     private void init() {
         this.musicListDbService = MusicListDbService.of(this.activity);
 
-        this.updateInterface();
-
         this.listView.setAdapter(new LocalManagerAdapter(this.activity));
         this.listView.setOnItemClickListener((parent, view, position, id) -> {
             switch (position) {
@@ -112,6 +115,8 @@ public class MusicFragment extends Fragment {
                 default:
             }
         });
+
+        this.listViewMusicList.setAdapter(new MusicListAdapter(this.activity));
 
         // 分隔布局的点击事件
         this.listViewSeparateLayout.setOnClickListener(new ListViewSeparateLayout.OnClickListener() {
@@ -162,6 +167,7 @@ public class MusicFragment extends Fragment {
                 this.swipeRefreshLayout.setRefreshing(false);
             }).start();
         });
+        this.updateInterface();
     }
 
 
@@ -183,7 +189,7 @@ public class MusicFragment extends Fragment {
                     musicListDbService.insert(ml, v -> {
                         // 刷新页面
                         updateInterface();
-
+                        UiUtils.getListViewAdapter(this.listViewMusicList, MusicListAdapter.class).initRes();
                     });
                 })
                 .setNegativeButton(child -> {

@@ -12,7 +12,8 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.htt.kon.bean.Music;
 import com.htt.kon.bean.MusicList;
-import com.htt.kon.constant.MidConstant;
+import com.htt.kon.constant.CommonConstant;
+
 import com.htt.kon.service.Playlist;
 import com.htt.kon.service.MusicService;
 import com.htt.kon.service.database.Callback;
@@ -91,10 +92,10 @@ public class App extends Application {
 
     private void createLocalMusicListIfNotExist() {
         MusicListDbService service = MusicListDbService.of(this);
-        service.getById(MidConstant.MID_LOCAL_MUSIC, musicList -> {
-            if (service.getById(MidConstant.MID_LOCAL_MUSIC) == null) {
+        service.getById(CommonConstant.MID_LOCAL_MUSIC, musicList -> {
+            if (service.getById(CommonConstant.MID_LOCAL_MUSIC) == null) {
                 MusicList ml = new MusicList();
-                ml.setId(MidConstant.MID_LOCAL_MUSIC);
+                ml.setId(CommonConstant.MID_LOCAL_MUSIC);
                 ml.setName(getString(R.string.local_music));
                 ml.setCreateTime(System.currentTimeMillis());
                 ml.setPlayCount(0);
@@ -125,7 +126,7 @@ public class App extends Application {
 
                 MusicDbService service = MusicDbService.of(this);
 
-                service.insert(path, MidConstant.MID_LOCAL_MUSIC);
+                service.insert(path, CommonConstant.MID_LOCAL_MUSIC);
                 SpUtils.putBoolean(this, key, false);
             } catch (IOException e) {
                 LogUtils.e(e);

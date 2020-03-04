@@ -14,27 +14,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.htt.kon.R;
-import com.htt.kon.bean.Mp3Metadata;
 import com.htt.kon.bean.Music;
-import com.htt.kon.constant.MidConstant;
+import com.htt.kon.constant.CommonConstant;
 import com.htt.kon.service.database.MusicDbService;
-import com.htt.kon.util.IdWorker;
-import com.htt.kon.util.LogUtils;
-import com.htt.kon.util.MusicFileMetadataParser;
 import com.htt.kon.util.MusicFileSearcher;
 import com.htt.kon.util.UiUtils;
-import com.htt.kon.util.stream.Optional;
 
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
 
 /**
  * @author su
@@ -148,7 +139,7 @@ public class ScanMusicFinishActivity extends AppCompatActivity {
             // }
 
             List<String> paths = MusicFileSearcher.search(ScanMusicFinishActivity.this);
-            List<Music> oldMusics = service.list(MidConstant.MID_LOCAL_MUSIC);
+            List<Music> oldMusics = service.list(CommonConstant.MID_LOCAL_MUSIC);
             List<String> newPaths = new ArrayList<>();
             for (String path : paths) {
                 if (!this.contains(path, oldMusics)) {
@@ -159,7 +150,7 @@ public class ScanMusicFinishActivity extends AppCompatActivity {
                 if (stopFlag) {
                     break;
                 }
-                if (service.insert(path, MidConstant.MID_LOCAL_MUSIC)) {
+                if (service.insert(path, CommonConstant.MID_LOCAL_MUSIC)) {
                     this.sendProcessMsg(path);
                 }
             }

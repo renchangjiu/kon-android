@@ -30,7 +30,14 @@
                     android:id="@+id/fm_listViewSeparateLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    htt:text="创建的歌单(99)" />
+                    htt:text="@string/created_music_list" />
+
+            <ListView
+                    android:id="@+id/fm_listViewMusicList"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:divider="@drawable/divider_list"
+                    android:dividerHeight="1dp" />
         </LinearLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
