@@ -1,13 +1,16 @@
 package com.htt.kon.util;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.HeaderViewListAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.core.content.ContextCompat;
 
@@ -58,7 +61,7 @@ public class UiUtils {
      * @param listView listView
      * @param t        Adapter.class
      */
-    public static <T> T getListViewAdapter(ListView listView, Class<T> t) {
+    public static <T> T getAdapter(ListView listView, Class<T> t) {
         ListAdapter adapter = listView.getAdapter();
         if (adapter instanceof HeaderViewListAdapter) {
             HeaderViewListAdapter ad = (HeaderViewListAdapter) listView.getAdapter();
@@ -67,5 +70,19 @@ public class UiUtils {
             return (T) adapter;
         }
     }
+
+    /**
+     * 设置 TextView 的跑马灯效果(使用xml设置可能无效)
+     */
+    public static void setTextMarquee(@NonNull TextView... textViews) {
+        for (TextView tv : textViews) {
+            tv.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+            tv.setSingleLine(true);
+            tv.setSelected(true);
+            tv.setFocusable(true);
+            tv.setFocusableInTouchMode(true);
+        }
+    }
+
 
 }

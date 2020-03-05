@@ -14,12 +14,10 @@ import androidx.annotation.Nullable;
 import com.htt.kon.R;
 import com.htt.kon.adapter.list.dialog.CommonDialogAdapter;
 import com.htt.kon.bean.CommonDialogItem;
-import com.htt.kon.bean.Music;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.UiUtils;
 import com.htt.kon.util.stream.Optional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -164,7 +162,7 @@ public class CommonDialogFragment extends BaseDialogFragment {
 
         this.listView.setOnItemClickListener((parent, view, position, id) -> {
             // 回调方法
-            CommonDialogItem item = UiUtils.getListViewAdapter(this.listView, CommonDialogAdapter.class).getItem(position);
+            CommonDialogItem item = UiUtils.getAdapter(this.listView, CommonDialogAdapter.class).getItem(position);
             Optional.of(this.onClickListener).ifPresent(v -> v.onClick(item));
             dismiss();
         });

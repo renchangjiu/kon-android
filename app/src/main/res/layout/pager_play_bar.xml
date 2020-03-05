@@ -15,6 +15,7 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_marginStart="5dp"
+            android:contentDescription="@string/empty_str"
             android:src="@drawable/playbar_cover_image_default" />
 
     <LinearLayout
@@ -31,9 +32,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="5dp"
-                android:ellipsize="end"
-                android:maxEms="10"
-                android:maxLines="1"
                 android:text="@string/music_title"
                 android:textSize="13sp" />
 
@@ -42,10 +40,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:ellipsize="end"
                 android:gravity="center_vertical"
-                android:maxEms="10"
-                android:maxLines="1"
                 android:text="@string/artist"
                 android:textSize="10sp" />
     </LinearLayout>

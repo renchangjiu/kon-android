@@ -3,6 +3,8 @@ package com.htt.kon.adapter.pager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.text.TextUtils;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import com.htt.kon.activity.MusicPlayActivity;
 import com.htt.kon.bean.Music;
 import com.htt.kon.service.Playlist;
 import com.htt.kon.util.LogUtils;
+import com.htt.kon.util.UiUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -58,6 +61,7 @@ public class PlayBarAdapter extends PagerAdapter {
             holder.imageViewCover = view.findViewById(R.id.lipb_imageViewCover);
             holder.textViewTitle = view.findViewById(R.id.lipb_textViewTitle);
             holder.textViewArtist = view.findViewById(R.id.lipb_textViewArtist);
+            UiUtils.setTextMarquee(holder.textViewArtist, holder.textViewTitle);
             view.setTag(holder);
         }
         Music music = this.playlist.getMusic(position);
@@ -68,7 +72,6 @@ public class PlayBarAdapter extends PagerAdapter {
         }
         holder.textViewTitle.setText(music.getTitle());
         holder.textViewArtist.setText(music.getArtist());
-
         view.setOnClickListener(v -> {
             context.startActivity(new Intent(context, MusicPlayActivity.class));
         });
@@ -76,6 +79,7 @@ public class PlayBarAdapter extends PagerAdapter {
         container.addView(view);
         return view;
     }
+
 
     /**
      * 解决ViewPager 不刷新问题, 此方法非最优解, 另有更优解, 见: https://www.jianshu.com/p/266861496508

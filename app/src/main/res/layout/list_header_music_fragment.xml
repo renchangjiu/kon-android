@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:htt="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/lhmf_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <ListView
+            android:id="@+id/lhmf_listView"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:divider="@drawable/divider_list"
+            android:dividerHeight="1dp"
+            android:scrollbars="none"
+            tools:listitem="@layout/list_item_local_manager" />
+
+    <com.htt.kon.view.ListViewSeparateLayout
+            android:id="@+id/lhmf_separateLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            htt:text="@string/created_music_list" />
+</LinearLayout>

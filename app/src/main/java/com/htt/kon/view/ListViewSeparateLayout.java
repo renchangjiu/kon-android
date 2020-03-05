@@ -28,8 +28,8 @@ public class ListViewSeparateLayout extends LinearLayout {
 
     private ImageView imageViewSetting;
 
-    private static final String ARROW_DIRECTION_DOWN = "down";
-    private static final String ARROW_DIRECTION_RIGHT = "right";
+    public static final String ARROW_DIRECTION_DOWN = "down";
+    public static final String ARROW_DIRECTION_RIGHT = "right";
 
     private String curArrowDirection = ARROW_DIRECTION_DOWN;
 
@@ -70,7 +70,7 @@ public class ListViewSeparateLayout extends LinearLayout {
     public void setOnClickListener(OnClickListener listener) {
         View.OnClickListener cl = v -> {
             changeArrayDirection();
-            listener.onCommonClick(v);
+            listener.onCommonClick(this.curArrowDirection);
         };
         this.imageView.setOnClickListener(cl);
         this.textView.setOnClickListener(cl);
@@ -98,8 +98,10 @@ public class ListViewSeparateLayout extends LinearLayout {
     public interface OnClickListener {
         /**
          * 点击了除设置按钮外的部分
+         *
+         * @param arrowDirection 点击之后的箭头方向
          */
-        void onCommonClick(View v);
+        void onCommonClick(String arrowDirection);
 
         /**
          * 点击了设置按钮

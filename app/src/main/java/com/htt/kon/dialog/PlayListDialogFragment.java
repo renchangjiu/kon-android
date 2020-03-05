@@ -92,7 +92,7 @@ public class PlayListDialogFragment extends BaseDialogFragment {
             public void onDeleteBtnClick(int position) {
                 assert onClickListener != null;
                 onClickListener.onDeleteBtnClick(position);
-                PlaylistDialogAdapter adapter = UiUtils.getListViewAdapter(listView, PlaylistDialogAdapter.class);
+                PlaylistDialogAdapter adapter = UiUtils.getAdapter(listView, PlaylistDialogAdapter.class);
                 adapter.notifyDataSetChanged();
                 updateModeInterface();
                 if (adapter.getCount() == 0) {
@@ -105,7 +105,7 @@ public class PlayListDialogFragment extends BaseDialogFragment {
             assert onClickListener != null;
             onClickListener.onItemClick(position);
             // 更新被点击项图标
-            UiUtils.getListViewAdapter(this.listView, PlaylistDialogAdapter.class).notifyDataSetChanged();
+            UiUtils.getAdapter(this.listView, PlaylistDialogAdapter.class).notifyDataSetChanged();
         });
 
         // 获取下一个播放模式并设置界面
@@ -127,7 +127,7 @@ public class PlayListDialogFragment extends BaseDialogFragment {
             of.setPositiveButton(getString(R.string.clear), (child) -> {
                 assert onClickListener != null;
                 onClickListener.onClearBtnClick();
-                UiUtils.getListViewAdapter(this.listView, PlaylistDialogAdapter.class).notifyDataSetChanged();
+                UiUtils.getAdapter(this.listView, PlaylistDialogAdapter.class).notifyDataSetChanged();
                 dismiss();
             });
             of.setNegativeButton(child -> {
@@ -151,7 +151,7 @@ public class PlayListDialogFragment extends BaseDialogFragment {
 
     public void updateAdapterInterface() {
         // 更新当前播放项的图标
-        PlaylistDialogAdapter adapter = UiUtils.getListViewAdapter(this.listView, PlaylistDialogAdapter.class);
+        PlaylistDialogAdapter adapter = UiUtils.getAdapter(this.listView, PlaylistDialogAdapter.class);
         adapter.notifyDataSetChanged();
     }
 

@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -27,27 +28,19 @@ import com.htt.kon.bean.MusicList;
 
 import com.htt.kon.dialog.CommonDialogFragment;
 import com.htt.kon.dialog.OptionDialog;
-import com.htt.kon.service.database.Callback;
-import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.service.database.MusicListDbService;
 import com.htt.kon.util.IdWorker;
-import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.TextWatcherWrapper;
 import com.htt.kon.util.UiUtils;
-import com.htt.kon.util.requests.Requests;
 import com.htt.kon.view.ListViewSeparateLayout;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.Call;
-import okhttp3.Response;
 
 /**
  * MainActivity 下的MusicFragment
@@ -61,19 +54,16 @@ public class MusicFragment extends Fragment {
 
     private MusicListDbService musicListDbService;
 
-
     @BindView(R.id.fm_swipeRefreshLayout)
     SwipeRefreshLayout swipeRefreshLayout;
-
-
-    @BindView(R.id.fm_listViewManager)
-    ListView listView;
 
     @BindView(R.id.fm_listViewMusicList)
     ListView listViewMusicList;
 
-    @BindView(R.id.fm_listViewSeparateLayout)
-    ListViewSeparateLayout listViewSeparateLayout;
+    private MusicListAdapter adapter;
+
+    private ListViewSeparateLayout separateLayout;
+
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -94,8 +84,27 @@ public class MusicFragment extends Fragment {
     private void init() {
         this.musicListDbService = MusicListDbService.of(this.activity);
 
-        this.listView.setAdapter(new LocalManagerAdapter(this.activity));
-        this.listView.setOnItemClickListener((parent, view, position, id) -> {
+        // 解决 ListView 与 SwipeRefreshLayout 滑动冲突的问题
+        this.listViewMusicList.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                swipeRefreshLayout.setEnabled(firstVisibleItem == 0);
+            }
+        });
+        View header = LayoutInflater.from(this.activity).inflate(R.layout.list_header_music_fragment, this.listViewMusicList, false);
+        ListView headerListView = header.findViewById(R.id.lhmf_listView);
+        this.separateLayout = header.findViewById(R.id.lhmf_separateLayout);
+
+        this.listViewMusicList.addHeaderView(header);
+        headerListView.setAdapter(new LocalManagerAdapter(this.activity));
+        this.adapter = new MusicListAdapter(this.activity);
+        this.listViewMusicList.setAdapter(adapter);
+
+        headerListView.setOnItemClickListener((parent, view, position, id) -> {
             switch (position) {
                 case 0:
                     startActivity(new Intent(activity, LocalMusicActivity.class));
@@ -116,12 +125,13 @@ public class MusicFragment extends Fragment {
             }
         });
 
-        this.listViewMusicList.setAdapter(new MusicListAdapter(this.activity));
 
         // 分隔布局的点击事件
-        this.listViewSeparateLayout.setOnClickListener(new ListViewSeparateLayout.OnClickListener() {
+        this.separateLayout.setOnClickListener(new ListViewSeparateLayout.OnClickListener() {
             @Override
-            public void onCommonClick(View v) {
+            public void onCommonClick(String ad) {
+                // 收起或展开歌单列表
+                listViewMusicList.setAdapter(ad.equals(ListViewSeparateLayout.ARROW_DIRECTION_DOWN) ? adapter : null);
             }
 
             @Override
@@ -189,7 +199,7 @@ public class MusicFragment extends Fragment {
                     musicListDbService.insert(ml, v -> {
                         // 刷新页面
                         updateInterface();
-                        UiUtils.getListViewAdapter(this.listViewMusicList, MusicListAdapter.class).initRes();
+                        UiUtils.getAdapter(this.listViewMusicList, MusicListAdapter.class).initRes();
                     });
                 })
                 .setNegativeButton(child -> {
@@ -215,7 +225,7 @@ public class MusicFragment extends Fragment {
             int count = v.size() - 1;
             this.activity.runOnUiThread(() -> {
                 String format = this.activity.getString(R.string.created_music_list);
-                this.listViewSeparateLayout.setText(String.format(format, count));
+                this.separateLayout.setText(String.format(format, count));
             });
         });
     }

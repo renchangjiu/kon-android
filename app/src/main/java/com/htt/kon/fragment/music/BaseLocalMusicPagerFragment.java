@@ -72,7 +72,7 @@ public abstract class BaseLocalMusicPagerFragment extends Fragment {
             case PLAY:
             case CLEAR:
             case REMOVE:
-                UiUtils.getListViewAdapter(this.listView, BaseAdapter.class).notifyDataSetChanged();
+                UiUtils.getAdapter(this.listView, BaseAdapter.class).notifyDataSetChanged();
                 break;
             default:
         }

@@ -108,7 +108,7 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
             case PLAY:
             case CLEAR:
             case REMOVE:
-                UiUtils.getListViewAdapter(this.listView, SingleAdapter.class).notifyDataSetChanged();
+                UiUtils.getAdapter(this.listView, SingleAdapter.class).notifyDataSetChanged();
                 break;
             default:
         }
@@ -126,7 +126,7 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
             this.activity.runOnUiThread(() -> {
                 this.activity.replacePlaylist(list, index);
                 // 通知adapter 更改界面
-                UiUtils.getListViewAdapter(this.listView, SingleAdapter.class).notifyDataSetChanged();
+                UiUtils.getAdapter(this.listView, SingleAdapter.class).notifyDataSetChanged();
             });
         }).start();
     }
