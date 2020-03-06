@@ -10,7 +10,8 @@
             android:layout_height="wrap_content"
             android:hint="@string/enter_musiclist_title"
             android:inputType="text"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:theme="@style/EditText" />
 
     <CheckBox
             android:id="@+id/dccml_checkBox"

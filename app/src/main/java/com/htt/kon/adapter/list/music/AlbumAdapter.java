@@ -14,7 +14,7 @@ import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
 import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
-import com.htt.kon.dialog.CommonDialogFragment;
+import com.htt.kon.dialog.CommonDialog;
 import com.htt.kon.service.Playlist;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.stream.Optional;
@@ -76,10 +76,10 @@ public class AlbumAdapter extends BaseAdapter implements LocalMusicFragmentAdapt
 
             List<CommonDialogItem> items = new ArrayList<>();
             String data = JsonUtils.bean2Json(item);
-            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_PLAY_NEXT).setName(context.getString(R.string.cdf_play_next)).setData(data));
-            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_COLLECT).setName(context.getString(R.string.cdf_collect)).setData(data));
-            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_DELETE).setName(context.getString(R.string.cdf_delete)).setData(data));
-            CommonDialogFragment dialog = CommonDialogFragment.of(String.format(format, item.getAlbum()), items);
+            items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_PLAY_NEXT).setName(context.getString(R.string.cdf_play_next)).setData(data));
+            items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_COLLECT).setName(context.getString(R.string.cdf_collect)).setData(data));
+            items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_DELETE).setName(context.getString(R.string.cdf_delete)).setData(data));
+            CommonDialog dialog = CommonDialog.of(String.format(format, item.getAlbum()), items);
 
             dialog.show(this.activity.getSupportFragmentManager(), "1");
             dialog.setOnClickListener((CommonDialogItem item1) -> {

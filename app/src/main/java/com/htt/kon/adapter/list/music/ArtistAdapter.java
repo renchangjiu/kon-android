@@ -11,22 +11,19 @@ import android.widget.TextView;
 import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
-import com.htt.kon.adapter.list.dialog.CommonDialogAdapter;
 import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
-import com.htt.kon.dialog.CommonDialogFragment;
+import com.htt.kon.dialog.CommonDialog;
 import com.htt.kon.service.Playlist;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.stream.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.experimental.Accessors;
 
 /**
  * @author su
@@ -76,12 +73,12 @@ public class ArtistAdapter extends BaseAdapter implements LocalMusicFragmentAdap
 
             List<CommonDialogItem> items = new ArrayList<>();
             String data = JsonUtils.bean2Json(musics);
-            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_PLAY_NEXT).setName(context.getString(R.string.cdf_play_next)).setData(data));
-            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_COLLECT).setName(context.getString(R.string.cdf_collect)).setData(data));
-            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_SHARE).setName(context.getString(R.string.cdf_share)).setData(data));
-            items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_DELETE).setName(context.getString(R.string.cdf_delete)).setData(data));
+            items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_PLAY_NEXT).setName(context.getString(R.string.cdf_play_next)).setData(data));
+            items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_COLLECT).setName(context.getString(R.string.cdf_collect)).setData(data));
+            items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_SHARE).setName(context.getString(R.string.cdf_share)).setData(data));
+            items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_DELETE).setName(context.getString(R.string.cdf_delete)).setData(data));
 
-            CommonDialogFragment dialog = CommonDialogFragment.of(String.format(format, item.getArtist()), items);
+            CommonDialog dialog = CommonDialog.of(String.format(format, item.getArtist()), items);
             dialog.show(this.activity.getSupportFragmentManager(), "1");
             dialog.setOnClickListener((CommonDialogItem item1) -> {
                 // 回调方法

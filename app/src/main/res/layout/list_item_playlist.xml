@@ -10,6 +10,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="9dp"
+            android:contentDescription="@string/empty_str"
             android:src="@drawable/list_item_play" />
 
     <TextView
@@ -40,6 +41,7 @@
             android:id="@+id/lip_imageViewLocate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/empty_str"
             android:src="@drawable/playlist_locate" />
 
     <ImageView
@@ -48,6 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="25dp"
+            android:contentDescription="@string/empty_str"
             android:src="@drawable/playlist_delete" />
 
 </LinearLayout>

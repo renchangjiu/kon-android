@@ -26,7 +26,7 @@ import com.htt.kon.adapter.list.MusicListAdapter;
 import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.MusicList;
 
-import com.htt.kon.dialog.CommonDialogFragment;
+import com.htt.kon.dialog.CommonDialog;
 import com.htt.kon.dialog.OptionDialog;
 import com.htt.kon.service.database.MusicListDbService;
 import com.htt.kon.util.IdWorker;
@@ -138,21 +138,21 @@ public class MusicFragment extends Fragment {
             public void onSettingImageClick(View v) {
                 List<CommonDialogItem> items = new ArrayList<>();
 
-                items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_MUSIC_LIST_CREATE).setName(getString(R.string.create_new_music_list)));
-                items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_MUSIC_LIST_MANAGE).setName(getString(R.string.music_list_manage)));
-                items.add(CommonDialogFragment.FULL_ITEMS.get(CommonDialogFragment.TAG_MUSIC_LIST_RESTORE).setName(getString(R.string.music_list_restore)));
+                items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_MUSIC_LIST_CREATE).setName(getString(R.string.create_new_music_list)));
+                items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_MUSIC_LIST_MANAGE).setName(getString(R.string.music_list_manage)));
+                items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_MUSIC_LIST_RESTORE).setName(getString(R.string.music_list_restore)));
 
-                CommonDialogFragment fragment = CommonDialogFragment.of("创建的歌单", items);
+                CommonDialog fragment = CommonDialog.of("创建的歌单", items);
                 fragment.show(activity.getSupportFragmentManager(), "1");
                 fragment.setOnClickListener(item -> {
                     switch (item.getId()) {
-                        case CommonDialogFragment.TAG_MUSIC_LIST_CREATE:
+                        case CommonDialog.TAG_MUSIC_LIST_CREATE:
                             caseCreateMusicList();
                             break;
-                        case CommonDialogFragment.TAG_MUSIC_LIST_MANAGE:
+                        case CommonDialog.TAG_MUSIC_LIST_MANAGE:
                             Toast.makeText(activity, "敬请期待", Toast.LENGTH_SHORT).show();
                             break;
-                        case CommonDialogFragment.TAG_MUSIC_LIST_RESTORE:
+                        case CommonDialog.TAG_MUSIC_LIST_RESTORE:
                             Toast.makeText(activity, "敬请期待", Toast.LENGTH_SHORT).show();
                             break;
                         default:
@@ -206,6 +206,7 @@ public class MusicFragment extends Fragment {
                 })
                 .end();
         EditText et = of.getChild().findViewById(R.id.dccml_editText);
+
         et.addTextChangedListener(new TextWatcherWrapper() {
             @Override
             public void afterTextChanged(Editable s) {

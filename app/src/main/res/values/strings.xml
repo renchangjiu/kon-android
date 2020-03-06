@@ -4,6 +4,7 @@
     <string name="empty_str" />
 
     <string name="local_music">本地音乐</string>
+    <string name="my_favorite_music">我喜欢的音乐</string>
     <string name="recently_played">最近播放</string>
     <string name="download_manage">下载管理</string>
     <string name="my_radio_station">我的电台</string>

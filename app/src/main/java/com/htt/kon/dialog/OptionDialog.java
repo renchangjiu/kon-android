@@ -30,6 +30,7 @@ public class OptionDialog {
 
     private Context context;
 
+    @Getter
     private AlertDialog dialog;
 
     private FrameLayout container;

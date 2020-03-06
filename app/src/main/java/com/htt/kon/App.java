@@ -49,7 +49,6 @@ public class App extends Application {
         super.onCreate();
         AppPathManger.initPaths(this);
         this.createNotificationChannel();
-        this.createLocalMusicListIfNotExist();
         this.whenInstall();
         LogUtils.e("App onCreate.");
 
@@ -90,47 +89,56 @@ public class App extends Application {
     }
 
 
-    private void createLocalMusicListIfNotExist() {
-        MusicListDbService service = MusicListDbService.of(this);
-        service.getById(CommonConstant.MID_LOCAL_MUSIC, musicList -> {
-            if (service.getById(CommonConstant.MID_LOCAL_MUSIC) == null) {
-                MusicList ml = new MusicList();
-                ml.setId(CommonConstant.MID_LOCAL_MUSIC);
-                ml.setName(getString(R.string.local_music));
-                ml.setCreateTime(System.currentTimeMillis());
-                ml.setPlayCount(0);
-                ml.setDelFlag(2);
-                service.insert(ml);
-            }
-        });
-    }
-
     /**
      * 安装应用后做些操作
      */
     private void whenInstall() {
         new Thread(() -> {
-            try {
-                String key = "INSTALL_FLAG";
-                String builtInMusic = "放課後ティータイム - Listen!!.mp3";
-                boolean installFlag = SpUtils.getBoolean(this, key, true);
-                if (!installFlag) {
-                    return;
-                }
-                InputStream in = getAssets().open(builtInMusic);
-                String path = AppPathManger.pathBuiltInMusic + builtInMusic;
-                FileOutputStream out = new FileOutputStream(path);
-                IOUtils.copy(in, out);
-                in.close();
-                out.close();
-
-                MusicDbService service = MusicDbService.of(this);
-
-                service.insert(path, CommonConstant.MID_LOCAL_MUSIC);
-                SpUtils.putBoolean(this, key, false);
-            } catch (IOException e) {
-                LogUtils.e(e);
-            }
+            this.work1();
+            this.work2();
         }).start();
+    }
+
+    /**
+     * 插入"本地音乐"歌单, 及"我喜欢的音乐歌单"
+     */
+    private void work2() {
+        MusicListDbService service = MusicListDbService.of(this);
+
+        MusicList ml1 = new MusicList();
+        ml1.setId(CommonConstant.MID_LOCAL_MUSIC);
+        ml1.setName(getString(R.string.local_music));
+        service.insert(ml1);
+
+        MusicList ml2 = new MusicList();
+        ml2.setId(2L);
+        ml2.setName(getString(R.string.my_favorite_music));
+        service.insert(ml2);
+    }
+
+    /**
+     * 插入一首应用自带的歌曲
+     */
+    private void work1() {
+        try {
+            String key = "INSTALL_FLAG";
+            String builtInMusic = "放課後ティータイム - Listen!!.mp3";
+            boolean installFlag = SpUtils.getBoolean(this, key, true);
+            if (!installFlag) {
+                return;
+            }
+            InputStream in = getAssets().open(builtInMusic);
+            String path = AppPathManger.pathBuiltInMusic + builtInMusic;
+            FileOutputStream out = new FileOutputStream(path);
+            IOUtils.copy(in, out);
+            in.close();
+            out.close();
+
+            MusicDbService service = MusicDbService.of(this);
+            service.insert(path, CommonConstant.MID_LOCAL_MUSIC);
+            SpUtils.putBoolean(this, key, false);
+        } catch (IOException e) {
+            LogUtils.e(e);
+        }
     }
 }

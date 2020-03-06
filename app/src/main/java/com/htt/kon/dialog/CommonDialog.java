@@ -1,15 +1,23 @@
 package com.htt.kon.dialog;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.SparseArray;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 
 import com.htt.kon.R;
 import com.htt.kon.adapter.list.dialog.CommonDialogAdapter;
@@ -28,7 +36,7 @@ import lombok.Setter;
  * @author su
  * @date 2020/02/05 17:45
  */
-public class CommonDialogFragment extends BaseDialogFragment {
+public class CommonDialog extends DialogFragment {
     private static final String B_K_TITLE = "title";
     private static final String B_K_ITEMS = "items";
 
@@ -128,12 +136,12 @@ public class CommonDialogFragment extends BaseDialogFragment {
     @Setter
     private OnClickListener onClickListener;
 
-    private CommonDialogFragment() {
+    private CommonDialog() {
     }
 
 
-    public static CommonDialogFragment of(String title, List<CommonDialogItem> items) {
-        CommonDialogFragment of = new CommonDialogFragment();
+    public static CommonDialog of(String title, List<CommonDialogItem> items) {
+        CommonDialog of = new CommonDialog();
         Bundle bundle = new Bundle();
         bundle.putString(B_K_TITLE, title);
         bundle.putString(B_K_ITEMS, JsonUtils.bean2Json(items));
@@ -141,6 +149,18 @@ public class CommonDialogFragment extends BaseDialogFragment {
         return of;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        // 设置dialog: 背景透明、宽度为屏宽、位置在屏幕底部
+        Window window = getDialog().getWindow();
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.getDecorView().setPadding(0, 0, 0, 0);
+        WindowManager.LayoutParams params = window.getAttributes();
+        params.gravity = Gravity.BOTTOM;
+        params.width = WindowManager.LayoutParams.MATCH_PARENT;
+        window.setAttributes(params);
+    }
 
     @Nullable
     @Override
@@ -168,6 +188,19 @@ public class CommonDialogFragment extends BaseDialogFragment {
         });
     }
 
+    /**
+     * 向上滑动动画
+     */
+    public static void slideToUp(View view) {
+        Animation slide = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
+                1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
+
+        slide.setDuration(400);
+        slide.setFillAfter(true);
+        slide.setFillEnabled(true);
+        view.startAnimation(slide);
+    }
 
     public interface OnClickListener {
         void onClick(CommonDialogItem item);

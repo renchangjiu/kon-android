@@ -56,8 +56,11 @@ public class MusicListDbService {
         }).start();
     }
 
-    public void insert(MusicList music) {
-        this.musicListDao.insert(music);
+    public void insert(MusicList ml) {
+        ml.setPlayCount(0);
+        ml.setDelFlag(2);
+        ml.setCreateTime(System.currentTimeMillis());
+        this.musicListDao.insert(ml);
     }
 
     public void insert(MusicList musicList, @Nullable Callback<MusicList> call) {

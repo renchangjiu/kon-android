@@ -24,9 +24,9 @@ import com.htt.kon.R;
 import com.htt.kon.adapter.pager.PlayBarAdapter;
 import com.htt.kon.bean.Music;
 import com.htt.kon.bean.PlayMode;
+import com.htt.kon.dialog.PlayListDialog;
 import com.htt.kon.service.Playlist;
 import com.htt.kon.constant.FragmentTagConstant;
-import com.htt.kon.dialog.PlayListDialogFragment;
 import com.htt.kon.service.MusicService;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.stream.Optional;
@@ -112,7 +112,7 @@ public class BaseActivity extends AppCompatActivity {
 
         // 点击弹出播放列表对话框
         imageViewPlayList.setOnClickListener(v -> {
-            PlayListDialogFragment of = PlayListDialogFragment.of();
+            PlayListDialog of = PlayListDialog.of();
             of.show(getSupportFragmentManager(), FragmentTagConstant.PLAYLIST_FRAGMENT);
             of.setOnClickListener(new PlayListDialogFragmentOnClickListener());
         });
@@ -253,7 +253,7 @@ public class BaseActivity extends AppCompatActivity {
     /**
      * 处理播放列表弹出框的所有事件
      */
-    private class PlayListDialogFragmentOnClickListener implements PlayListDialogFragment.OnClickListener {
+    private class PlayListDialogFragmentOnClickListener implements PlayListDialog.OnClickListener {
 
         /**
          * 当点击播放列表的某一项时
@@ -321,7 +321,7 @@ public class BaseActivity extends AppCompatActivity {
             msService.setOnPreparedListener(new MusicService.OnPreparedListener() {
                 @Override
                 public void onPreparedStart(MediaPlayer mp) {
-                    PlayListDialogFragment dialog = (PlayListDialogFragment) getSupportFragmentManager()
+                    PlayListDialog dialog = (PlayListDialog) getSupportFragmentManager()
                             .findFragmentByTag(FragmentTagConstant.PLAYLIST_FRAGMENT);
                     if (dialog != null) {
                         dialog.updateAdapterInterface();

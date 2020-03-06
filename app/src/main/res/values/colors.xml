@@ -9,7 +9,9 @@
     <color name="black">#000000</color>
     <color name="lightBlack">#343838</color>
     <color name="grey">#AE343838</color>
+    <color name="grey1_5">#DDDDDD</color>
     <color name="grey2">#F9F9F9</color>
+    <color name="grey3">#EDEDED</color>
     <color name="red1">#D3433C</color>
     <color name="pink">#E9BDBA</color>
     <color name="write">#FFFFFF</color>

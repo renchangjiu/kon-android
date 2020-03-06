@@ -16,7 +16,7 @@ import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
 import com.htt.kon.constant.CommonConstant;
 
-import com.htt.kon.dialog.CommonDialogFragment;
+import com.htt.kon.dialog.CommonDialog;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.LogUtils;
 
@@ -72,7 +72,7 @@ public class DirPagerFragment extends BaseLocalMusicPagerFragment {
                     AlbumAdapter.ItemData itemData = JsonUtils.json2Bean(item.getData(), AlbumAdapter.ItemData.class);
                     List<Music> musics = itemData.getMusics();
                     switch (item.getId()) {
-                        case CommonDialogFragment.TAG_PLAY_NEXT:
+                        case CommonDialog.TAG_PLAY_NEXT:
                             super.activity.nextPlay(musics);
                             Toast.makeText(this.activity, this.activity.getString(R.string.added_to_next_play), Toast.LENGTH_SHORT).show();
                             break;

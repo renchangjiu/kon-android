@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+    <ImageView
+            android:id="@+id/limld_imageView"
+            android:layout_width="37dp"
+            android:layout_height="37dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="11dp"
+            android:background="@color/red1"
+            android:contentDescription="@string/empty_str" />
+
+    <TextView
+            android:id="@+id/limld_textViewName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@id/limld_imageView"
+            android:text="@string/music_list_name"
+            android:textColor="@color/lightBlack"
+            android:textSize="13sp" />
+
+    <TextView
+            android:id="@+id/limld_textViewCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/limld_textViewName"
+            android:layout_alignStart="@id/limld_textViewName"
+            android:layout_marginBottom="9dp"
+            android:text="@string/music_list_music_count"
+            android:textColor="@color/grey"
+            android:textSize="12sp" />
+
+
+</RelativeLayout>

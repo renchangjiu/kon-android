@@ -1,17 +1,23 @@
 package com.htt.kon.dialog;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 
 import com.htt.kon.App;
 import com.htt.kon.R;
@@ -29,7 +35,7 @@ import lombok.Setter;
  * @author su
  * @date 2020/02/08 17:48
  */
-public class PlayListDialogFragment extends BaseDialogFragment {
+public class PlayListDialog extends DialogFragment {
 
     @BindView(R.id.dp_textViewPlayMode)
     TextView textViewPlayMode;
@@ -50,14 +56,27 @@ public class PlayListDialogFragment extends BaseDialogFragment {
 
     private Playlist playlist;
 
-    private PlayListDialogFragment() {
+    private PlayListDialog() {
         super();
     }
 
-    public static PlayListDialogFragment of() {
-        return new PlayListDialogFragment();
+    public static PlayListDialog of() {
+        return new PlayListDialog();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        // 设置dialog: 背景透明、宽度为屏宽、位置在屏幕底部
+        Window window = getDialog().getWindow();
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.getDecorView().setPadding(0, 0, 0, 0);
+        WindowManager.LayoutParams params = window.getAttributes();
+        params.gravity = Gravity.BOTTOM;
+        params.width = WindowManager.LayoutParams.MATCH_PARENT;
+        params.height = (int) (getContext().getResources().getDisplayMetrics().heightPixels * 0.6);
+        window.setAttributes(params);
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {
