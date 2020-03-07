@@ -94,26 +94,35 @@ public class App extends Application {
      */
     private void whenInstall() {
         new Thread(() -> {
+            String key = "INSTALL_FLAG";
+            boolean installFlag = SpUtils.getBoolean(this, key, true);
+            if (!installFlag) {
+                return;
+            }
             this.work1();
             this.work2();
+            SpUtils.putBoolean(this, key, false);
         }).start();
     }
 
     /**
-     * 插入"本地音乐"歌单, 及"我喜欢的音乐歌单"
+     * 插入歌单: "本地音乐" & "我喜欢的音乐"
      */
     private void work2() {
         MusicListDbService service = MusicListDbService.of(this);
 
-        MusicList ml1 = new MusicList();
-        ml1.setId(CommonConstant.MID_LOCAL_MUSIC);
-        ml1.setName(getString(R.string.local_music));
-        service.insert(ml1);
-
-        MusicList ml2 = new MusicList();
-        ml2.setId(2L);
-        ml2.setName(getString(R.string.my_favorite_music));
-        service.insert(ml2);
+        if (service.getById(CommonConstant.MID_LOCAL_MUSIC) == null) {
+            MusicList ml1 = new MusicList();
+            ml1.setId(CommonConstant.MID_LOCAL_MUSIC);
+            ml1.setName(getString(R.string.local_music));
+            service.insert(ml1);
+        }
+        if (service.getById(CommonConstant.MID_MY_FAVORITE) == null) {
+            MusicList ml2 = new MusicList();
+            ml2.setId(CommonConstant.MID_MY_FAVORITE);
+            ml2.setName(getString(R.string.my_favorite_music));
+            service.insert(ml2);
+        }
     }
 
     /**
@@ -121,22 +130,15 @@ public class App extends Application {
      */
     private void work1() {
         try {
-            String key = "INSTALL_FLAG";
             String builtInMusic = "放課後ティータイム - Listen!!.mp3";
-            boolean installFlag = SpUtils.getBoolean(this, key, true);
-            if (!installFlag) {
-                return;
-            }
             InputStream in = getAssets().open(builtInMusic);
             String path = AppPathManger.pathBuiltInMusic + builtInMusic;
             FileOutputStream out = new FileOutputStream(path);
             IOUtils.copy(in, out);
             in.close();
             out.close();
-
             MusicDbService service = MusicDbService.of(this);
             service.insert(path, CommonConstant.MID_LOCAL_MUSIC);
-            SpUtils.putBoolean(this, key, false);
         } catch (IOException e) {
             LogUtils.e(e);
         }

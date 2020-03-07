@@ -1,4 +1,4 @@
-package com.htt.kon.adapter.list;
+package com.htt.kon.adapter.list.dialog;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.htt.kon.R;
+import com.htt.kon.activity.LocalMusicActivity;
 import com.htt.kon.activity.MainActivity;
 import com.htt.kon.bean.MusicList;
 import com.htt.kon.constant.CommonConstant;
@@ -20,23 +21,23 @@ import java.util.List;
 
 /**
  * @author su
- * @date 2020/03/04 21:15
+ * @date 2020/03/07 21:11
  */
-public class MusicListAdapter extends BaseAdapter {
+public class MusicListDialogAdapter extends BaseAdapter {
 
     private MusicListDbService service;
 
-    private MainActivity activity;
+    private LocalMusicActivity activity;
 
     private List<MusicList> res = new ArrayList<>();
 
-    public MusicListAdapter(Context activity) {
-        this.activity = (MainActivity) activity;
+    public MusicListDialogAdapter(Context activity) {
+        this.activity = (LocalMusicActivity) activity;
         this.service = MusicListDbService.of(this.activity);
-        this.updateRes();
+        this.initRes();
     }
 
-    public void updateRes() {
+    public void initRes() {
         this.service.list(musicLists -> {
             this.activity.runOnUiThread(() -> {
                 this.res.clear();
@@ -50,11 +51,6 @@ public class MusicListAdapter extends BaseAdapter {
         });
     }
 
-    public void clearRes() {
-        this.res.clear();
-        this.notifyDataSetChanged();
-    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view;
@@ -63,12 +59,11 @@ public class MusicListAdapter extends BaseAdapter {
             view = convertView;
             holder = (ViewHolder) view.getTag();
         } else {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_ml, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_ml_dialog, parent, false);
             holder = new ViewHolder();
-            holder.imageView = view.findViewById(R.id.liml_imageView);
-            holder.textViewName = view.findViewById(R.id.liml_textViewName);
-            holder.textViewCount = view.findViewById(R.id.liml_textViewCount);
-            holder.imageViewOption = view.findViewById(R.id.liml_imageViewOption);
+            holder.imageView = view.findViewById(R.id.limld_imageView);
+            holder.textViewName = view.findViewById(R.id.limld_textViewName);
+            holder.textViewCount = view.findViewById(R.id.limld_textViewCount);
             view.setTag(holder);
         }
 
@@ -100,7 +95,6 @@ public class MusicListAdapter extends BaseAdapter {
         private ImageView imageView;
         private TextView textViewName;
         private TextView textViewCount;
-        private ImageView imageViewOption;
     }
 
 }

@@ -31,7 +31,6 @@ import com.htt.kon.dialog.OptionDialog;
 import com.htt.kon.service.database.MusicListDbService;
 import com.htt.kon.util.IdWorker;
 import com.htt.kon.util.TextWatcherWrapper;
-import com.htt.kon.util.UiUtils;
 import com.htt.kon.view.ListViewSeparateLayout;
 
 import org.apache.commons.lang3.StringUtils;
@@ -131,7 +130,11 @@ public class MusicFragment extends Fragment {
             @Override
             public void onCommonClick(String ad) {
                 // 收起或展开歌单列表
-                listViewMusicList.setAdapter(ad.equals(ListViewSeparateLayout.ARROW_DIRECTION_DOWN) ? adapter : null);
+                if (ad.equals(ListViewSeparateLayout.ARROW_DIRECTION_DOWN)) {
+                    adapter.updateRes();
+                } else {
+                    adapter.clearRes();
+                }
             }
 
             @Override
@@ -199,7 +202,7 @@ public class MusicFragment extends Fragment {
                     musicListDbService.insert(ml, v -> {
                         // 刷新页面
                         updateInterface();
-                        UiUtils.getAdapter(this.listViewMusicList, MusicListAdapter.class).initRes();
+                        this.adapter.updateRes();
                     });
                 })
                 .setNegativeButton(child -> {

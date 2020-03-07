@@ -11,4 +11,9 @@ public interface CommonConstant {
      * 本地音乐的歌单id
      */
     Long MID_LOCAL_MUSIC = 1L;
+
+    /**
+     * 我喜欢的音乐
+     */
+    Long MID_MY_FAVORITE = 2L;
 }
