@@ -113,4 +113,16 @@ public class MusicList {
     public void setMusics(List<Music> musics) {
         this.musics = musics;
     }
+
+    @Override
+    public String toString() {
+        return "MusicList{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", createTime=" + createTime +
+                ", createTimeLabel='" + createTimeLabel + '\'' +
+                ", playCount=" + playCount +
+                ", delFlag=" + delFlag +
+                '}';
+    }
 }

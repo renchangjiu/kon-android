@@ -72,16 +72,17 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
                 this.listView.setAdapter(adapter);
                 String format = this.activity.getString(R.string.local_music_count);
                 this.textViewCount.setText(String.format(format, list.size()));
-                MusicListDialog mlDialog = MusicListDialog.of();
+
                 adapter.setOnOptionClickListener(item -> {
-                    Music data = JsonUtils.json2Bean(item.getData(), Music.class);
+                    Music music = JsonUtils.json2Bean(item.getData(), Music.class);
                     switch (item.getId()) {
                         case CommonDialog.TAG_PLAY_NEXT:
-                            this.activity.nextPlay(data);
+                            this.activity.nextPlay(music);
                             Toast.makeText(this.activity, this.activity.getString(R.string.added_to_next_play), Toast.LENGTH_SHORT).show();
                             break;
                         case CommonDialog.TAG_COLLECT:
                             // 收藏到歌单
+                            MusicListDialog mlDialog = MusicListDialog.of(music);
                             mlDialog.show(activity.getSupportFragmentManager(), "1");
                             break;
                         default:

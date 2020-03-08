@@ -13,7 +13,6 @@ import com.htt.kon.R;
 import com.htt.kon.adapter.list.music.ArtistAdapter;
 import com.htt.kon.bean.Music;
 
-import com.htt.kon.bean.MusicList;
 import com.htt.kon.constant.CommonConstant;
 import com.htt.kon.dialog.CommonDialog;
 import com.htt.kon.dialog.MusicListDialog;
@@ -67,7 +66,6 @@ public class ArtistPagerFragment extends BaseLocalMusicPagerFragment {
             this.activity.runOnUiThread(() -> {
                 ArtistAdapter adapter = new ArtistAdapter(res, this.activity);
                 this.listView.setAdapter(adapter);
-                MusicListDialog mlDialog = MusicListDialog.of();
 
                 adapter.setOnOptionClickListener(item -> {
                     List<Music> musics = JsonUtils.json2List(item.getData(), Music.class);
@@ -78,6 +76,7 @@ public class ArtistPagerFragment extends BaseLocalMusicPagerFragment {
                             break;
                         case CommonDialog.TAG_COLLECT:
                             // 收藏到歌单
+                            MusicListDialog mlDialog = MusicListDialog.of(musics);
                             mlDialog.show(activity.getSupportFragmentManager(), "1");
                             break;
                         default:

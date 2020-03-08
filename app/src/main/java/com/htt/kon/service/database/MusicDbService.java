@@ -2,6 +2,8 @@ package com.htt.kon.service.database;
 
 import android.content.Context;
 
+import androidx.annotation.Nullable;
+
 import com.htt.kon.R;
 import com.htt.kon.bean.Mp3Metadata;
 import com.htt.kon.bean.Music;
@@ -12,6 +14,7 @@ import com.htt.kon.util.AppPathManger;
 import com.htt.kon.util.IdWorker;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.MusicFileMetadataParser;
+import com.htt.kon.util.stream.Optional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -20,6 +23,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -76,14 +80,57 @@ public class MusicDbService {
 
     public void insert(Music music) {
         this.setDataIfEmpty(music);
+        this.putInsertInfo(music);
         this.musicDao.insert(music);
     }
 
     public void insert(List<Music> list) {
         for (Music music : list) {
             this.setDataIfEmpty(music);
+            this.putInsertInfo(music);
         }
         this.musicDao.insert(list);
+    }
+
+
+    /**
+     * 批量插入
+     *
+     * @param mid 歌单ID, 若指定了目标歌单ID, 则会对歌曲集合进行校验, 已存在于该歌单内的歌曲不会被插入
+     */
+    public void insert(List<Music> list, @Nullable Long mid, @Nullable Callback<List<Music>> call) {
+        new Thread(() -> {
+            if (mid != null) {
+                List<Music> olds = this.list(mid);
+                Iterator<Music> iterator = list.iterator();
+                while (iterator.hasNext()) {
+                    Music next = iterator.next();
+                    boolean exist = false;
+                    for (Music old : olds) {
+                        if (old.getPath().equals(next.getPath())) {
+                            exist = true;
+                            break;
+                        }
+                    }
+                    if (exist) {
+                        iterator.remove();
+                    }
+                }
+            }
+            for (Music music : list) {
+                this.setDataIfEmpty(music);
+                this.putInsertInfo(music);
+            }
+            this.musicDao.insert(list);
+            Optional.of(call).ifPresent(v -> v.on(list));
+        }).start();
+    }
+
+
+    private void putInsertInfo(Music music) {
+        music.setId(IdWorker.singleNextId());
+        music.setCreateTime(System.currentTimeMillis());
+        music.setDelFlag(2);
     }
 
     /**
@@ -97,12 +144,11 @@ public class MusicDbService {
         try {
             Mp3Metadata metadata = MusicFileMetadataParser.parse(path);
             Music music = new Music();
-            music.setId(IdWorker.singleNextId());
             music.setMid(mid);
             music.setPath(path);
             music.setSize(new File(path).length());
             if (metadata.getImage() != null) {
-                File imageFile = new File(AppPathManger.pathCoverImage + music.getId() + ".png");
+                File imageFile = new File(AppPathManger.pathCoverImage + IdWorker.singleNextIdString() + ".png");
                 FileOutputStream out = new FileOutputStream(imageFile);
                 out.write(metadata.getImage());
                 out.flush();
@@ -114,18 +160,14 @@ public class MusicDbService {
             music.setAlbum(metadata.getAlbum());
             music.setDuration(metadata.getDuration());
             music.setBitRate(metadata.getBitRate());
-            music.setCreateTime(System.currentTimeMillis());
-            music.setDelFlag(2);
-            if (StringUtils.isEmpty(music.getTitle())) {
-                return false;
-            } else {
+            if (StringUtils.isNotEmpty(music.getTitle())) {
                 this.insert(music);
                 return true;
             }
         } catch (IOException e) {
             LogUtils.e(e);
-            return false;
         }
+        return false;
     }
 
     public Music getById(long id) {

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,11 +18,16 @@ import androidx.fragment.app.DialogFragment;
 
 import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
-import com.htt.kon.adapter.list.MusicListAdapter;
 import com.htt.kon.adapter.list.dialog.MusicListDialogAdapter;
-import com.htt.kon.service.database.MusicListDbService;
+import com.htt.kon.bean.Music;
+import com.htt.kon.service.database.MusicDbService;
+import com.htt.kon.util.JsonUtils;
+import com.htt.kon.util.LogUtils;
 
-import org.apache.commons.io.filefilter.FalseFileFilter;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,20 +42,31 @@ public class MusicListDialog extends DialogFragment {
 
     private LocalMusicActivity activity;
 
-    private MusicListDbService service;
-
+    private MusicDbService musicDbService;
 
     @BindView(R.id.dml_listView)
     ListView listView;
 
-    private MusicListDialogAdapter adapter;
-
+    private static final String B_K_MUSIC = "MUSIC";
+    private static final String B_K_MUSICS = "MUSICS";
 
     private MusicListDialog() {
     }
 
-    public static MusicListDialog of() {
-        return new MusicListDialog();
+    public static MusicListDialog of(@NonNull Music music) {
+        MusicListDialog of = new MusicListDialog();
+        Bundle bd = new Bundle();
+        bd.putString(B_K_MUSIC, JsonUtils.bean2Json(music));
+        of.setArguments(bd);
+        return of;
+    }
+
+    public static MusicListDialog of(@NonNull List<Music> musics) {
+        MusicListDialog of = new MusicListDialog();
+        Bundle bd = new Bundle();
+        bd.putString(B_K_MUSICS, JsonUtils.bean2Json(musics));
+        of.setArguments(bd);
+        return of;
     }
 
     @Override
@@ -69,7 +86,7 @@ public class MusicListDialog extends DialogFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.activity = (LocalMusicActivity) context;
-        this.service = MusicListDbService.of(context);
+        this.musicDbService = MusicDbService.of(context);
     }
 
 
@@ -85,9 +102,38 @@ public class MusicListDialog extends DialogFragment {
 
 
     private void init() {
-        this.adapter = new MusicListDialogAdapter(this.activity);
+        MusicListDialogAdapter adapter = new MusicListDialogAdapter(this.activity);
         View header = LayoutInflater.from(this.activity).inflate(R.layout.list_header_ml_dialog, this.listView, false);
         this.listView.addHeaderView(header);
         this.listView.setAdapter(adapter);
+
+        this.listView.setOnItemClickListener((parent, view, position, id) -> {
+            if (id == -1) {
+                // TODO: 新建歌单
+            } else {
+                List<Music> musics = this.getMusics();
+                for (Music music : musics) {
+                    music.setId(null);
+                    music.setMid(id);
+                }
+                this.musicDbService.insert(musics, id, null);
+                this.dismiss();
+                Toast.makeText(this.activity, this.activity.getString(R.string.collected_to_ml), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private List<Music> getMusics() {
+        List<Music> musics = new ArrayList<>();
+        Bundle bd = getArguments();
+        assert bd != null;
+        String string = bd.getString(B_K_MUSIC);
+        if (StringUtils.isNotEmpty(string)) {
+            musics.add(JsonUtils.json2Bean(string, Music.class));
+        } else {
+            String strings = bd.getString(B_K_MUSICS);
+            musics = JsonUtils.json2List(strings, Music.class);
+        }
+        return musics;
     }
 }

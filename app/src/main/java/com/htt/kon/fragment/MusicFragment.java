@@ -63,11 +63,20 @@ public class MusicFragment extends Fragment {
 
     private ListViewSeparateLayout separateLayout;
 
+    private LocalManagerAdapter localManagerAdapter;
+
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.activity = (MainActivity) context;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        this.localManagerAdapter.updateRes();
+        this.adapter.updateRes();
     }
 
     @Nullable
@@ -99,9 +108,11 @@ public class MusicFragment extends Fragment {
         this.separateLayout = header.findViewById(R.id.lhmf_separateLayout);
 
         this.listViewMusicList.addHeaderView(header);
-        headerListView.setAdapter(new LocalManagerAdapter(this.activity));
+
+        this.localManagerAdapter = new LocalManagerAdapter(this.activity);
         this.adapter = new MusicListAdapter(this.activity);
-        this.listViewMusicList.setAdapter(adapter);
+        headerListView.setAdapter(this.localManagerAdapter);
+        this.listViewMusicList.setAdapter(this.adapter);
 
         headerListView.setOnItemClickListener((parent, view, position, id) -> {
             switch (position) {
@@ -233,5 +244,4 @@ public class MusicFragment extends Fragment {
             });
         });
     }
-
 }

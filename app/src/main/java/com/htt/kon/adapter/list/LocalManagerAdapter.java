@@ -17,8 +17,6 @@ import com.htt.kon.service.database.MusicDbService;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Setter;
-
 
 /**
  * @author su
@@ -30,12 +28,12 @@ public class LocalManagerAdapter extends BaseAdapter {
 
     private MainActivity activity;
 
-    private List<ItemData> res;
+    private List<ItemData> res = new ArrayList<>();
 
     public LocalManagerAdapter(Context activity) {
         this.activity = (MainActivity) activity;
         this.musicDbService = MusicDbService.of(this.activity);
-        this.initItemData();
+        this.updateRes();
     }
 
     @Override
@@ -62,7 +60,7 @@ public class LocalManagerAdapter extends BaseAdapter {
         return view;
     }
 
-    private void initItemData() {
+    public void updateRes() {
         ItemData item1 = new ItemData();
         item1.imageId = R.drawable.music_icon_local;
         item1.itemTitle = this.activity.getString(R.string.local_music);
@@ -92,12 +90,13 @@ public class LocalManagerAdapter extends BaseAdapter {
         item5.itemTitle = this.activity.getString(R.string.my_collection);
         item5.count = 0;
 
-        this.res = new ArrayList<>();
+        this.res .clear();
         this.res.add(item1);
         this.res.add(item2);
         this.res.add(item3);
         this.res.add(item4);
         this.res.add(item5);
+        this.notifyDataSetChanged();
     }
 
 

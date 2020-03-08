@@ -205,6 +205,9 @@ public class Music {
     }
 
 
+    /**
+     * 重写 equals 方法, 以ID为准判断是否相等
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {

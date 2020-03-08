@@ -17,6 +17,7 @@ import com.htt.kon.bean.Music;
 import com.htt.kon.constant.CommonConstant;
 
 import com.htt.kon.dialog.CommonDialog;
+import com.htt.kon.dialog.MusicListDialog;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.LogUtils;
 
@@ -75,6 +76,11 @@ public class DirPagerFragment extends BaseLocalMusicPagerFragment {
                         case CommonDialog.TAG_PLAY_NEXT:
                             super.activity.nextPlay(musics);
                             Toast.makeText(this.activity, this.activity.getString(R.string.added_to_next_play), Toast.LENGTH_SHORT).show();
+                            break;
+                        case CommonDialog.TAG_COLLECT:
+                            // 收藏到歌单
+                            MusicListDialog mlDialog = MusicListDialog.of(musics);
+                            mlDialog.show(activity.getSupportFragmentManager(), "1");
                             break;
                         default:
                     }
