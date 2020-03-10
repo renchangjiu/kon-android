@@ -1,14 +1,17 @@
 package com.htt.kon.dialog;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -20,9 +23,13 @@ import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
 import com.htt.kon.adapter.list.dialog.MusicListDialogAdapter;
 import com.htt.kon.bean.Music;
+import com.htt.kon.bean.MusicList;
 import com.htt.kon.service.database.MusicDbService;
+import com.htt.kon.service.database.MusicListDbService;
+import com.htt.kon.util.IdWorker;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.LogUtils;
+import com.htt.kon.util.TextWatcherWrapper;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -44,27 +51,42 @@ public class MusicListDialog extends DialogFragment {
 
     private MusicDbService musicDbService;
 
+    private MusicListDbService musicListDbService;
+
     @BindView(R.id.dml_listView)
     ListView listView;
 
+    private static final String B_K_DEF_ML_NAME = "defaultMusicListName";
     private static final String B_K_MUSIC = "MUSIC";
     private static final String B_K_MUSICS = "MUSICS";
 
     private MusicListDialog() {
     }
 
-    public static MusicListDialog of(@NonNull Music music) {
+    /**
+     * of
+     *
+     * @param defMusicListName 若选择"新建歌单"选项, 则其为新建歌单的默认名称
+     */
+    public static MusicListDialog of(@NonNull Music music, String defMusicListName) {
         MusicListDialog of = new MusicListDialog();
         Bundle bd = new Bundle();
         bd.putString(B_K_MUSIC, JsonUtils.bean2Json(music));
+        bd.putString(B_K_DEF_ML_NAME, defMusicListName);
         of.setArguments(bd);
         return of;
     }
 
-    public static MusicListDialog of(@NonNull List<Music> musics) {
+    /**
+     * of
+     *
+     * @param defMusicListName 若选择"新建歌单"选项, 则其为新建歌单的默认名称
+     */
+    public static MusicListDialog of(@NonNull List<Music> musics, String defMusicListName) {
         MusicListDialog of = new MusicListDialog();
         Bundle bd = new Bundle();
         bd.putString(B_K_MUSICS, JsonUtils.bean2Json(musics));
+        bd.putString(B_K_DEF_ML_NAME, defMusicListName);
         of.setArguments(bd);
         return of;
     }
@@ -87,6 +109,7 @@ public class MusicListDialog extends DialogFragment {
         super.onAttach(context);
         this.activity = (LocalMusicActivity) context;
         this.musicDbService = MusicDbService.of(context);
+        this.musicListDbService = MusicListDbService.of(context);
     }
 
 
@@ -108,10 +131,10 @@ public class MusicListDialog extends DialogFragment {
         this.listView.setAdapter(adapter);
 
         this.listView.setOnItemClickListener((parent, view, position, id) -> {
+            List<Music> musics = this.getMusics();
             if (id == -1) {
-                // TODO: 新建歌单
+                this.caseCreateMusicList(musics, getArguments().getString(B_K_DEF_ML_NAME));
             } else {
-                List<Music> musics = this.getMusics();
                 for (Music music : musics) {
                     music.setId(null);
                     music.setMid(id);
@@ -123,6 +146,9 @@ public class MusicListDialog extends DialogFragment {
         });
     }
 
+    /**
+     * 从参数中获取歌曲列表
+     */
     private List<Music> getMusics() {
         List<Music> musics = new ArrayList<>();
         Bundle bd = getArguments();
@@ -135,5 +161,51 @@ public class MusicListDialog extends DialogFragment {
             musics = JsonUtils.json2List(strings, Music.class);
         }
         return musics;
+    }
+
+    /**
+     * TODO: 与 MusicFragment#caseCreateMusicList 方法重复过多, 考虑如何重用
+     */
+    private void caseCreateMusicList(List<Music> musics, String defMusicListName) {
+        OptionDialog of = OptionDialog.of(activity)
+                .setChild(LayoutInflater.from(activity).inflate(R.layout.dialog_child_create_music_list, null))
+                .setTitle(getString(R.string.create_music_list))
+                .disabled(DialogInterface.BUTTON_POSITIVE)
+                .setPositiveButton(getString(R.string.submit), (child) -> {
+                    // 创建新歌单, 然后插入歌曲
+                    EditText et = child.findViewById(R.id.dccml_editText);
+                    String name = et.getText().toString();
+                    MusicList ml = new MusicList();
+                    ml.setId(IdWorker.singleNextId());
+                    ml.setName(name);
+                    musicListDbService.insert(ml, v -> {
+                        for (Music music : musics) {
+                            music.setId(null);
+                            music.setMid(v.getId());
+                        }
+                        this.musicDbService.insert(musics, null, null);
+                        this.dismiss();
+                        activity.runOnUiThread(() -> {
+                            Toast.makeText(this.activity, this.activity.getString(R.string.collected_to_ml), Toast.LENGTH_SHORT).show();
+                        });
+                    });
+                })
+                .setNegativeButton(child -> {
+                })
+                .end();
+        EditText et = of.getChild().findViewById(R.id.dccml_editText);
+        et.addTextChangedListener(new TextWatcherWrapper() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                String str = s.toString();
+                if (StringUtils.isNotEmpty(str)) {
+                    of.enabled(DialogInterface.BUTTON_POSITIVE);
+                } else {
+                    of.disabled(DialogInterface.BUTTON_POSITIVE);
+                }
+            }
+        });
+        et.setText(defMusicListName);
+        of.show();
     }
 }

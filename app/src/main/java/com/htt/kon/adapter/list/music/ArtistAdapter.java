@@ -72,7 +72,7 @@ public class ArtistAdapter extends BaseAdapter implements LocalMusicFragmentAdap
             String format = context.getString(R.string.cdf_dialog_title_single);
 
             List<CommonDialogItem> items = new ArrayList<>();
-            String data = JsonUtils.bean2Json(musics);
+            String data = JsonUtils.bean2Json(item);
             items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_PLAY_NEXT).setName(context.getString(R.string.cdf_play_next)).setData(data));
             items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_COLLECT).setName(context.getString(R.string.cdf_collect)).setData(data));
             items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_SHARE).setName(context.getString(R.string.cdf_share)).setData(data));

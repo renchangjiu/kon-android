@@ -82,7 +82,7 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
                             break;
                         case CommonDialog.TAG_COLLECT:
                             // 收藏到歌单
-                            MusicListDialog mlDialog = MusicListDialog.of(music);
+                            MusicListDialog mlDialog = MusicListDialog.of(music, music.getTitle());
                             mlDialog.show(activity.getSupportFragmentManager(), "1");
                             break;
                         default:

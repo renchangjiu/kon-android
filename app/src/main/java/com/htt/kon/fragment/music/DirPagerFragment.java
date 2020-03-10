@@ -21,6 +21,7 @@ import com.htt.kon.dialog.MusicListDialog;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.LogUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +71,7 @@ public class DirPagerFragment extends BaseLocalMusicPagerFragment {
                 this.listView.setAdapter(adapter);
 
                 adapter.setOnOptionClickListener((CommonDialogItem item) -> {
-                    AlbumAdapter.ItemData itemData = JsonUtils.json2Bean(item.getData(), AlbumAdapter.ItemData.class);
+                    DirAdapter.ItemData itemData = JsonUtils.json2Bean(item.getData(), DirAdapter.ItemData.class);
                     List<Music> musics = itemData.getMusics();
                     switch (item.getId()) {
                         case CommonDialog.TAG_PLAY_NEXT:
@@ -79,7 +80,7 @@ public class DirPagerFragment extends BaseLocalMusicPagerFragment {
                             break;
                         case CommonDialog.TAG_COLLECT:
                             // 收藏到歌单
-                            MusicListDialog mlDialog = MusicListDialog.of(musics);
+                            MusicListDialog mlDialog = MusicListDialog.of(musics, new File(itemData.getPath()).getName());
                             mlDialog.show(activity.getSupportFragmentManager(), "1");
                             break;
                         default:

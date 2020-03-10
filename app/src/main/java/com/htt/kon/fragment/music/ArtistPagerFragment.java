@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.htt.kon.R;
+import com.htt.kon.adapter.list.music.AlbumAdapter;
 import com.htt.kon.adapter.list.music.ArtistAdapter;
 import com.htt.kon.bean.Music;
 
@@ -68,7 +69,8 @@ public class ArtistPagerFragment extends BaseLocalMusicPagerFragment {
                 this.listView.setAdapter(adapter);
 
                 adapter.setOnOptionClickListener(item -> {
-                    List<Music> musics = JsonUtils.json2List(item.getData(), Music.class);
+                    ArtistAdapter.ItemData itemData = JsonUtils.json2Bean(item.getData(), ArtistAdapter.ItemData.class);
+                    List<Music> musics = itemData.getMusics();
                     switch (item.getId()) {
                         case CommonDialog.TAG_PLAY_NEXT:
                             super.activity.nextPlay(musics);
@@ -76,7 +78,7 @@ public class ArtistPagerFragment extends BaseLocalMusicPagerFragment {
                             break;
                         case CommonDialog.TAG_COLLECT:
                             // 收藏到歌单
-                            MusicListDialog mlDialog = MusicListDialog.of(musics);
+                            MusicListDialog mlDialog = MusicListDialog.of(musics, itemData.getArtist());
                             mlDialog.show(activity.getSupportFragmentManager(), "1");
                             break;
                         default:

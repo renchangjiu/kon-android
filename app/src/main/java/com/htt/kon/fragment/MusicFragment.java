@@ -207,9 +207,6 @@ public class MusicFragment extends Fragment {
                     MusicList ml = new MusicList();
                     ml.setId(IdWorker.singleNextId());
                     ml.setName(name);
-                    ml.setCreateTime(System.currentTimeMillis());
-                    ml.setPlayCount(0);
-                    ml.setDelFlag(2);
                     musicListDbService.insert(ml, v -> {
                         // 刷新页面
                         updateInterface();
