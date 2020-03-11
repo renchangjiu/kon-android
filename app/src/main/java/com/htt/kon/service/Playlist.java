@@ -61,7 +61,7 @@ public class Playlist {
     private int mode = MODE_LOOP;
 
     @Getter
-    private int index = 0;
+    private int index = -1;
 
     /**
      * 播放下一首, 返回切换后的Music

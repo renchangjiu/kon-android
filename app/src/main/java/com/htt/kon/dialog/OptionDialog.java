@@ -2,8 +2,10 @@ package com.htt.kon.dialog;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -13,10 +15,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 
 import com.htt.kon.R;
+import com.htt.kon.function.Function1;
+import com.htt.kon.util.TextWatcherWrapper;
 import com.htt.kon.util.stream.Optional;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 
 import lombok.Getter;
 
@@ -60,6 +63,44 @@ public class OptionDialog {
         of.dialog = new AlertDialog.Builder(context).setView(view).create();
         return of;
     }
+
+    /**
+     * 为创建歌单弹出框预定义的方法
+     *
+     * @param context          context
+     * @param defMusicListName default music list name
+     * @param func             callback function
+     */
+    public static void ofCreateMusicList(Context context, @Nullable String defMusicListName, @NonNull Function1<String, Void> func) {
+        OptionDialog of = OptionDialog.of(context)
+                .setChild(LayoutInflater.from(context).inflate(R.layout.dialog_child_create_music_list, null))
+                .setTitle(context.getString(R.string.create_music_list))
+                .disabled(DialogInterface.BUTTON_POSITIVE)
+                .setPositiveButton(context.getString(R.string.submit), (child) -> {
+                    EditText et = child.findViewById(R.id.dccml_editText);
+                    String name = et.getText().toString();
+                    func.invoke(name);
+                })
+                .setNegativeButton(child -> {
+                })
+                .end();
+        EditText et = of.getChild().findViewById(R.id.dccml_editText);
+        et.addTextChangedListener(new TextWatcherWrapper() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                String str = s.toString();
+                if (StringUtils.isNotEmpty(str)) {
+                    of.enabled(DialogInterface.BUTTON_POSITIVE);
+                } else {
+                    of.disabled(DialogInterface.BUTTON_POSITIVE);
+                }
+            }
+        });
+        et.setText(defMusicListName);
+        of.show();
+        of.show();
+    }
+
 
     public OptionDialog setTitle(CharSequence title) {
         this.dialog.setTitle(title);

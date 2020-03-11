@@ -161,7 +161,17 @@ public class MusicFragment extends Fragment {
                 fragment.setOnClickListener(item -> {
                     switch (item.getId()) {
                         case CommonDialog.TAG_MUSIC_LIST_CREATE:
-                            caseCreateMusicList();
+                            OptionDialog.ofCreateMusicList(activity, null, name -> {
+                                MusicList ml = new MusicList();
+                                ml.setId(IdWorker.singleNextId());
+                                ml.setName(name);
+                                musicListDbService.insert(ml, vv -> {
+                                    // 刷新页面
+                                    updateInterface();
+                                    adapter.updateRes();
+                                });
+                                return null;
+                            });
                             break;
                         case CommonDialog.TAG_MUSIC_LIST_MANAGE:
                             Toast.makeText(activity, "敬请期待", Toast.LENGTH_SHORT).show();
@@ -195,42 +205,42 @@ public class MusicFragment extends Fragment {
     }
 
 
-    private void caseCreateMusicList() {
-        OptionDialog of = OptionDialog.of(activity)
-                .setChild(LayoutInflater.from(activity).inflate(R.layout.dialog_child_create_music_list, null))
-                .setTitle(getString(R.string.create_music_list))
-                .disabled(DialogInterface.BUTTON_POSITIVE)
-                .setPositiveButton(getString(R.string.submit), (child) -> {
-                    EditText et = child.findViewById(R.id.dccml_editText);
-                    String name = et.getText().toString();
-
-                    MusicList ml = new MusicList();
-                    ml.setId(IdWorker.singleNextId());
-                    ml.setName(name);
-                    musicListDbService.insert(ml, v -> {
-                        // 刷新页面
-                        updateInterface();
-                        this.adapter.updateRes();
-                    });
-                })
-                .setNegativeButton(child -> {
-                })
-                .end();
-        EditText et = of.getChild().findViewById(R.id.dccml_editText);
-
-        et.addTextChangedListener(new TextWatcherWrapper() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                String str = s.toString();
-                if (StringUtils.isNotEmpty(str)) {
-                    of.enabled(DialogInterface.BUTTON_POSITIVE);
-                } else {
-                    of.disabled(DialogInterface.BUTTON_POSITIVE);
-                }
-            }
-        });
-        of.show();
-    }
+    // private void caseCreateMusicList() {
+    //     OptionDialog of = OptionDialog.of(activity)
+    //             .setChild(LayoutInflater.from(activity).inflate(R.layout.dialog_child_create_music_list, null))
+    //             .setTitle(getString(R.string.create_music_list))
+    //             .disabled(DialogInterface.BUTTON_POSITIVE)
+    //             .setPositiveButton(getString(R.string.submit), (child) -> {
+    //                 EditText et = child.findViewById(R.id.dccml_editText);
+    //                 String name = et.getText().toString();
+    //
+    //                 MusicList ml = new MusicList();
+    //                 ml.setId(IdWorker.singleNextId());
+    //                 ml.setName(name);
+    //                 musicListDbService.insert(ml, v -> {
+    //                     // 刷新页面
+    //                     updateInterface();
+    //                     this.adapter.updateRes();
+    //                 });
+    //             })
+    //             .setNegativeButton(child -> {
+    //             })
+    //             .end();
+    //     EditText et = of.getChild().findViewById(R.id.dccml_editText);
+    //
+    //     et.addTextChangedListener(new TextWatcherWrapper() {
+    //         @Override
+    //         public void afterTextChanged(Editable s) {
+    //             String str = s.toString();
+    //             if (StringUtils.isNotEmpty(str)) {
+    //                 of.enabled(DialogInterface.BUTTON_POSITIVE);
+    //             } else {
+    //                 of.disabled(DialogInterface.BUTTON_POSITIVE);
+    //             }
+    //         }
+    //     });
+    //     of.show();
+    // }
 
     private void updateInterface() {
         this.musicListDbService.list(v -> {

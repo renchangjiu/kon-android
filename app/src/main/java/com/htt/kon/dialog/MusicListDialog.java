@@ -133,7 +133,23 @@ public class MusicListDialog extends DialogFragment {
         this.listView.setOnItemClickListener((parent, view, position, id) -> {
             List<Music> musics = this.getMusics();
             if (id == -1) {
-                this.caseCreateMusicList(musics, getArguments().getString(B_K_DEF_ML_NAME));
+                OptionDialog.ofCreateMusicList(activity, getArguments().getString(B_K_DEF_ML_NAME), name -> {
+                    MusicList ml = new MusicList();
+                    ml.setId(IdWorker.singleNextId());
+                    ml.setName(name);
+                    musicListDbService.insert(ml, v -> {
+                        for (Music music : musics) {
+                            music.setId(null);
+                            music.setMid(v.getId());
+                        }
+                        this.musicDbService.insert(musics, null, null);
+                        this.dismiss();
+                        activity.runOnUiThread(() -> {
+                            Toast.makeText(this.activity, this.activity.getString(R.string.collected_to_ml), Toast.LENGTH_SHORT).show();
+                        });
+                    });
+                    return null;
+                });
             } else {
                 for (Music music : musics) {
                     music.setId(null);
@@ -163,49 +179,4 @@ public class MusicListDialog extends DialogFragment {
         return musics;
     }
 
-    /**
-     * TODO: 与 MusicFragment#caseCreateMusicList 方法重复过多, 考虑如何重用
-     */
-    private void caseCreateMusicList(List<Music> musics, String defMusicListName) {
-        OptionDialog of = OptionDialog.of(activity)
-                .setChild(LayoutInflater.from(activity).inflate(R.layout.dialog_child_create_music_list, null))
-                .setTitle(getString(R.string.create_music_list))
-                .disabled(DialogInterface.BUTTON_POSITIVE)
-                .setPositiveButton(getString(R.string.submit), (child) -> {
-                    // 创建新歌单, 然后插入歌曲
-                    EditText et = child.findViewById(R.id.dccml_editText);
-                    String name = et.getText().toString();
-                    MusicList ml = new MusicList();
-                    ml.setId(IdWorker.singleNextId());
-                    ml.setName(name);
-                    musicListDbService.insert(ml, v -> {
-                        for (Music music : musics) {
-                            music.setId(null);
-                            music.setMid(v.getId());
-                        }
-                        this.musicDbService.insert(musics, null, null);
-                        this.dismiss();
-                        activity.runOnUiThread(() -> {
-                            Toast.makeText(this.activity, this.activity.getString(R.string.collected_to_ml), Toast.LENGTH_SHORT).show();
-                        });
-                    });
-                })
-                .setNegativeButton(child -> {
-                })
-                .end();
-        EditText et = of.getChild().findViewById(R.id.dccml_editText);
-        et.addTextChangedListener(new TextWatcherWrapper() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                String str = s.toString();
-                if (StringUtils.isNotEmpty(str)) {
-                    of.enabled(DialogInterface.BUTTON_POSITIVE);
-                } else {
-                    of.disabled(DialogInterface.BUTTON_POSITIVE);
-                }
-            }
-        });
-        et.setText(defMusicListName);
-        of.show();
-    }
 }
