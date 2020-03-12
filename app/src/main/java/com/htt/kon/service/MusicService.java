@@ -96,7 +96,7 @@ public class MusicService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        this.playlist = App.getApp().getPlaylist();
+        this.playlist = App.getPlaylist();
         this.player = new MediaPlayer();
 
         this.createNotification();

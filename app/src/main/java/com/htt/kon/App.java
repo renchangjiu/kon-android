@@ -31,15 +31,26 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import lombok.Getter;
 
 /**
  * @author su
  * @date 2020/02/06 19:55
  */
 public class App extends Application {
-    private static Context app;
 
+    @Getter
+    private static App app;
+
+    @Getter
     private static Playlist playlist;
+
+    @Getter
+    private static ThreadPoolExecutor poolExecutor;
 
     public static final String N_C_PLAY_ID = "1";
     public static final String N_C_PLAY_NAME = "play";
@@ -52,9 +63,11 @@ public class App extends Application {
         this.whenInstall();
         LogUtils.e("App onCreate.");
 
-        app = getApplicationContext();
+        app = (App) getApplicationContext();
 
         playlist = Playlist.init(this);
+
+        poolExecutor = new ThreadPoolExecutor(5, 10, 1, TimeUnit.SECONDS, new ArrayBlockingQueue<>(100), new ThreadPoolExecutor.CallerRunsPolicy());
 
         Intent intent = new Intent(this, MusicService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -63,15 +76,6 @@ public class App extends Application {
             startService(intent);
         }
     }
-
-    public static App getApp() {
-        return (App) app;
-    }
-
-    public Playlist getPlaylist() {
-        return playlist;
-    }
-
 
     /**
      * 适配 Android 8.0 通知

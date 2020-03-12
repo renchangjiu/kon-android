@@ -35,10 +35,6 @@ public class ContextTest {
     @Test
     public void useAppContext() throws Exception {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        Playlist playlist = App.getApp().getPlaylist();
-        Notification notification = PlayNotification.ofTwo(context, playlist.getCurMusic());
-        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(context);
-        managerCompat.notify(1, notification);
         LogUtils.e();
     }
 

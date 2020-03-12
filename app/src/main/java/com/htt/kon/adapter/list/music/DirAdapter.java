@@ -44,7 +44,7 @@ public class DirAdapter extends BaseAdapter implements LocalMusicFragmentAdapter
     public DirAdapter(List<ItemData> res, Context context) {
         this.res = res;
         this.activity = (LocalMusicActivity) context;
-        this.playlist = App.getApp().getPlaylist();
+        this.playlist = App.getPlaylist();
     }
 
     @Override

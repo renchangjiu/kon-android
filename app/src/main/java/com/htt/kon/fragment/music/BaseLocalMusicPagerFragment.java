@@ -59,7 +59,7 @@ public abstract class BaseLocalMusicPagerFragment extends Fragment {
         BaseReceiver.registerLocal(this.activity, this.receiver, PlayStateChangeReceiver.ACTION);
         this.receiver.setOnReceiveListener(this::onReceiveBroadcast);
         this.musicDbService = MusicDbService.of(this.activity);
-        this.playlist = App.getApp().getPlaylist();
+        this.playlist = App.getPlaylist();
     }
 
     /**

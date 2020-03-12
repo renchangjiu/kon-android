@@ -5,6 +5,7 @@ import android.content.Context;
 
 import androidx.annotation.Nullable;
 
+import com.htt.kon.App;
 import com.htt.kon.bean.Music;
 import com.htt.kon.bean.MusicList;
 import com.htt.kon.dao.AppDatabase;
@@ -13,7 +14,6 @@ import com.htt.kon.dao.MusicListDao;
 import com.htt.kon.util.stream.Optional;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -29,19 +29,22 @@ public class MusicListDbService {
 
     private MusicDao musicDao;
 
-    private static volatile MusicListDbService instance = null;
+    private static volatile MusicListDbService of = null;
+
+    private App app;
 
     public static MusicListDbService of(Context context) {
-        if (instance == null) {
+        if (of == null) {
             synchronized (MusicListDbService.class) {
-                if (instance == null) {
-                    instance = new MusicListDbService();
-                    instance.musicListDao = AppDatabase.of(context).musicListDao();
-                    instance.musicDao = AppDatabase.of(context).musicDao();
+                if (of == null) {
+                    of = new MusicListDbService();
+                    of.app = (App) context.getApplicationContext();
+                    of.musicListDao = AppDatabase.of(context).musicListDao();
+                    of.musicDao = AppDatabase.of(context).musicDao();
                 }
             }
         }
-        return instance;
+        return of;
     }
 
     public List<MusicList> list() {
@@ -64,10 +67,10 @@ public class MusicListDbService {
     }
 
     public void insert(MusicList musicList, @Nullable Callback<MusicList> call) {
-        new Thread(() -> {
+        App.getPoolExecutor().execute(() -> {
             this.insert(musicList);
             Optional.of(call).ifPresent(v -> v.on(musicList));
-        }).start();
+        });
     }
 
 

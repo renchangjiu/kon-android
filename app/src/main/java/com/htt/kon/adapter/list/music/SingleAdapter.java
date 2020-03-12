@@ -41,7 +41,7 @@ public class SingleAdapter extends BaseAdapter implements LocalMusicFragmentAdap
     public SingleAdapter(List<Music> res, Context activity) {
         this.res = res;
         this.activity = (LocalMusicActivity) activity;
-        this.playlist = App.getApp().getPlaylist();
+        this.playlist = App.getPlaylist();
     }
 
     @Override

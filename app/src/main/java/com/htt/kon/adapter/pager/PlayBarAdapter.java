@@ -43,7 +43,7 @@ public class PlayBarAdapter extends PagerAdapter {
     private Queue<View> viewPool = new LinkedList<>();
 
     public PlayBarAdapter() {
-        this.playlist = App.getApp().getPlaylist();
+        this.playlist = App.getPlaylist();
     }
 
     @NonNull

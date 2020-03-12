@@ -37,7 +37,7 @@ public class PlaylistDialogAdapter extends BaseAdapter {
 
     public PlaylistDialogAdapter() {
         this.app = App.getApp();
-        this.playlist = this.app.getPlaylist();
+        this.playlist = App.getPlaylist();
         lightBlackColor = ContextCompat.getColor(this.app, R.color.lightBlack);
     }
 

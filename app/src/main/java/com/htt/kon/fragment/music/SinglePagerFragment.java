@@ -60,7 +60,7 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
 
 
     private void init() {
-        this.playlist = App.getApp().getPlaylist();
+        this.playlist = App.getPlaylist();
         View headerView = LayoutInflater.from(this.activity).inflate(R.layout.list_header_single, null);
         this.listView.addHeaderView(headerView);
         ButterKnife.bind(this, this.listView);

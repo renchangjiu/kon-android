@@ -68,8 +68,7 @@ public class BaseActivity extends AppCompatActivity {
         this.contentContainer = (FrameLayout) ((ViewGroup) mDecorView.getChildAt(0)).getChildAt(1);
         this.playBar = LayoutInflater.from(this).inflate(R.layout.play_bar, contentContainer, false);
 
-        App app = App.getApp();
-        this.playlist = app.getPlaylist();
+        this.playlist = App.getPlaylist();
         this.initPlayBar();
         LogUtils.e();
     }

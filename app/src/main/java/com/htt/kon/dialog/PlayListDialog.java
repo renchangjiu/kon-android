@@ -82,7 +82,7 @@ public class PlayListDialog extends DialogFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
-        this.playlist = App.getApp().getPlaylist();
+        this.playlist = App.getPlaylist();
     }
 
     @Nullable
