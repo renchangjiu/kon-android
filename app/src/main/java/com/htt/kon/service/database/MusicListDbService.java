@@ -54,9 +54,9 @@ public class MusicListDbService {
     }
 
     public void list(Callback<List<MusicList>> call) {
-        new Thread(() -> {
+        App.getPoolExecutor().execute(() -> {
             call.on(this.list());
-        }).start();
+        });
     }
 
     public void insert(MusicList ml) {
@@ -81,11 +81,9 @@ public class MusicListDbService {
     }
 
     public void getById(long id, Callback<MusicList> call) {
-        new Thread(() -> {
+        App.getPoolExecutor().execute(() -> {
             call.on(this.getById(id));
-        }).start();
-
-
+        });
     }
 
     private void putData(List<MusicList> list) {

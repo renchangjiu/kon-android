@@ -61,11 +61,11 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
 
     private void init() {
         this.playlist = App.getPlaylist();
-        View headerView = LayoutInflater.from(this.activity).inflate(R.layout.list_header_single, null);
+        View headerView = LayoutInflater.from(this.activity).inflate(R.layout.list_header_single, this.listView, false);
         this.listView.addHeaderView(headerView);
         ButterKnife.bind(this, this.listView);
 
-        new Thread(() -> {
+        App.getPoolExecutor().execute(() -> {
             List<Music> list = this.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC);
             this.activity.runOnUiThread(() -> {
                 SingleAdapter adapter = new SingleAdapter(list, this.activity);
@@ -90,8 +90,7 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
                     LogUtils.e(item);
                 });
             });
-        }).start();
-
+        });
         this.listView.setOnItemClickListener((parent, view, position, id) -> {
             setPlaylist(position - 1);
         });
@@ -127,14 +126,14 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
      */
     private void setPlaylist(int index) {
         // 使本地音乐列表替代成为新的播放列表
-        new Thread(() -> {
+        App.getPoolExecutor().execute(() -> {
             List<Music> list = this.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC);
             this.activity.runOnUiThread(() -> {
                 this.activity.replacePlaylist(list, index);
                 // 通知adapter 更改界面
                 UiUtils.getAdapter(this.listView, SingleAdapter.class).notifyDataSetChanged();
             });
-        }).start();
+        });
     }
 
     private SinglePagerFragment() {

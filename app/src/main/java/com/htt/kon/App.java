@@ -60,7 +60,7 @@ public class App extends Application {
         super.onCreate();
         AppPathManger.initPaths(this);
         this.createNotificationChannel();
-        this.whenInstall();
+
         LogUtils.e("App onCreate.");
 
         app = (App) getApplicationContext();
@@ -68,6 +68,8 @@ public class App extends Application {
         playlist = Playlist.init(this);
 
         poolExecutor = new ThreadPoolExecutor(5, 10, 1, TimeUnit.SECONDS, new ArrayBlockingQueue<>(100), new ThreadPoolExecutor.CallerRunsPolicy());
+
+        this.whenInstall();
 
         Intent intent = new Intent(this, MusicService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -97,7 +99,7 @@ public class App extends Application {
      * 安装应用后做些操作
      */
     private void whenInstall() {
-        new Thread(() -> {
+        poolExecutor.execute(() -> {
             String key = "INSTALL_FLAG";
             boolean installFlag = SpUtils.getBoolean(this, key, true);
             if (!installFlag) {
@@ -106,7 +108,7 @@ public class App extends Application {
             this.work1();
             this.work2();
             SpUtils.putBoolean(this, key, false);
-        }).start();
+        });
     }
 
     /**

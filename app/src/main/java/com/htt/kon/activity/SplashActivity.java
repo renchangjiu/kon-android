@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.util.PermissionHelper;
 
@@ -46,7 +47,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void runApp() {
-        new Thread(() -> {
+        App.getPoolExecutor().execute(() -> {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -54,6 +55,6 @@ public class SplashActivity extends AppCompatActivity {
             }
             startActivity(new Intent(this, MainActivity.class));
             finish();
-        }).start();
+        });
     }
 }

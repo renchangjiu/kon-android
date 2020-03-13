@@ -4,6 +4,7 @@ import android.content.Context;
 
 import androidx.annotation.Nullable;
 
+import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.bean.Mp3Metadata;
 import com.htt.kon.bean.Music;
@@ -63,9 +64,9 @@ public class MusicDbService {
     }
 
     public void list(Callback<List<Music>> call) {
-        new Thread(() -> {
+        App.getPoolExecutor().execute(() -> {
             call.on(this.list());
-        }).start();
+        });
     }
 
     /**
@@ -99,7 +100,7 @@ public class MusicDbService {
      * @param mid 歌单ID, 若指定了目标歌单ID, 则会对歌曲集合进行校验, 已存在于该歌单内的歌曲不会被插入
      */
     public void insert(List<Music> list, @Nullable Long mid, @Nullable Callback<List<Music>> call) {
-        new Thread(() -> {
+        App.getPoolExecutor().execute(() -> {
             if (mid != null) {
                 List<Music> olds = this.list(mid);
                 Iterator<Music> iterator = list.iterator();
@@ -123,7 +124,7 @@ public class MusicDbService {
             }
             this.musicDao.insert(list);
             Optional.of(call).ifPresent(v -> v.on(list));
-        }).start();
+        });
     }
 
 

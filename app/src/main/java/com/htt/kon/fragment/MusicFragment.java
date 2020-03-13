@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
 import com.htt.kon.activity.MainActivity;
@@ -188,7 +189,7 @@ public class MusicFragment extends Fragment {
         this.swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         this.swipeRefreshLayout.setOnRefreshListener(() -> {
             // 耗时操作放入子线程
-            new Thread(() -> {
+            App.getPoolExecutor().execute(() -> {
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
@@ -199,7 +200,7 @@ public class MusicFragment extends Fragment {
                 });
                 // 结束刷新事件
                 this.swipeRefreshLayout.setRefreshing(false);
-            }).start();
+            });
         });
         this.updateInterface();
     }

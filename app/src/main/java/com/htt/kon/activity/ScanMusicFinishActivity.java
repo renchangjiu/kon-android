@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.bean.Music;
 import com.htt.kon.constant.CommonConstant;
@@ -93,7 +94,7 @@ public class ScanMusicFinishActivity extends AppCompatActivity {
 
     private void initTask() {
         this.task = new Task();
-        new Thread(task).start();
+        App.getPoolExecutor().execute(task);
     }
 
     private void init() {

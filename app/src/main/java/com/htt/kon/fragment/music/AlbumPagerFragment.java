@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.adapter.list.music.AlbumAdapter;
 import com.htt.kon.bean.CommonDialogItem;
@@ -48,7 +49,7 @@ public class AlbumPagerFragment extends BaseLocalMusicPagerFragment {
     }
 
     private void initListView() {
-        new Thread(() -> {
+        App.getPoolExecutor().execute(() -> {
             List<Music> list = super.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC);
             // 按歌手分类
             Map<String, List<Music>> map = super.musicDbService.listGroupByAlbum(list);
@@ -86,7 +87,7 @@ public class AlbumPagerFragment extends BaseLocalMusicPagerFragment {
                     LogUtils.e(item);
                 });
             });
-        }).start();
+        });
     }
 
 

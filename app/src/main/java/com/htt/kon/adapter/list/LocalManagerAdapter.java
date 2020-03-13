@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.activity.MainActivity;
 import com.htt.kon.constant.CommonConstant;
@@ -64,11 +65,10 @@ public class LocalManagerAdapter extends BaseAdapter {
         ItemData item1 = new ItemData();
         item1.imageId = R.drawable.music_icon_local;
         item1.itemTitle = this.activity.getString(R.string.local_music);
-        new Thread(() -> {
+        App.getPoolExecutor().execute(() -> {
             item1.count = this.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC).size();
             this.activity.runOnUiThread(this::notifyDataSetChanged);
-        }).start();
-
+        });
 
         ItemData item2 = new ItemData();
         item2.imageId = R.drawable.music_icon_recently_played;
@@ -90,7 +90,7 @@ public class LocalManagerAdapter extends BaseAdapter {
         item5.itemTitle = this.activity.getString(R.string.my_collection);
         item5.count = 0;
 
-        this.res .clear();
+        this.res.clear();
         this.res.add(item1);
         this.res.add(item2);
         this.res.add(item3);

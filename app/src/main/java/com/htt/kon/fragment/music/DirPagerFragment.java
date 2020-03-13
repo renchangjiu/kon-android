@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.adapter.list.music.AlbumAdapter;
 import com.htt.kon.adapter.list.music.DirAdapter;
@@ -51,7 +52,7 @@ public class DirPagerFragment extends BaseLocalMusicPagerFragment {
     }
 
     private void initListView() {
-        new Thread(() -> {
+        App.getPoolExecutor().execute(() -> {
             List<Music> list = super.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC);
             // 按文件夹分类
             Map<String, List<Music>> map = super.musicDbService.listGroupByDir(list);
@@ -88,7 +89,7 @@ public class DirPagerFragment extends BaseLocalMusicPagerFragment {
                     LogUtils.e(item);
                 });
             });
-        }).start();
+        });
     }
 
 
