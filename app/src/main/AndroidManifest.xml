@@ -14,7 +14,12 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".activity.MusicPlayActivity"></activity>
+        <activity
+                android:name=".activity.MusicsActivity"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity android:name=".activity.MusicPlayActivity" />
+
         <activity
                 android:name=".activity.ScanMusicFinishActivity"
                 android:theme="@style/Theme.AppCompat.Light.NoActionBar" />

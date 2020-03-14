@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
+import com.htt.kon.adapter.AsyncAdapter;
 import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
 import com.htt.kon.dialog.CommonDialog;
@@ -29,7 +30,7 @@ import lombok.ToString;
  * @author su
  * @date 2020/02/15 15:06
  */
-public class ArtistAdapter extends BaseAdapter implements LocalMusicFragmentAdapter {
+public class ArtistAdapter extends BaseAdapter implements LocalMusicFragmentAdapter, AsyncAdapter {
 
     private List<ItemData> res;
 
@@ -44,6 +45,17 @@ public class ArtistAdapter extends BaseAdapter implements LocalMusicFragmentAdap
         this.res = res;
         this.activity = (LocalMusicActivity) context;
         this.playlist = App.getPlaylist();
+    }
+
+    @Override
+    public void updateRes() {
+
+    }
+
+    @Override
+    public void clearRes() {
+        this.res.clear();
+        super.notifyDataSetChanged();
     }
 
     @Override
@@ -112,6 +124,7 @@ public class ArtistAdapter extends BaseAdapter implements LocalMusicFragmentAdap
     public long getItemId(int position) {
         return 0;
     }
+
 
     private static class ViewHolder {
         /**

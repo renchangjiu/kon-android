@@ -7,15 +7,21 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
+import com.htt.kon.adapter.AsyncAdapter;
 import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
+import com.htt.kon.constant.CommonConstant;
 import com.htt.kon.dialog.CommonDialog;
+import com.htt.kon.dialog.MusicListDialog;
 import com.htt.kon.service.Playlist;
+import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.util.JsonUtils;
+import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.stream.Optional;
 
 import java.util.ArrayList;
@@ -27,21 +33,41 @@ import lombok.Setter;
  * @author su
  * @date 2020/02/04 08:33
  */
-public class SingleAdapter extends BaseAdapter implements LocalMusicFragmentAdapter {
+public class SingleAdapter extends BaseAdapter implements LocalMusicFragmentAdapter, AsyncAdapter {
 
-    private List<Music> res;
+    private List<Music> res = new ArrayList<>();
 
     private LocalMusicActivity activity;
 
     private Playlist playlist;
 
+    private MusicDbService musicDbService;
+
     @Setter
     private OnOptionClickListener onOptionClickListener;
 
-    public SingleAdapter(List<Music> res, Context activity) {
-        this.res = res;
+    public SingleAdapter(Context activity) {
         this.activity = (LocalMusicActivity) activity;
+        this.musicDbService = MusicDbService.of(this.activity);
         this.playlist = App.getPlaylist();
+        this.updateRes();
+    }
+
+    @Override
+    public void updateRes() {
+        this.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC, musics -> {
+            this.activity.runOnUiThread(() -> {
+                this.res.clear();
+                this.res.addAll(musics);
+                super.notifyDataSetChanged();
+            });
+        });
+    }
+
+    @Override
+    public void clearRes() {
+        this.res.clear();
+        super.notifyDataSetChanged();
     }
 
     @Override
@@ -109,6 +135,7 @@ public class SingleAdapter extends BaseAdapter implements LocalMusicFragmentAdap
     public long getItemId(int position) {
         return this.getItem(position).getId();
     }
+
 
     private static class ViewHolder {
         private ImageView imageViewPlay;

@@ -65,31 +65,29 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
         this.listView.addHeaderView(headerView);
         ButterKnife.bind(this, this.listView);
 
-        App.getPoolExecutor().execute(() -> {
-            List<Music> list = this.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC);
-            this.activity.runOnUiThread(() -> {
-                SingleAdapter adapter = new SingleAdapter(list, this.activity);
-                this.listView.setAdapter(adapter);
-                String format = this.activity.getString(R.string.local_music_count);
-                this.textViewCount.setText(String.format(format, list.size()));
+        SingleAdapter adapter = new SingleAdapter(this.activity);
+        this.listView.setAdapter(adapter);
 
-                adapter.setOnOptionClickListener(item -> {
-                    Music music = JsonUtils.json2Bean(item.getData(), Music.class);
-                    switch (item.getId()) {
-                        case CommonDialog.TAG_PLAY_NEXT:
-                            this.activity.nextPlay(music);
-                            Toast.makeText(this.activity, this.activity.getString(R.string.added_to_next_play), Toast.LENGTH_SHORT).show();
-                            break;
-                        case CommonDialog.TAG_COLLECT:
-                            // 收藏到歌单
-                            MusicListDialog mlDialog = MusicListDialog.of(music, music.getTitle());
-                            mlDialog.show(activity.getSupportFragmentManager(), "1");
-                            break;
-                        default:
-                    }
-                    LogUtils.e(item);
-                });
+        this.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC, musics -> {
+            this.activity.runOnUiThread(() -> {
+                String format = this.activity.getString(R.string.local_music_count);
+                this.textViewCount.setText(String.format(format, musics.size()));
             });
+        });
+        adapter.setOnOptionClickListener(item -> {
+            Music music = JsonUtils.json2Bean(item.getData(), Music.class);
+            switch (item.getId()) {
+                case CommonDialog.TAG_PLAY_NEXT:
+                    this.activity.nextPlay(music);
+                    Toast.makeText(this.activity, this.activity.getString(R.string.added_to_next_play), Toast.LENGTH_SHORT).show();
+                    break;
+                case CommonDialog.TAG_COLLECT:
+                    // 收藏到歌单
+                    MusicListDialog mlDialog = MusicListDialog.of(music, music.getTitle());
+                    mlDialog.show(activity.getSupportFragmentManager(), "1");
+                    break;
+                default:
+            }
         });
         this.listView.setOnItemClickListener((parent, view, position, id) -> {
             setPlaylist(position - 1);

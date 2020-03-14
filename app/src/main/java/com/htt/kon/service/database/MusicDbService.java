@@ -2,6 +2,7 @@ package com.htt.kon.service.database;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.htt.kon.App;
@@ -63,7 +64,7 @@ public class MusicDbService {
         return list;
     }
 
-    public void list(Callback<List<Music>> call) {
+    public void list(@NonNull Callback<List<Music>> call) {
         App.getPoolExecutor().execute(() -> {
             call.on(this.list());
         });
@@ -76,6 +77,17 @@ public class MusicDbService {
         List<Music> list = this.musicDao.list(mid);
         this.putData(list);
         return list;
+    }
+
+    /**
+     * list by mid
+     */
+    public void list(long mid, @NonNull Callback<List<Music>> call) {
+        App.getPoolExecutor().execute(() -> {
+            List<Music> list = this.musicDao.list(mid);
+            this.putData(list);
+            call.on(list);
+        });
     }
 
 

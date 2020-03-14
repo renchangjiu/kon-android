@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.htt.kon.R;
 import com.htt.kon.activity.MainActivity;
+import com.htt.kon.adapter.AsyncAdapter;
 import com.htt.kon.bean.MusicList;
 import com.htt.kon.constant.CommonConstant;
 import com.htt.kon.service.database.MusicListDbService;
@@ -22,7 +23,7 @@ import java.util.List;
  * @author su
  * @date 2020/03/04 21:15
  */
-public class MusicListAdapter extends BaseAdapter {
+public class MusicListAdapter extends BaseAdapter implements AsyncAdapter {
 
     private MusicListDbService service;
 
@@ -36,6 +37,7 @@ public class MusicListAdapter extends BaseAdapter {
         this.updateRes();
     }
 
+    @Override
     public void updateRes() {
         this.service.list(musicLists -> {
             this.activity.runOnUiThread(() -> {
@@ -50,6 +52,7 @@ public class MusicListAdapter extends BaseAdapter {
         });
     }
 
+    @Override
     public void clearRes() {
         this.res.clear();
         this.notifyDataSetChanged();

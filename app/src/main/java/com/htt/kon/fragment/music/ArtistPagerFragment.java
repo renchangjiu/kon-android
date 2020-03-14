@@ -51,7 +51,7 @@ public class ArtistPagerFragment extends BaseLocalMusicPagerFragment {
 
     private void initListView() {
         App.getPoolExecutor().execute(() -> {
-// 按歌手分类
+            // 按歌手分类
             List<Music> list = super.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC);
             Map<String, List<Music>> map = super.musicDbService.listGroupByArtist(list);
 
