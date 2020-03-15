@@ -144,7 +144,4 @@ public class SingleAdapter extends BaseAdapter implements LocalMusicFragmentAdap
         private ImageView imageViewOption;
     }
 
-    public interface OnOptionClickListener {
-        void onClick(CommonDialogItem item);
-    }
 }

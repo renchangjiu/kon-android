@@ -84,9 +84,9 @@ public class MusicDbService {
      */
     public void list(long mid, @NonNull Callback<List<Music>> call) {
         App.getPoolExecutor().execute(() -> {
-            List<Music> list = this.musicDao.list(mid);
-            this.putData(list);
-            call.on(list);
+            List<Music> musics = this.musicDao.list(mid);
+            this.putData(musics);
+            call.on(musics);
         });
     }
 

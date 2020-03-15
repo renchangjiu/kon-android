@@ -1,5 +1,6 @@
 package com.htt.kon.fragment.music;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import androidx.annotation.Nullable;
 
 import com.htt.kon.App;
 import com.htt.kon.R;
+import com.htt.kon.activity.MusicsActivity;
 import com.htt.kon.adapter.list.music.AlbumAdapter;
 import com.htt.kon.adapter.list.music.ArtistAdapter;
 import com.htt.kon.bean.Music;
@@ -50,43 +52,33 @@ public class ArtistPagerFragment extends BaseLocalMusicPagerFragment {
     }
 
     private void initListView() {
-        App.getPoolExecutor().execute(() -> {
-            // 按歌手分类
-            List<Music> list = super.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC);
-            Map<String, List<Music>> map = super.musicDbService.listGroupByArtist(list);
 
-            // 封装adapter 参数
-            List<ArtistAdapter.ItemData> res = new ArrayList<>();
-            Set<Map.Entry<String, List<Music>>> entries = map.entrySet();
-            for (Map.Entry<String, List<Music>> entry : entries) {
-                ArtistAdapter.ItemData item = new ArtistAdapter.ItemData();
-                item.setArtist(entry.getKey());
-                item.setMusics(entry.getValue());
-                res.add(item);
+        ArtistAdapter adapter = new ArtistAdapter(this.activity);
+        this.listView.setAdapter(adapter);
+
+        adapter.setOnOptionClickListener(item -> {
+            ArtistAdapter.ItemData itemData = JsonUtils.json2Bean(item.getData(), ArtistAdapter.ItemData.class);
+            List<Music> musics = itemData.getMusics();
+            switch (item.getId()) {
+                case CommonDialog.TAG_PLAY_NEXT:
+                    super.activity.nextPlay(musics);
+                    Toast.makeText(this.activity, this.activity.getString(R.string.added_to_next_play), Toast.LENGTH_SHORT).show();
+                    break;
+                case CommonDialog.TAG_COLLECT:
+                    // 收藏到歌单
+                    MusicListDialog mlDialog = MusicListDialog.of(musics, itemData.getArtist());
+                    mlDialog.show(activity.getSupportFragmentManager(), "1");
+                    break;
+                default:
             }
+            LogUtils.e(item);
+        });
 
-            this.activity.runOnUiThread(() -> {
-                ArtistAdapter adapter = new ArtistAdapter(res, this.activity);
-                this.listView.setAdapter(adapter);
-
-                adapter.setOnOptionClickListener(item -> {
-                    ArtistAdapter.ItemData itemData = JsonUtils.json2Bean(item.getData(), ArtistAdapter.ItemData.class);
-                    List<Music> musics = itemData.getMusics();
-                    switch (item.getId()) {
-                        case CommonDialog.TAG_PLAY_NEXT:
-                            super.activity.nextPlay(musics);
-                            Toast.makeText(this.activity, this.activity.getString(R.string.added_to_next_play), Toast.LENGTH_SHORT).show();
-                            break;
-                        case CommonDialog.TAG_COLLECT:
-                            // 收藏到歌单
-                            MusicListDialog mlDialog = MusicListDialog.of(musics, itemData.getArtist());
-                            mlDialog.show(activity.getSupportFragmentManager(), "1");
-                            break;
-                        default:
-                    }
-                    LogUtils.e(item);
-                });
-            });
+        this.listView.setOnItemClickListener((parent, view, position, id) -> {
+            ArtistAdapter.ItemData item = adapter.getItem(position);
+            Intent intent = new Intent(this.activity, MusicsActivity.class);
+            intent.putExtras(MusicsActivity.putData(item.getArtist(), item.getMusics()));
+            startActivity(intent);
         });
     }
 

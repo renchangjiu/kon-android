@@ -14,13 +14,17 @@ import com.htt.kon.activity.LocalMusicActivity;
 import com.htt.kon.adapter.AsyncAdapter;
 import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
+import com.htt.kon.constant.CommonConstant;
 import com.htt.kon.dialog.CommonDialog;
 import com.htt.kon.service.Playlist;
+import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.stream.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -32,24 +36,41 @@ import lombok.ToString;
  */
 public class ArtistAdapter extends BaseAdapter implements LocalMusicFragmentAdapter, AsyncAdapter {
 
-    private List<ItemData> res;
+    private List<ItemData> res = new ArrayList<>();
 
     private LocalMusicActivity activity;
 
     private Playlist playlist;
 
+    private MusicDbService musicDbService;
+
     @Setter
     private OnOptionClickListener onOptionClickListener;
 
-    public ArtistAdapter(List<ItemData> res, Context context) {
-        this.res = res;
+    public ArtistAdapter(Context context) {
         this.activity = (LocalMusicActivity) context;
         this.playlist = App.getPlaylist();
+        this.musicDbService = MusicDbService.of(context);
+        this.updateRes();
     }
 
     @Override
     public void updateRes() {
-
+        // 按歌手分类
+        this.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC, musics -> {
+            Map<String, List<Music>> map = this.musicDbService.listGroupByArtist(musics);
+            Set<Map.Entry<String, List<Music>>> entries = map.entrySet();
+            this.activity.runOnUiThread(() -> {
+                this.res.clear();
+                for (Map.Entry<String, List<Music>> entry : entries) {
+                    ItemData item = new ItemData();
+                    item.setArtist(entry.getKey());
+                    item.setMusics(entry.getValue());
+                    this.res.add(item);
+                }
+                this.notifyDataSetChanged();
+            });
+        });
     }
 
     @Override
@@ -75,7 +96,6 @@ public class ArtistAdapter extends BaseAdapter implements LocalMusicFragmentAdap
             holder.imageViewOption = view.findViewById(R.id.lilma_imageViewOption);
             view.setTag(holder);
         }
-
         ItemData item = this.getItem(position);
 
         // 单击右侧图标
@@ -143,9 +163,5 @@ public class ArtistAdapter extends BaseAdapter implements LocalMusicFragmentAdap
         private String artist;
         private List<Music> musics;
 
-    }
-
-    public interface OnOptionClickListener {
-        void onClick(CommonDialogItem item);
     }
 }

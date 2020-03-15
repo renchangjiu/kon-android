@@ -142,7 +142,4 @@ public class AlbumAdapter extends BaseAdapter implements LocalMusicFragmentAdapt
 
     }
 
-    public interface OnOptionClickListener {
-        void onClick(CommonDialogItem item);
-    }
 }

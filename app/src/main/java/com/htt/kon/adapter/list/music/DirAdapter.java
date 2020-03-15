@@ -127,7 +127,4 @@ public class DirAdapter extends BaseAdapter implements LocalMusicFragmentAdapter
 
     }
 
-    public interface OnOptionClickListener {
-        void onClick(CommonDialogItem item);
-    }
 }
