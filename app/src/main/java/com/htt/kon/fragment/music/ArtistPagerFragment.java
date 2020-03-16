@@ -36,7 +36,6 @@ import java.util.Set;
  */
 public class ArtistPagerFragment extends BaseLocalMusicPagerFragment {
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -52,7 +51,6 @@ public class ArtistPagerFragment extends BaseLocalMusicPagerFragment {
     }
 
     private void initListView() {
-
         ArtistAdapter adapter = new ArtistAdapter(this.activity);
         this.listView.setAdapter(adapter);
 

@@ -11,7 +11,9 @@ import android.widget.Toast;
 
 import com.htt.kon.App;
 import com.htt.kon.R;
+import com.htt.kon.activity.BaseActivity;
 import com.htt.kon.activity.LocalMusicActivity;
+import com.htt.kon.activity.MusicsActivity;
 import com.htt.kon.adapter.AsyncAdapter;
 import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
@@ -37,7 +39,7 @@ public class SingleAdapter extends BaseAdapter implements LocalMusicFragmentAdap
 
     private List<Music> res;
 
-    private LocalMusicActivity activity;
+    private BaseActivity activity;
 
     private Playlist playlist;
 
@@ -46,16 +48,16 @@ public class SingleAdapter extends BaseAdapter implements LocalMusicFragmentAdap
     @Setter
     private OnOptionClickListener onOptionClickListener;
 
-    public SingleAdapter(Context activity) {
-        this.activity = (LocalMusicActivity) activity;
-        this.musicDbService = MusicDbService.of(this.activity);
+    public SingleAdapter(Context context) {
+        this.activity = (BaseActivity) context;
         this.playlist = App.getPlaylist();
+        this.musicDbService = MusicDbService.of(this.activity);
         this.res = new ArrayList<>();
         this.updateRes();
     }
 
-    public SingleAdapter(List<Music> res, Context activity) {
-        this.activity = (LocalMusicActivity) activity;
+    public SingleAdapter(List<Music> res, Context context) {
+        this.activity = (BaseActivity) context;
         this.playlist = App.getPlaylist();
         this.res = res;
     }

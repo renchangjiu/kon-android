@@ -12,10 +12,13 @@ import android.widget.TextView;
 import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
+import com.htt.kon.adapter.AsyncAdapter;
 import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
+import com.htt.kon.constant.CommonConstant;
 import com.htt.kon.dialog.CommonDialog;
 import com.htt.kon.service.Playlist;
+import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.stream.Optional;
 
@@ -23,6 +26,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -32,13 +37,15 @@ import lombok.ToString;
  * @author su
  * @date 2020/02/16 14:34
  */
-public class AlbumAdapter extends BaseAdapter implements LocalMusicFragmentAdapter {
+public class AlbumAdapter extends BaseAdapter implements LocalMusicFragmentAdapter, AsyncAdapter {
 
     private List<ItemData> res;
 
     private LocalMusicActivity activity;
 
     private Playlist playlist;
+
+    private MusicDbService musicDbService;
 
     @Setter
     private OnOptionClickListener onOptionClickListener;
@@ -47,6 +54,41 @@ public class AlbumAdapter extends BaseAdapter implements LocalMusicFragmentAdapt
         this.res = res;
         this.activity = (LocalMusicActivity) context;
         this.playlist = App.getPlaylist();
+        this.musicDbService = MusicDbService.of(context);
+    }
+
+    public AlbumAdapter(Context context) {
+        this.res = new ArrayList<>();
+        this.activity = (LocalMusicActivity) context;
+        this.playlist = App.getPlaylist();
+        this.musicDbService = MusicDbService.of(context);
+        this.updateRes();
+    }
+
+    @Override
+    public void updateRes() {
+        this.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC, musics -> {
+            // 按专辑分类
+            Map<String, List<Music>> map = this.musicDbService.listGroupByAlbum(musics);
+            Set<Map.Entry<String, List<Music>>> entries = map.entrySet();
+            this.activity.runOnUiThread(() -> {
+                this.res.clear();
+                for (Map.Entry<String, List<Music>> entry : entries) {
+                    ItemData item = new ItemData();
+                    item.setArtist(entry.getValue().get(0).getArtist());
+                    item.setAlbum(entry.getKey());
+                    item.setMusics(entry.getValue());
+                    this.res.add(item);
+                }
+                super.notifyDataSetChanged();
+            });
+        });
+    }
+
+    @Override
+    public void clearRes() {
+        this.res.clear();
+        super.notifyDataSetChanged();
     }
 
     @Override

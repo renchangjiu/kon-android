@@ -4,14 +4,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.adapter.list.music.SingleAdapter;
 import com.htt.kon.bean.Music;
+import com.htt.kon.broadcast.BaseReceiver;
+import com.htt.kon.broadcast.PlayStateChangeReceiver;
+import com.htt.kon.constant.CommonConstant;
 import com.htt.kon.util.JsonUtils;
+import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.UiUtils;
 
 import java.util.List;
@@ -23,7 +31,7 @@ import butterknife.ButterKnife;
  * @author su
  * @date 2020/03/14 12:31
  */
-public class MusicsActivity extends AppCompatActivity implements DataRequisiteActivity {
+public class MusicsActivity extends BaseActivity implements DataRequisiteActivity {
 
     private static final String B_K_TITLE = "B_K_TITLE";
     private static final String B_K_MUSICS = "B_K_MUSICS";
@@ -35,6 +43,8 @@ public class MusicsActivity extends AppCompatActivity implements DataRequisiteAc
     ListView listView;
 
     private List<Music> musics;
+
+    private SingleAdapter adapter;
 
     public static Bundle putData(String title, List<Music> musics) {
         Bundle bd = new Bundle();
@@ -63,9 +73,49 @@ public class MusicsActivity extends AppCompatActivity implements DataRequisiteAc
         this.toolbar.setNavigationOnClickListener(v -> {
             finish();
         });
-
-        View view = LayoutInflater.from(this).inflate(R.layout.fragment_local_music_single, this.listView, false);
-        SingleAdapter adapter = new SingleAdapter(this.musics, this);
+        this.adapter = new SingleAdapter(this.musics, this);
         this.listView.setAdapter(adapter);
+        View headerView = LayoutInflater.from(this).inflate(R.layout.list_header_single, this.listView, false);
+        TextView textViewCount = headerView.findViewById(R.id.lhs_textViewCount);
+        TextView textViewMultipleChoice = headerView.findViewById(R.id.lhs_textViewMultipleChoice);
+        String format = super.getString(R.string.local_music_count);
+        textViewCount.setText(String.format(format, musics.size()));
+        textViewMultipleChoice.setOnClickListener(v -> {
+            LogUtils.e("v");
+        });
+        this.listView.addHeaderView(headerView);
+
+        this.listView.setOnItemClickListener((parent, view, position, id) -> {
+            setPlaylist(position - 1);
+        });
+
+        // 播放全部
+        headerView.setOnClickListener(v -> {
+            setPlaylist(0);
+        });
+
+        PlayStateChangeReceiver receiver = new PlayStateChangeReceiver();
+        BaseReceiver.registerLocal(this, receiver, PlayStateChangeReceiver.ACTION);
+        receiver.setOnReceiveListener(flag -> {
+            switch (flag) {
+                case PLAY:
+                case CLEAR:
+                case REMOVE:
+                    this.adapter.notifyDataSetChanged();
+                    break;
+                default:
+            }
+        });
     }
+
+    /**
+     * 更新播放列表
+     *
+     * @param index 在新的播放列表中的index
+     */
+    private void setPlaylist(int index) {
+        super.replacePlaylist(this.musics, index);
+        this.adapter.notifyDataSetChanged();
+    }
+
 }
