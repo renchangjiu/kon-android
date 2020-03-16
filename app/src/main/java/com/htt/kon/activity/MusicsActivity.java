@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.htt.kon.R;
-import com.htt.kon.adapter.list.MusicsAdapter;
+import com.htt.kon.adapter.list.music.SingleAdapter;
 import com.htt.kon.bean.Music;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.UiUtils;
@@ -65,7 +65,7 @@ public class MusicsActivity extends AppCompatActivity implements DataRequisiteAc
         });
 
         View view = LayoutInflater.from(this).inflate(R.layout.fragment_local_music_single, this.listView, false);
-        MusicsAdapter adapter = new MusicsAdapter();
+        SingleAdapter adapter = new SingleAdapter(this.musics, this);
         this.listView.setAdapter(adapter);
     }
 }

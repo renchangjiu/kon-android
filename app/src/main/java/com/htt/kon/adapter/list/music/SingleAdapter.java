@@ -35,7 +35,7 @@ import lombok.Setter;
  */
 public class SingleAdapter extends BaseAdapter implements LocalMusicFragmentAdapter, AsyncAdapter {
 
-    private List<Music> res = new ArrayList<>();
+    private List<Music> res;
 
     private LocalMusicActivity activity;
 
@@ -50,7 +50,14 @@ public class SingleAdapter extends BaseAdapter implements LocalMusicFragmentAdap
         this.activity = (LocalMusicActivity) activity;
         this.musicDbService = MusicDbService.of(this.activity);
         this.playlist = App.getPlaylist();
+        this.res = new ArrayList<>();
         this.updateRes();
+    }
+
+    public SingleAdapter(List<Music> res, Context activity) {
+        this.activity = (LocalMusicActivity) activity;
+        this.playlist = App.getPlaylist();
+        this.res = res;
     }
 
     @Override
