@@ -1,5 +1,6 @@
 package com.htt.kon.fragment.music;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.annotation.Nullable;
 
 import com.htt.kon.App;
 import com.htt.kon.R;
+import com.htt.kon.activity.MusicsCheckedActivity;
 import com.htt.kon.adapter.list.music.SingleAdapter;
 import com.htt.kon.bean.Music;
 import com.htt.kon.broadcast.PlayStateChangeReceiver;
@@ -46,6 +48,7 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
     TextView textViewMultipleChoice;
 
     private ListView listView;
+    private SingleAdapter adapter;
 
     @Nullable
     @Override
@@ -65,7 +68,7 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
         this.listView.addHeaderView(headerView);
         ButterKnife.bind(this, this.listView);
 
-        SingleAdapter adapter = new SingleAdapter(this.activity);
+        this.adapter = new SingleAdapter(this.activity);
         this.listView.setAdapter(adapter);
 
         this.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC, musics -> {
@@ -100,7 +103,9 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
         });
 
         this.textViewMultipleChoice.setOnClickListener(v -> {
-            LogUtils.e("textViewMultipleChoice");
+            Intent intent = new Intent(this.activity, MusicsCheckedActivity.class);
+            intent.putExtras(MusicsCheckedActivity.putData(this.adapter.getRes()));
+            startActivity(intent);
         });
     }
 

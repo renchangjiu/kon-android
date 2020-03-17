@@ -50,12 +50,6 @@ public class AlbumAdapter extends BaseAdapter implements LocalMusicFragmentAdapt
     @Setter
     private OnOptionClickListener onOptionClickListener;
 
-    public AlbumAdapter(List<ItemData> res, Context context) {
-        this.res = res;
-        this.activity = (LocalMusicActivity) context;
-        this.playlist = App.getPlaylist();
-        this.musicDbService = MusicDbService.of(context);
-    }
 
     public AlbumAdapter(Context context) {
         this.res = new ArrayList<>();

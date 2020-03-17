@@ -7,23 +7,18 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.activity.BaseActivity;
-import com.htt.kon.activity.LocalMusicActivity;
-import com.htt.kon.activity.MusicsActivity;
 import com.htt.kon.adapter.AsyncAdapter;
 import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
 import com.htt.kon.constant.CommonConstant;
 import com.htt.kon.dialog.CommonDialog;
-import com.htt.kon.dialog.MusicListDialog;
 import com.htt.kon.service.Playlist;
 import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.util.JsonUtils;
-import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.stream.Optional;
 
 import java.util.ArrayList;
@@ -77,6 +72,10 @@ public class SingleAdapter extends BaseAdapter implements LocalMusicFragmentAdap
     public void clearRes() {
         this.res.clear();
         super.notifyDataSetChanged();
+    }
+
+    public List<Music> getRes() {
+        return this.res;
     }
 
     @Override

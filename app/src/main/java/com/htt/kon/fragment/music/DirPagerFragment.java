@@ -1,5 +1,6 @@
 package com.htt.kon.fragment.music;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import androidx.annotation.Nullable;
 
 import com.htt.kon.App;
 import com.htt.kon.R;
+import com.htt.kon.activity.MusicsActivity;
 import com.htt.kon.adapter.list.music.AlbumAdapter;
 import com.htt.kon.adapter.list.music.DirAdapter;
 import com.htt.kon.bean.CommonDialogItem;
@@ -37,6 +39,8 @@ import java.util.Set;
 public class DirPagerFragment extends BaseLocalMusicPagerFragment {
 
 
+    private DirAdapter adapter;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -52,43 +56,31 @@ public class DirPagerFragment extends BaseLocalMusicPagerFragment {
     }
 
     private void initListView() {
-        App.getPoolExecutor().execute(() -> {
-            List<Music> list = super.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC);
-            // 按文件夹分类
-            Map<String, List<Music>> map = super.musicDbService.listGroupByDir(list);
+        this.adapter = new DirAdapter(this.activity);
+        super.listView.setAdapter(adapter);
 
-            // 封装参数
-            List<DirAdapter.ItemData> res = new ArrayList<>();
-            Set<Map.Entry<String, List<Music>>> entries = map.entrySet();
-            for (Map.Entry<String, List<Music>> entry : entries) {
-                DirAdapter.ItemData item = new DirAdapter.ItemData();
-                item.setPath(entry.getKey());
-                item.setMusics(entry.getValue());
-                res.add(item);
+        adapter.setOnOptionClickListener((CommonDialogItem item) -> {
+            DirAdapter.ItemData itemData = JsonUtils.json2Bean(item.getData(), DirAdapter.ItemData.class);
+            List<Music> musics = itemData.getMusics();
+            switch (item.getId()) {
+                case CommonDialog.TAG_PLAY_NEXT:
+                    super.activity.nextPlay(musics);
+                    Toast.makeText(this.activity, this.activity.getString(R.string.added_to_next_play), Toast.LENGTH_SHORT).show();
+                    break;
+                case CommonDialog.TAG_COLLECT:
+                    // 收藏到歌单
+                    MusicListDialog mlDialog = MusicListDialog.of(musics, new File(itemData.getPath()).getName());
+                    mlDialog.show(activity.getSupportFragmentManager(), "1");
+                    break;
+                default:
             }
+        });
 
-            this.activity.runOnUiThread(() -> {
-                DirAdapter adapter = new DirAdapter(res, this.activity);
-                this.listView.setAdapter(adapter);
-
-                adapter.setOnOptionClickListener((CommonDialogItem item) -> {
-                    DirAdapter.ItemData itemData = JsonUtils.json2Bean(item.getData(), DirAdapter.ItemData.class);
-                    List<Music> musics = itemData.getMusics();
-                    switch (item.getId()) {
-                        case CommonDialog.TAG_PLAY_NEXT:
-                            super.activity.nextPlay(musics);
-                            Toast.makeText(this.activity, this.activity.getString(R.string.added_to_next_play), Toast.LENGTH_SHORT).show();
-                            break;
-                        case CommonDialog.TAG_COLLECT:
-                            // 收藏到歌单
-                            MusicListDialog mlDialog = MusicListDialog.of(musics, new File(itemData.getPath()).getName());
-                            mlDialog.show(activity.getSupportFragmentManager(), "1");
-                            break;
-                        default:
-                    }
-                    LogUtils.e(item);
-                });
-            });
+        this.listView.setOnItemClickListener((parent, view, position, id) -> {
+            DirAdapter.ItemData item = this.adapter.getItem(position);
+            Intent intent = new Intent(this.activity, MusicsActivity.class);
+            intent.putExtras(MusicsActivity.putData(new File(item.getPath()).getName(), item.getMusics()));
+            startActivity(intent);
         });
     }
 

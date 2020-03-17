@@ -11,16 +11,21 @@ import android.widget.TextView;
 import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
+import com.htt.kon.adapter.AsyncAdapter;
 import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
+import com.htt.kon.constant.CommonConstant;
 import com.htt.kon.dialog.CommonDialog;
 import com.htt.kon.service.Playlist;
+import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.stream.Optional;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +35,7 @@ import lombok.ToString;
  * @author su
  * @date 2020/02/23 19:52
  */
-public class DirAdapter extends BaseAdapter implements LocalMusicFragmentAdapter {
+public class DirAdapter extends BaseAdapter implements LocalMusicFragmentAdapter, AsyncAdapter {
 
     private List<ItemData> res;
 
@@ -38,14 +43,46 @@ public class DirAdapter extends BaseAdapter implements LocalMusicFragmentAdapter
 
     private Playlist playlist;
 
+    private MusicDbService musicDbService;
+
     @Setter
     private OnOptionClickListener onOptionClickListener;
 
-    public DirAdapter(List<ItemData> res, Context context) {
-        this.res = res;
+    public DirAdapter(Context context) {
+        this.res = new ArrayList<>();
         this.activity = (LocalMusicActivity) context;
         this.playlist = App.getPlaylist();
+        this.musicDbService = MusicDbService.of(context);
+        this.updateRes();
     }
+
+    @Override
+    public void updateRes() {
+        this.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC, musics -> {
+            // 按文件夹分类
+            Map<String, List<Music>> map = this.musicDbService.listGroupByDir(musics);
+
+            // 封装参数
+            Set<Map.Entry<String, List<Music>>> entries = map.entrySet();
+            this.activity.runOnUiThread(() -> {
+                this.res.clear();
+                for (Map.Entry<String, List<Music>> entry : entries) {
+                    DirAdapter.ItemData item = new DirAdapter.ItemData();
+                    item.setPath(entry.getKey());
+                    item.setMusics(entry.getValue());
+                    res.add(item);
+                }
+                super.notifyDataSetChanged();
+            });
+        });
+    }
+
+    @Override
+    public void clearRes() {
+        this.res.clear();
+        super.notifyDataSetChanged();
+    }
+
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -76,7 +113,7 @@ public class DirAdapter extends BaseAdapter implements LocalMusicFragmentAdapter
             items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_PLAY_NEXT).setName(context.getString(R.string.cdf_play_next)).setData(data));
             items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_COLLECT).setName(context.getString(R.string.cdf_collect)).setData(data));
             items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_DELETE).setName(context.getString(R.string.cdf_delete)).setData(data));
-            CommonDialog dialog = CommonDialog.of(String.format(format, item.getPath()), items);
+            CommonDialog dialog = CommonDialog.of(String.format(format, new File(item.getPath()).getName()), items);
 
             dialog.show(this.activity.getSupportFragmentManager(), "1");
             dialog.setOnClickListener((CommonDialogItem item1) -> {

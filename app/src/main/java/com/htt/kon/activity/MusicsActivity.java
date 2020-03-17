@@ -1,23 +1,19 @@
 package com.htt.kon.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.adapter.list.music.SingleAdapter;
 import com.htt.kon.bean.Music;
 import com.htt.kon.broadcast.BaseReceiver;
 import com.htt.kon.broadcast.PlayStateChangeReceiver;
-import com.htt.kon.constant.CommonConstant;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.UiUtils;
@@ -80,8 +76,11 @@ public class MusicsActivity extends BaseActivity implements DataRequisiteActivit
         TextView textViewMultipleChoice = headerView.findViewById(R.id.lhs_textViewMultipleChoice);
         String format = super.getString(R.string.local_music_count);
         textViewCount.setText(String.format(format, musics.size()));
+
         textViewMultipleChoice.setOnClickListener(v -> {
-            LogUtils.e("v");
+            Intent intent = new Intent(this, MusicsCheckedActivity.class);
+            intent.putExtras(MusicsCheckedActivity.putData(this.adapter.getRes()));
+            startActivity(intent);
         });
         this.listView.addHeaderView(headerView);
 
@@ -94,6 +93,7 @@ public class MusicsActivity extends BaseActivity implements DataRequisiteActivit
             setPlaylist(0);
         });
 
+        // 监听播放广播
         PlayStateChangeReceiver receiver = new PlayStateChangeReceiver();
         BaseReceiver.registerLocal(this, receiver, PlayStateChangeReceiver.ACTION);
         receiver.setOnReceiveListener(flag -> {
