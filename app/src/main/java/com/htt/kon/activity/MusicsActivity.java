@@ -54,13 +54,13 @@ public class MusicsActivity extends BaseActivity implements DataRequisiteActivit
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_musics);
         ButterKnife.bind(this);
+        setSupportActionBar(this.toolbar);
+        UiUtils.setStatusBarColor(this);
 
         Bundle bd = getIntent().getExtras();
         assert bd != null;
-        setSupportActionBar(this.toolbar);
-        this.toolbar.setTitle(bd.getString(B_K_TITLE));
-        UiUtils.setStatusBarColor(this);
 
+        this.toolbar.setTitle(bd.getString(B_K_TITLE));
         this.musics = JsonUtils.json2List(bd.getString(B_K_MUSICS), Music.class);
         this.init();
     }

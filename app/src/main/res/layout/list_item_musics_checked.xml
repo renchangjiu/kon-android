@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="55dp">
+
+    <CheckBox
+            android:id="@+id/limc_checkBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="8dp"
+            android:clickable="false"
+            android:focusable="false" />
+
+    <TextView
+            android:id="@+id/limc_textViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="9dp"
+            android:layout_toEndOf="@id/limc_checkBox"
+            android:ellipsize="marquee"
+            android:maxEms="24"
+            android:singleLine="true"
+            android:text="@string/deep_sea_girl"
+            android:textColor="@color/lightBlack"
+            android:textSize="14sp" />
+
+    <TextView
+            android:id="@+id/lilmc_textViewArtist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/limc_textViewTitle"
+            android:layout_alignStart="@id/limc_textViewTitle"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:layout_toEndOf="@id/limc_checkBox"
+            android:ellipsize="marquee"
+            android:maxEms="24"
+            android:singleLine="true"
+            android:text="@string/artist_album"
+            android:textColor="@color/grey"
+            android:textSize="12sp" />
+</RelativeLayout>

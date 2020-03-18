@@ -78,5 +78,9 @@
     <string name="music_list_name">歌单名</string>
     <string name="music_list_music_count">%d首</string>
 
+    <string name="item_selected_count">已选择%d项</string>
+    <string name="select_all">全选</string>
+    <string name="unselect_all">取消全选</string>
+
 
 </resources>
