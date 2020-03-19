@@ -1,6 +1,5 @@
 package com.htt.kon.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
@@ -12,7 +11,6 @@ import com.htt.kon.R;
 import com.htt.kon.adapter.list.MusicsCheckedAdapter;
 import com.htt.kon.bean.Music;
 import com.htt.kon.util.JsonUtils;
-import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.UiUtils;
 
 import java.util.List;
@@ -47,6 +45,12 @@ public class MusicsCheckedActivity extends BaseActivity implements DataRequisite
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        super.hidePlayBar();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_musics_checked);
@@ -67,30 +71,30 @@ public class MusicsCheckedActivity extends BaseActivity implements DataRequisite
         this.adapter = new MusicsCheckedAdapter(musics, this);
         this.listView.setAdapter(adapter);
         this.listView.setOnItemClickListener((parent, view, position, id) -> {
-            int checkedCount = adapter.checkedIf(position);
-            this.setStatusBarTitle(checkedCount);
-            if (checkedCount == musics.size()) {
-                this.textView.setText(getString(R.string.unselect_all));
-            } else {
-                this.textView.setText(getString(R.string.select_all));
-            }
+            this.adapter.checkedIf(position);
+            this.setStatusBarTitle();
+            this.whenCheck();
         });
-        this.setStatusBarTitle(0);
+        this.setStatusBarTitle();
     }
 
     @OnClick({R.id.amc_textView})
     public void click(View view) {
-        int checkedCount = this.adapter.checkedAll();
-        this.setStatusBarTitle(checkedCount);
-        if (checkedCount == musics.size()) {
+        this.adapter.checkedAll();
+        this.setStatusBarTitle();
+        this.whenCheck();
+    }
+
+    private void setStatusBarTitle() {
+        String format = super.getString(R.string.item_selected_count);
+        this.toolbar.setTitle(String.format(format, this.adapter.getCheckedCount()));
+    }
+
+    private void whenCheck() {
+        if (this.adapter.getCheckedCount() == musics.size()) {
             this.textView.setText(getString(R.string.unselect_all));
         } else {
             this.textView.setText(getString(R.string.select_all));
         }
-    }
-
-    private void setStatusBarTitle(int checkedCount) {
-        String format = super.getString(R.string.item_selected_count);
-        this.toolbar.setTitle(String.format(format, checkedCount));
     }
 }

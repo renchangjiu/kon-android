@@ -10,7 +10,8 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="8dp"
             android:clickable="false"
-            android:focusable="false" />
+            android:focusable="false"
+            android:text="@string/empty_str" />
 
     <TextView
             android:id="@+id/limc_textViewTitle"

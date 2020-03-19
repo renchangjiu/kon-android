@@ -6,27 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.htt.kon.App;
 import com.htt.kon.R;
-import com.htt.kon.activity.BaseActivity;
 import com.htt.kon.activity.MusicsCheckedActivity;
-import com.htt.kon.adapter.list.music.OnOptionClickListener;
-import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
-import com.htt.kon.constant.CommonConstant;
-import com.htt.kon.dialog.CommonDialog;
-import com.htt.kon.service.Playlist;
-import com.htt.kon.service.database.MusicDbService;
-import com.htt.kon.util.JsonUtils;
-import com.htt.kon.util.stream.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import lombok.Setter;
 
 /**
  * @author su
@@ -48,24 +35,22 @@ public class MusicsCheckedAdapter extends BaseAdapter {
     /**
      * 对选中状态取反
      *
-     * @return checked count
      */
-    public int checkedIf(int position) {
+    public void checkedIf(int position) {
         if (this.checkedPos.contains(position)) {
             this.checkedPos.remove((Integer) position);
         } else {
             this.checkedPos.add(position);
         }
         super.notifyDataSetChanged();
-        return this.checkedPos.size();
+        this.checkedPos.size();
     }
 
     /**
      * 全选 or 取消全选
      *
-     * @return checked count
      */
-    public int checkedAll() {
+    public void checkedAll() {
         if (this.checkedPos.size() == this.res.size()) {
             this.checkedPos.clear();
         } else {
@@ -75,9 +60,15 @@ public class MusicsCheckedAdapter extends BaseAdapter {
             }
         }
         super.notifyDataSetChanged();
-        return this.checkedPos.size();
+        this.checkedPos.size();
     }
 
+    /**
+     * 返回被选中的数量
+     */
+    public int getCheckedCount() {
+        return this.checkedPos.size();
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
