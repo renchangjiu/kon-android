@@ -20,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.htt.kon.R;
+import com.htt.kon.activity.BaseActivity;
 import com.htt.kon.activity.LocalMusicActivity;
 import com.htt.kon.adapter.list.dialog.MusicListDialogAdapter;
 import com.htt.kon.bean.Music;
@@ -47,7 +48,7 @@ import butterknife.ButterKnife;
  */
 public class MusicListDialog extends DialogFragment {
 
-    private LocalMusicActivity activity;
+    private BaseActivity activity;
 
     private MusicDbService musicDbService;
 
@@ -107,7 +108,7 @@ public class MusicListDialog extends DialogFragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        this.activity = (LocalMusicActivity) context;
+        this.activity = (BaseActivity) context;
         this.musicDbService = MusicDbService.of(context);
         this.musicListDbService = MusicListDbService.of(context);
     }

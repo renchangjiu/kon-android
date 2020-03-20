@@ -34,7 +34,6 @@ public class MusicsCheckedAdapter extends BaseAdapter {
 
     /**
      * 对选中状态取反
-     *
      */
     public void checkedIf(int position) {
         if (this.checkedPos.contains(position)) {
@@ -48,7 +47,6 @@ public class MusicsCheckedAdapter extends BaseAdapter {
 
     /**
      * 全选 or 取消全选
-     *
      */
     public void checkedAll() {
         if (this.checkedPos.size() == this.res.size()) {
@@ -68,6 +66,17 @@ public class MusicsCheckedAdapter extends BaseAdapter {
      */
     public int getCheckedCount() {
         return this.checkedPos.size();
+    }
+
+    /**
+     * 返回被选中的
+     */
+    public List<Music> getChecked() {
+        List<Music> musics = new ArrayList<>();
+        for (Integer pos : checkedPos) {
+            musics.add(this.res.get(pos));
+        }
+        return musics;
     }
 
     @Override

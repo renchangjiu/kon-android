@@ -83,6 +83,7 @@
     <string name="select_all">全选</string>
     <string name="unselect_all">取消全选</string>
     <string name="add2music_list">加入歌单</string>
+    <string name="please_select_music">请选择歌曲</string>
 
 
 </resources>

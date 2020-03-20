@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.htt.kon.R;
+import com.htt.kon.activity.BaseActivity;
 import com.htt.kon.activity.LocalMusicActivity;
 import com.htt.kon.activity.MainActivity;
 import com.htt.kon.bean.MusicList;
@@ -27,12 +28,12 @@ public class MusicListDialogAdapter extends BaseAdapter {
 
     private MusicListDbService service;
 
-    private LocalMusicActivity activity;
+    private BaseActivity activity;
 
     private List<MusicList> res = new ArrayList<>();
 
     public MusicListDialogAdapter(Context activity) {
-        this.activity = (LocalMusicActivity) activity;
+        this.activity = (BaseActivity) activity;
         this.service = MusicListDbService.of(this.activity);
         this.initRes();
     }

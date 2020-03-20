@@ -11,7 +11,8 @@
             android:layout_marginStart="8dp"
             android:clickable="false"
             android:focusable="false"
-            android:text="@string/empty_str" />
+            android:text="null"
+            android:theme="@style/CheckBox" />
 
     <TextView
             android:id="@+id/limc_textViewTitle"

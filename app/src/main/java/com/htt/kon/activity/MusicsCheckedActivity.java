@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.htt.kon.R;
 import com.htt.kon.adapter.list.MusicsCheckedAdapter;
 import com.htt.kon.bean.Music;
+import com.htt.kon.dialog.MusicListDialog;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.UiUtils;
 
@@ -78,12 +80,45 @@ public class MusicsCheckedActivity extends BaseActivity implements DataRequisite
         this.setStatusBarTitle();
     }
 
+    /**
+     * 全选 & 取消全选
+     */
     @OnClick({R.id.amc_textView})
-    public void click(View view) {
+    public void click1(View view) {
         this.adapter.checkedAll();
         this.setStatusBarTitle();
         this.whenCheck();
     }
+
+    /**
+     * 下一首播放 & 加入歌单 & 上传到云盘 & 删除
+     */
+    @OnClick({R.id.amc_playNext, R.id.amc_add2music_list, R.id.amc_share, R.id.amc_delete})
+    public void click2(View view) {
+        List<Music> musics = this.adapter.getChecked();
+        if (musics.isEmpty()) {
+            Toast.makeText(this, getString(R.string.please_select_music), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        switch (view.getId()) {
+            case R.id.amc_playNext:
+                super.nextPlay(musics);
+                super.hidePlayBar();
+                break;
+            case R.id.amc_add2music_list:
+                MusicListDialog mlDialog = MusicListDialog.of(musics, musics.get(0).getTitle());
+                mlDialog.show(super.getSupportFragmentManager(), "1");
+                break;
+            case R.id.amc_share:
+                Toast.makeText(this, "敬请期待...", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.amc_delete:
+                // TODO: 删除
+                break;
+            default:
+        }
+    }
+
 
     private void setStatusBarTitle() {
         String format = super.getString(R.string.item_selected_count);
