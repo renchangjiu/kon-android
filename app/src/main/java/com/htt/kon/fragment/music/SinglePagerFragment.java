@@ -103,9 +103,7 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
         });
 
         this.textViewMultipleChoice.setOnClickListener(v -> {
-            Intent intent = new Intent(this.activity, MusicsCheckedActivity.class);
-            intent.putExtras(MusicsCheckedActivity.putData(this.adapter.getRes()));
-            startActivity(intent);
+            MusicsCheckedActivity.start(this.activity, this.adapter.getRes());
         });
     }
 

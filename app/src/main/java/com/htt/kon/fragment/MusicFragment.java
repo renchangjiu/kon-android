@@ -22,6 +22,7 @@ import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
 import com.htt.kon.activity.MainActivity;
+import com.htt.kon.activity.MusicListActivity;
 import com.htt.kon.adapter.list.LocalManagerAdapter;
 import com.htt.kon.adapter.list.MusicListAdapter;
 import com.htt.kon.bean.CommonDialogItem;
@@ -31,6 +32,7 @@ import com.htt.kon.dialog.CommonDialog;
 import com.htt.kon.dialog.OptionDialog;
 import com.htt.kon.service.database.MusicListDbService;
 import com.htt.kon.util.IdWorker;
+import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.TextWatcherWrapper;
 import com.htt.kon.view.ListViewSeparateLayout;
 
@@ -65,6 +67,7 @@ public class MusicFragment extends Fragment {
     private ListViewSeparateLayout separateLayout;
 
     private LocalManagerAdapter localManagerAdapter;
+    private ListView headerListView;
 
 
     @Override
@@ -92,7 +95,25 @@ public class MusicFragment extends Fragment {
 
     private void init() {
         this.musicListDbService = MusicListDbService.of(this.activity);
+        View header = LayoutInflater.from(this.activity).inflate(R.layout.list_header_music_fragment, this.listViewMusicList, false);
+        this.headerListView = header.findViewById(R.id.lhmf_listView);
+        this.separateLayout = header.findViewById(R.id.lhmf_separateLayout);
 
+        this.listViewMusicList.addHeaderView(header);
+        this.localManagerAdapter = new LocalManagerAdapter(this.activity);
+        this.headerListView.setAdapter(this.localManagerAdapter);
+        this.adapter = new MusicListAdapter(this.activity);
+        this.listViewMusicList.setAdapter(this.adapter);
+
+        this.processListViewMusicList();
+        this.processHeaderView();
+        this.processSeparateLayout();
+        this.processSwipeRefreshLayout();
+
+        this.updateInterface();
+    }
+
+    private void processListViewMusicList() {
         // 解决 ListView 与 SwipeRefreshLayout 滑动冲突的问题
         this.listViewMusicList.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -104,18 +125,14 @@ public class MusicFragment extends Fragment {
                 swipeRefreshLayout.setEnabled(firstVisibleItem == 0);
             }
         });
-        View header = LayoutInflater.from(this.activity).inflate(R.layout.list_header_music_fragment, this.listViewMusicList, false);
-        ListView headerListView = header.findViewById(R.id.lhmf_listView);
-        this.separateLayout = header.findViewById(R.id.lhmf_separateLayout);
 
-        this.listViewMusicList.addHeaderView(header);
+        this.listViewMusicList.setOnItemClickListener((parent, view, position, id) -> {
+            MusicListActivity.start(this.activity, id);
+        });
+    }
 
-        this.localManagerAdapter = new LocalManagerAdapter(this.activity);
-        this.adapter = new MusicListAdapter(this.activity);
-        headerListView.setAdapter(this.localManagerAdapter);
-        this.listViewMusicList.setAdapter(this.adapter);
-
-        headerListView.setOnItemClickListener((parent, view, position, id) -> {
+    private void processHeaderView() {
+        this.headerListView.setOnItemClickListener((parent, view, position, id) -> {
             switch (position) {
                 case 0:
                     startActivity(new Intent(activity, LocalMusicActivity.class));
@@ -135,8 +152,9 @@ public class MusicFragment extends Fragment {
                 default:
             }
         });
+    }
 
-
+    private void processSeparateLayout() {
         // 分隔布局的点击事件
         this.separateLayout.setOnClickListener(new ListViewSeparateLayout.OnClickListener() {
             @Override
@@ -185,7 +203,9 @@ public class MusicFragment extends Fragment {
                 });
             }
         });
+    }
 
+    private void processSwipeRefreshLayout() {
         this.swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         this.swipeRefreshLayout.setOnRefreshListener(() -> {
             // 耗时操作放入子线程
@@ -202,46 +222,7 @@ public class MusicFragment extends Fragment {
                 this.swipeRefreshLayout.setRefreshing(false);
             });
         });
-        this.updateInterface();
     }
-
-
-    // private void caseCreateMusicList() {
-    //     OptionDialog of = OptionDialog.of(activity)
-    //             .setChild(LayoutInflater.from(activity).inflate(R.layout.dialog_child_create_music_list, null))
-    //             .setTitle(getString(R.string.create_music_list))
-    //             .disabled(DialogInterface.BUTTON_POSITIVE)
-    //             .setPositiveButton(getString(R.string.submit), (child) -> {
-    //                 EditText et = child.findViewById(R.id.dccml_editText);
-    //                 String name = et.getText().toString();
-    //
-    //                 MusicList ml = new MusicList();
-    //                 ml.setId(IdWorker.singleNextId());
-    //                 ml.setName(name);
-    //                 musicListDbService.insert(ml, v -> {
-    //                     // 刷新页面
-    //                     updateInterface();
-    //                     this.adapter.updateRes();
-    //                 });
-    //             })
-    //             .setNegativeButton(child -> {
-    //             })
-    //             .end();
-    //     EditText et = of.getChild().findViewById(R.id.dccml_editText);
-    //
-    //     et.addTextChangedListener(new TextWatcherWrapper() {
-    //         @Override
-    //         public void afterTextChanged(Editable s) {
-    //             String str = s.toString();
-    //             if (StringUtils.isNotEmpty(str)) {
-    //                 of.enabled(DialogInterface.BUTTON_POSITIVE);
-    //             } else {
-    //                 of.disabled(DialogInterface.BUTTON_POSITIVE);
-    //             }
-    //         }
-    //     });
-    //     of.show();
-    // }
 
     private void updateInterface() {
         this.musicListDbService.list(v -> {

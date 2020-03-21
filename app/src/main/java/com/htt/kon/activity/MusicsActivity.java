@@ -2,6 +2,7 @@ package com.htt.kon.activity;
 
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -42,11 +43,13 @@ public class MusicsActivity extends BaseActivity implements DataRequisiteActivit
 
     private SingleAdapter adapter;
 
-    public static Bundle putData(String title, List<Music> musics) {
+    public static void start(Activity source, String title, List<Music> musics) {
         Bundle bd = new Bundle();
         bd.putString(B_K_TITLE, title);
         bd.putString(B_K_MUSICS, JsonUtils.bean2Json(musics));
-        return bd;
+        Intent intent = new Intent(source, MusicsActivity.class);
+        intent.putExtras(bd);
+        source.startActivity(intent);
     }
 
     @Override
@@ -78,9 +81,7 @@ public class MusicsActivity extends BaseActivity implements DataRequisiteActivit
         textViewCount.setText(String.format(format, musics.size()));
 
         textViewMultipleChoice.setOnClickListener(v -> {
-            Intent intent = new Intent(this, MusicsCheckedActivity.class);
-            intent.putExtras(MusicsCheckedActivity.putData(this.adapter.getRes()));
-            startActivity(intent);
+            MusicsCheckedActivity.start(this, this.adapter.getRes());
         });
         this.listView.addHeaderView(headerView);
 

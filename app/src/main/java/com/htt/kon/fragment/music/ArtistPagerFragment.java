@@ -74,9 +74,7 @@ public class ArtistPagerFragment extends BaseLocalMusicPagerFragment {
 
         this.listView.setOnItemClickListener((parent, view, position, id) -> {
             ArtistAdapter.ItemData item = adapter.getItem(position);
-            Intent intent = new Intent(this.activity, MusicsActivity.class);
-            intent.putExtras(MusicsActivity.putData(item.getArtist(), item.getMusics()));
-            startActivity(intent);
+            MusicsActivity.start(this.activity, item.getArtist(), item.getMusics());
         });
     }
 

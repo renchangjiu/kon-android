@@ -78,9 +78,7 @@ public class DirPagerFragment extends BaseLocalMusicPagerFragment {
 
         this.listView.setOnItemClickListener((parent, view, position, id) -> {
             DirAdapter.ItemData item = this.adapter.getItem(position);
-            Intent intent = new Intent(this.activity, MusicsActivity.class);
-            intent.putExtras(MusicsActivity.putData(new File(item.getPath()).getName(), item.getMusics()));
-            startActivity(intent);
+            MusicsActivity.start(this.activity, new File(item.getPath()).getName(), item.getMusics());
         });
     }
 

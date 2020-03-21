@@ -85,5 +85,10 @@
     <string name="add2music_list">加入歌单</string>
     <string name="please_select_music">请选择歌曲</string>
 
+    <string name="ml_auto_download">WIFI下自动下载新增歌曲</string>
+    <string name="ml_edit">编辑歌单信息</string>
+    <string name="ml_sort">更改歌曲排序</string>
+    <string name="ml_delete">清空下载文件</string>
+
 
 </resources>

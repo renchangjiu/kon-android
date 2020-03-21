@@ -2,6 +2,8 @@ package com.htt.kon.activity;
 
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
@@ -40,10 +42,12 @@ public class MusicsCheckedActivity extends BaseActivity implements DataRequisite
     private List<Music> musics;
 
 
-    public static Bundle putData(List<Music> musics) {
+    public static void start(Activity source, List<Music> musics) {
+        Intent intent = new Intent(source, MusicsCheckedActivity.class);
         Bundle bd = new Bundle();
         bd.putString(B_K_MUSICS, JsonUtils.bean2Json(musics));
-        return bd;
+        intent.putExtras(bd);
+        source.startActivity(intent);
     }
 
     @Override
@@ -59,7 +63,6 @@ public class MusicsCheckedActivity extends BaseActivity implements DataRequisite
         ButterKnife.bind(this);
         setSupportActionBar(this.toolbar);
         UiUtils.setStatusBarColor(this);
-
         this.init();
     }
 

@@ -1,6 +1,6 @@
 package com.htt.kon.activity;
 
-import android.os.Bundle;
+import android.app.Activity;
 
 /**
  * 需要从 Bundle 中接收数据的 activity 务必实现此接口, 以明确数据传递的方式
@@ -11,11 +11,12 @@ import android.os.Bundle;
 public interface DataRequisiteActivity {
 
     /**
-     * 通过该方法向目标 activity 传递数据
+     * 通过该方法向目标 activity 传递数据, 然后启动目标 activity
      *
-     * @return Bundle
+     * @param source source
+     * @param args   args
      */
-    static Bundle putData() {
+    static void start(Activity source, Object... args) {
         throw new RuntimeException();
     }
 }
