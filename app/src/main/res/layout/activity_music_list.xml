@@ -4,6 +4,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         tools:context=".activity.MusicListActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -15,5 +16,14 @@
             app:navigationIcon="@drawable/t_actionbar_back"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:title="歌单" />
+
+    <ListView
+            android:id="@+id/aml_listView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@drawable/divider_list_single"
+            android:dividerHeight="1dp"
+            tools:listheader="@layout/list_header_ml"
+            tools:listitem="@layout/list_item_musics" />
 
 </LinearLayout>

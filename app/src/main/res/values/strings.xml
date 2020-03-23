@@ -91,4 +91,9 @@
     <string name="ml_delete">清空下载文件</string>
 
 
+    <string name="collect">收藏</string>
+    <string name="comment">评论</string>
+    <string name="share">分享</string>
+    <string name="download">下载</string>
+
 </resources>

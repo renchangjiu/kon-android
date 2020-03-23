@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/grey5">
+
+        <ImageView
+                android:id="@+id/imageViewCover"
+                android:layout_width="114dp"
+                android:layout_height="114dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="4dp"
+                android:background="@color/colorPrimary"
+                android:contentDescription="@string/empty_str" />
+
+        <TextView
+                android:id="@+id/textViewMLName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="13dp"
+                android:layout_toEndOf="@id/imageViewCover"
+                android:text="歌单名"
+                android:textColor="@color/write" />
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@id/imageViewCover"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+            <TextView
+                    android:id="@+id/lhm_collect"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:drawableTop="@drawable/btn_ml_collect"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:paddingTop="5dp"
+                    android:text="@string/collect"
+                    android:textColor="@color/write3" />
+
+            <TextView
+                    android:id="@+id/lhm_comment"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:drawableTop="@drawable/btn_ml_comment"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:paddingTop="5dp"
+                    android:text="@string/comment"
+                    android:textColor="@color/write3" />
+
+            <TextView
+                    android:id="@+id/lhm_share"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:drawableTop="@drawable/btn_ml_share"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:paddingTop="5dp"
+                    android:text="@string/share"
+                    android:textColor="@color/write3" />
+
+            <TextView
+                    android:id="@+id/lhm_download"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:drawableTop="@drawable/btn_ml_download"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:paddingTop="5dp"
+                    android:text="@string/download"
+                    android:textColor="@color/write3" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="13dp"
+                android:contentDescription="@string/play_all"
+                android:drawableStart="@drawable/play1"
+                android:drawablePadding="12dp"
+                android:text="@string/play_all"
+                android:textColor="@color/lightBlack"
+                android:textSize="15sp" />
+
+        <TextView
+                android:id="@+id/lhs_textViewCount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/local_music_count"
+                android:textColor="@color/grey"
+                android:textSize="13sp" />
+
+
+        <TextView
+                android:id="@+id/lhs_textViewMultipleChoice"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:contentDescription="@string/multiple_choice"
+                android:drawableStart="@drawable/list_header_option"
+                android:drawablePadding="5dp"
+                android:gravity="center_vertical"
+                android:paddingStart="9dp"
+                android:paddingEnd="9dp"
+                android:text="@string/multiple_choice"
+                android:textColor="@color/lightBlack"
+                android:textSize="14sp" />
+    </LinearLayout>
+</LinearLayout>

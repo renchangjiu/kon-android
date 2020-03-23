@@ -2,29 +2,29 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-            android:id="@+id/mlm_menu_search"
+            android:id="@+id/mml_search"
             android:icon="@drawable/t_actionbar_search"
             android:title="@string/search"
             app:showAsAction="ifRoom" />
     <item
 
-            android:id="@+id/mlm_scan_local_music"
+            android:id="@+id/mml_auto_download"
             android:icon="@drawable/btn_ml_auto_download"
             android:title="@string/ml_auto_download"
             app:showAsAction="never" />
     <item
-            android:id="@+id/mlm_select_sort_way"
+            android:id="@+id/mml_edit"
             android:icon="@drawable/btn_ml_edit"
             android:title="@string/ml_edit"
             app:showAsAction="never" />
     <item
-            android:id="@+id/mlm_get_cover_lyrics"
+            android:id="@+id/mml_sort"
             android:icon="@drawable/btn_ml_sort"
             android:title="@string/ml_sort"
             app:showAsAction="never" />
     <item
-            android:id="@+id/mlm_improve_tone_quality"
-            android:icon="@drawable/btm_ml_delete"
+            android:id="@+id/mml_delete"
+            android:icon="@drawable/btn_ml_delete"
             android:title="@string/ml_delete"
             app:showAsAction="never" />
 </menu>

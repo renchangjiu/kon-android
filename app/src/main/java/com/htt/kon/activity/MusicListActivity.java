@@ -1,14 +1,20 @@
 package com.htt.kon.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ListView;
 
 import com.htt.kon.R;
+import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.UiUtils;
 
 import butterknife.BindView;
@@ -28,6 +34,9 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
 
     @BindView(R.id.aml_toolbar)
     Toolbar toolbar;
+
+    @BindView(R.id.aml_listView)
+    ListView listView;
 
     /**
      * @param musicListId 歌单id
@@ -54,8 +63,31 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
         this.toolbar.setNavigationOnClickListener(v -> {
             finish();
         });
+        View headerView = LayoutInflater.from(this).inflate(R.layout.list_header_ml, this.listView, false);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.mml_search:
+                LogUtils.e(1);
+                break;
+            case R.id.mml_auto_download:
+                LogUtils.e(2);
+                break;
+            case R.id.mml_edit:
+                LogUtils.e(3);
+                break;
+            case R.id.mml_sort:
+                LogUtils.e(4);
+                break;
+            case R.id.mml_delete:
+                LogUtils.e(5);
+                break;
+            default:
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

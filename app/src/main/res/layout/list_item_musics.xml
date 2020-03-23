@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="55dp">
+
+    <ImageView
+            android:id="@+id/lilma_imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@string/empty_str"
+            android:src="@drawable/list_item_play" />
+
+    <TextView
+            android:id="@+id/lilma_textViewArtist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="9dp"
+            android:layout_toEndOf="@id/lilma_imageView"
+            android:ellipsize="marquee"
+            android:maxEms="24"
+            android:singleLine="true"
+            android:text="@string/deep_sea_girl"
+            android:textColor="@color/lightBlack"
+            android:textSize="14sp" />
+
+    <TextView
+            android:id="@+id/lilma_textViewCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lilma_textViewArtist"
+            android:layout_alignStart="@id/lilma_textViewArtist"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:layout_toEndOf="@id/lilma_imageView"
+            android:ellipsize="marquee"
+            android:maxEms="24"
+            android:singleLine="true"
+            android:text="@string/artist_album"
+            android:textColor="@color/grey"
+            android:textSize="12sp" />
+
+
+    <ImageView
+            android:id="@+id/lilms_imageViewOption"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:contentDescription="@string/empty_str"
+            android:paddingStart="10dp"
+            android:paddingEnd="20dp"
+            android:src="@drawable/list_item_option" />
+</RelativeLayout>
