@@ -12,7 +12,7 @@
             android:background="@color/grey5">
 
         <ImageView
-                android:id="@+id/imageViewCover"
+                android:id="@+id/lhm_ivCover"
                 android:layout_width="114dp"
                 android:layout_height="114dp"
                 android:layout_marginStart="20dp"
@@ -21,76 +21,65 @@
                 android:contentDescription="@string/empty_str" />
 
         <TextView
-                android:id="@+id/textViewMLName"
+                android:id="@+id/lhm_tvMusicListName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="13dp"
-                android:layout_toEndOf="@id/imageViewCover"
-                android:text="歌单名"
+                android:layout_toEndOf="@id/lhm_ivCover"
+                android:text="@string/music_list_name"
                 android:textColor="@color/write" />
 
         <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_below="@id/imageViewCover"
+                android:layout_height="60dp"
+                android:layout_below="@id/lhm_ivCover"
                 android:layout_gravity="center"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp">
 
             <TextView
-                    android:id="@+id/lhm_collect"
+                    android:id="@+id/lhm_tvCollect"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
                     android:drawableTop="@drawable/btn_ml_collect"
-                    android:focusable="true"
                     android:gravity="center"
-                    android:paddingTop="5dp"
                     android:text="@string/collect"
                     android:textColor="@color/write3" />
 
             <TextView
-                    android:id="@+id/lhm_comment"
+                    android:id="@+id/lhm_tvComment"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
                     android:drawableTop="@drawable/btn_ml_comment"
-                    android:focusable="true"
                     android:gravity="center"
-                    android:paddingTop="5dp"
                     android:text="@string/comment"
                     android:textColor="@color/write3" />
 
             <TextView
-                    android:id="@+id/lhm_share"
+                    android:id="@+id/lhm_tvShare"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
                     android:drawableTop="@drawable/btn_ml_share"
-                    android:focusable="true"
                     android:gravity="center"
-                    android:paddingTop="5dp"
                     android:text="@string/share"
                     android:textColor="@color/write3" />
 
             <TextView
-                    android:id="@+id/lhm_download"
+                    android:id="@+id/lhm_tvDownload"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
                     android:drawableTop="@drawable/btn_ml_download"
-                    android:focusable="true"
                     android:gravity="center"
-                    android:paddingTop="5dp"
                     android:text="@string/download"
                     android:textColor="@color/write3" />
         </LinearLayout>
@@ -112,7 +101,7 @@
                 android:textSize="15sp" />
 
         <TextView
-                android:id="@+id/lhs_textViewCount"
+                android:id="@+id/lhm_tvCount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -122,7 +111,7 @@
 
 
         <TextView
-                android:id="@+id/lhs_textViewMultipleChoice"
+                android:id="@+id/lhm_tvMultipleChoice"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="?attr/selectableItemBackground"

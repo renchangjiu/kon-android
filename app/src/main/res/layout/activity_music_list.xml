@@ -11,7 +11,7 @@
             android:id="@+id/aml_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
+            android:background="@color/grey5"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:navigationIcon="@drawable/t_actionbar_back"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -24,6 +24,6 @@
             android:divider="@drawable/divider_list_single"
             android:dividerHeight="1dp"
             tools:listheader="@layout/list_header_ml"
-            tools:listitem="@layout/list_item_musics" />
+            tools:listitem="@layout/list_item_ml_musics" />
 
 </LinearLayout>
