@@ -86,8 +86,12 @@
     </RelativeLayout>
 
     <LinearLayout
+            android:id="@+id/lhm_llPlayAll"
             android:layout_width="match_parent"
-            android:layout_height="48dp">
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true">
 
         <TextView
                 android:layout_width="wrap_content"

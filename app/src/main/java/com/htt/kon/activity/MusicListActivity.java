@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -118,7 +119,7 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
         this.headerView = LayoutInflater.from(this).inflate(R.layout.list_header_ml, this.listView, false);
         this.initHeaderView();
         this.listView.addHeaderView(headerView);
-        this.adapter = new MusicsAdapter(this);
+        this.adapter = new MusicsAdapter(this, mlId);
         this.listView.setAdapter(this.adapter);
 
         // 初始化数据
@@ -146,10 +147,12 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
         TextView tvShare = headerView.findViewById(R.id.lhm_tvShare);
         TextView tvDownload = headerView.findViewById(R.id.lhm_tvDownload);
         tvCount = headerView.findViewById(R.id.lhm_tvCount);
+        LinearLayout llPlayAll = headerView.findViewById(R.id.lhm_llPlayAll);
         TextView tvMultipleChoice = headerView.findViewById(R.id.lhm_tvMultipleChoice);
 
         // 播放全部
-        headerView.setOnClickListener(v -> {
+        llPlayAll.setOnClickListener(v -> {
+            LogUtils.e(v);
             //TODO
             // super.replacePlaylist(this.musics, 0);
             // this.adapter.notifyDataSetChanged();

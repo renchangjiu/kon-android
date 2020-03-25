@@ -40,21 +40,26 @@ public class MusicsAdapter extends BaseAdapter implements AsyncAdapter {
     private Playlist playlist;
 
     private MusicDbService musicDbService;
+    private long mlId;
 
     @Setter
     private OnOptionClickListener onOptionClickListener;
 
-    public MusicsAdapter(Context context) {
+    /**
+     * @param mlId 歌单id
+     */
+    public MusicsAdapter(Context context, long mlId) {
         this.activity = (BaseActivity) context;
         this.playlist = App.getPlaylist();
         this.musicDbService = MusicDbService.of(this.activity);
         this.res = new ArrayList<>();
+        this.mlId = mlId;
         this.updateRes();
     }
 
     @Override
     public void updateRes() {
-        this.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC, musics -> {
+        this.musicDbService.list(mlId, musics -> {
             this.activity.runOnUiThread(() -> {
                 this.res.clear();
                 this.res.addAll(musics);
