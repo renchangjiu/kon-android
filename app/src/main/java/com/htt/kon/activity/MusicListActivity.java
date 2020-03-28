@@ -23,6 +23,8 @@ import com.htt.kon.R;
 import com.htt.kon.adapter.list.MusicsAdapter;
 import com.htt.kon.bean.Music;
 import com.htt.kon.bean.MusicList;
+import com.htt.kon.broadcast.BaseReceiver;
+import com.htt.kon.broadcast.PlayStateChangeReceiver;
 import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.service.database.MusicListDbService;
 import com.htt.kon.util.LogUtils;
@@ -121,6 +123,7 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
         this.listView.addHeaderView(headerView);
         this.adapter = new MusicsAdapter(this, mlId);
         this.listView.setAdapter(this.adapter);
+        this.initListView();
 
         // 初始化数据
         MusicDbService musicDbService = MusicDbService.of(this);
@@ -137,6 +140,20 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
             handler.sendMessage(msg);
             this.musics = musics;
         });
+
+        // 监听播放广播
+        PlayStateChangeReceiver receiver = new PlayStateChangeReceiver();
+        BaseReceiver.registerLocal(this, receiver, PlayStateChangeReceiver.ACTION);
+        receiver.setOnReceiveListener(flag -> {
+            switch (flag) {
+                case PLAY:
+                case CLEAR:
+                case REMOVE:
+                    this.adapter.notifyDataSetChanged();
+                    break;
+                default:
+            }
+        });
     }
 
     private void initHeaderView() {
@@ -152,14 +169,19 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
 
         // 播放全部
         llPlayAll.setOnClickListener(v -> {
-            LogUtils.e(v);
-            //TODO
-            // super.replacePlaylist(this.musics, 0);
-            // this.adapter.notifyDataSetChanged();
+            super.replacePlaylist(this.musics, 0);
+            this.adapter.notifyDataSetChanged();
         });
 
         tvMultipleChoice.setOnClickListener(v -> {
             MusicsCheckedActivity.start(this, this.adapter.getRes());
+        });
+    }
+
+    private void initListView() {
+        this.listView.setOnItemClickListener((parent, view, position, id) -> {
+            super.replacePlaylist(this.musics, position - 1);
+            this.adapter.notifyDataSetChanged();
         });
     }
 

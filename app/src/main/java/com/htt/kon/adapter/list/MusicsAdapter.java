@@ -40,6 +40,7 @@ public class MusicsAdapter extends BaseAdapter implements AsyncAdapter {
     private Playlist playlist;
 
     private MusicDbService musicDbService;
+
     private long mlId;
 
     @Setter
@@ -87,19 +88,20 @@ public class MusicsAdapter extends BaseAdapter implements AsyncAdapter {
             view = convertView;
             holder = (ViewHolder) view.getTag();
         } else {
-            view = LayoutInflater.from(context).inflate(R.layout.list_item_musics, parent, false);
+            view = LayoutInflater.from(context).inflate(R.layout.list_item_ml_musics, parent, false);
             holder = new ViewHolder();
-            holder.imageViewPlay = view.findViewById(R.id.lilma_imageView);
-            holder.imageViewOption = view.findViewById(R.id.lilms_imageViewOption);
-            holder.textViewTitle = view.findViewById(R.id.lilma_textViewArtist);
-            holder.textViewArtistAlbum = view.findViewById(R.id.lilma_textViewCount);
+            holder.tvSortNum = view.findViewById(R.id.limm_tvSortNum);
+            holder.imageView = view.findViewById(R.id.limm_imageView);
+            holder.tvTitle = view.findViewById(R.id.limm_tvTitle);
+            holder.tvArtist = view.findViewById(R.id.limm_tvArtist);
+            holder.ivOption = view.findViewById(R.id.limm_ivOption);
             view.setTag(holder);
         }
 
         Music item = this.getItem(position);
 
         // 右侧按钮点击事件
-        holder.imageViewOption.setOnClickListener(v -> {
+        holder.ivOption.setOnClickListener(v -> {
             String format = context.getString(R.string.cdf_dialog_title_single);
             List<CommonDialogItem> items = new ArrayList<>();
             String data = JsonUtils.bean2Json(item);
@@ -117,15 +119,17 @@ public class MusicsAdapter extends BaseAdapter implements AsyncAdapter {
             });
         });
 
-
         if (this.playlist.isNotEmpty() && this.playlist.getCurMusic().getId().equals(item.getId())) {
-            holder.imageViewPlay.setVisibility(View.VISIBLE);
+            holder.imageView.setVisibility(View.VISIBLE);
+            holder.tvSortNum.setVisibility(View.GONE);
         } else {
-            holder.imageViewPlay.setVisibility(View.GONE);
+            holder.imageView.setVisibility(View.INVISIBLE);
+            holder.tvSortNum.setVisibility(View.VISIBLE);
         }
-        holder.textViewTitle.setText(item.getTitle());
+        holder.tvSortNum.setText(String.format(activity.getString(R.string.digital), position + 1));
+        holder.tvTitle.setText(item.getTitle());
         String format = this.activity.getString(R.string.artist_album);
-        holder.textViewArtistAlbum.setText(String.format(format, item.getArtist(), item.getAlbum()));
+        holder.tvArtist.setText(String.format(format, item.getArtist(), item.getAlbum()));
         return view;
     }
 
@@ -146,10 +150,15 @@ public class MusicsAdapter extends BaseAdapter implements AsyncAdapter {
 
 
     private static class ViewHolder {
-        private ImageView imageViewPlay;
-        private TextView textViewTitle;
-        private TextView textViewArtistAlbum;
-        private ImageView imageViewOption;
+        private TextView tvSortNum;
+
+        private ImageView imageView;
+
+        private TextView tvTitle;
+
+        private TextView tvArtist;
+
+        private ImageView ivOption;
     }
 
 }

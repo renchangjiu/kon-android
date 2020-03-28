@@ -3,40 +3,48 @@
         android:layout_width="match_parent"
         android:layout_height="55dp">
 
+    <TextView
+            android:id="@+id/limm_tvSortNum"
+            android:layout_width="45dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:text="@string/digital"
+            android:visibility="visible" />
+
     <ImageView
-            android:id="@+id/lilma_imageView"
-            android:layout_width="wrap_content"
+            android:id="@+id/limm_imageView"
+            android:layout_width="45dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginStart="8dp"
             android:contentDescription="@string/empty_str"
-            android:src="@drawable/list_item_play" />
+            android:src="@drawable/list_item_play"
+            android:visibility="invisible" />
 
     <TextView
-            android:id="@+id/lilma_textViewArtist"
+            android:id="@+id/limm_tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:layout_marginTop="9dp"
-            android:layout_toEndOf="@id/lilma_imageView"
+            android:layout_toEndOf="@id/limm_imageView"
             android:ellipsize="marquee"
-            android:maxEms="24"
+            android:maxEms="22"
             android:singleLine="true"
             android:text="@string/deep_sea_girl"
             android:textColor="@color/lightBlack"
             android:textSize="14sp" />
 
     <TextView
-            android:id="@+id/lilma_textViewCount"
+            android:id="@+id/limm_tvArtist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/lilma_textViewArtist"
-            android:layout_alignStart="@id/lilma_textViewArtist"
+            android:layout_below="@id/limm_tvTitle"
+            android:layout_alignStart="@id/limm_tvTitle"
             android:layout_marginTop="6dp"
             android:layout_marginBottom="6dp"
-            android:layout_toEndOf="@id/lilma_imageView"
+            android:layout_toEndOf="@id/limm_imageView"
             android:ellipsize="marquee"
-            android:maxEms="24"
+            android:maxEms="22"
             android:singleLine="true"
             android:text="@string/artist_album"
             android:textColor="@color/grey"
@@ -44,7 +52,7 @@
 
 
     <ImageView
-            android:id="@+id/lilms_imageViewOption"
+            android:id="@+id/limm_ivOption"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"

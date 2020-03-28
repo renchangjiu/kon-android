@@ -4,6 +4,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/background"
         android:orientation="vertical"
         tools:context=".activity.MusicListActivity">
 
@@ -21,7 +22,7 @@
             android:id="@+id/aml_listView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@drawable/divider_list_single"
+            android:divider="@drawable/divider_list2"
             android:dividerHeight="1dp"
             tools:listheader="@layout/list_header_ml"
             tools:listitem="@layout/list_item_ml_musics" />

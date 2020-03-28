@@ -11,7 +11,7 @@
             android:id="@+id/lhmf_listView"
             android:layout_width="match_parent"
             android:layout_height="240dp"
-            android:divider="@drawable/divider_list"
+            android:divider="@drawable/divider_list2"
             android:dividerHeight="1dp"
             android:scrollbars="none"
             tools:listitem="@layout/list_item_local_manager" />

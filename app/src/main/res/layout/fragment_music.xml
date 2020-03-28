@@ -16,7 +16,7 @@
                 android:id="@+id/fm_listViewMusicList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:divider="@drawable/divider_list"
+                android:divider="@drawable/divider_list2"
                 android:dividerHeight="1dp"
                 tools:listheader="@layout/list_header_music_fragment" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

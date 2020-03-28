@@ -95,5 +95,6 @@
     <string name="comment">评论</string>
     <string name="share">分享</string>
     <string name="download">下载</string>
+    <string name="digital">%d</string>
 
 </resources>
