@@ -3,10 +3,13 @@ package com.htt.kon.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,9 +17,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.htt.kon.R;
@@ -28,8 +34,11 @@ import com.htt.kon.broadcast.PlayStateChangeReceiver;
 import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.service.database.MusicListDbService;
 import com.htt.kon.util.LogUtils;
+import com.htt.kon.util.MMCQ;
 import com.htt.kon.util.UiUtils;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -56,7 +65,19 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
                 this.tvCount.setText(String.format(format, this.musics.size()));
                 if (!this.musics.isEmpty()) {
                     // 歌单封面暂时使用歌曲的封面
-                    this.ivCover.setImageBitmap(BitmapFactory.decodeFile(this.musics.get(0).getImage()));
+                    Bitmap bitmap = BitmapFactory.decodeFile(this.musics.get(0).getImage());
+                    this.ivCover.setImageBitmap(bitmap);
+                    try {
+                        List<int[]> result = MMCQ.compute(bitmap, 5);
+                        int[] dominantColor = result.get(0);
+                        // int rgb = Color.rgb(dominantColor[0], dominantColor[1], dominantColor[2]);
+                        int rgb = Color.argb(255, dominantColor[0], dominantColor[1], dominantColor[2]);
+                        this.relativeLayout.setBackgroundColor(rgb);
+                        this.toolbar.setBackgroundColor(rgb);
+                        getWindow().setStatusBarColor(rgb);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
             default:
@@ -89,6 +110,7 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
 
     private TextView tvCount;
     private ImageView ivCover;
+    private RelativeLayout relativeLayout;
 
     /**
      * @param musicListId 歌单id
@@ -106,7 +128,7 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
         ButterKnife.bind(this);
 
         setSupportActionBar(this.toolbar);
-        UiUtils.setStatusBarColor(this, R.color.grey5);
+        UiUtils.setStatusBarColor(this, R.color.transparent);
 
         this.init();
     }
@@ -159,6 +181,7 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
     private void initHeaderView() {
         ivCover = headerView.findViewById(R.id.lhm_ivCover);
         tvMusicListName = headerView.findViewById(R.id.lhm_tvMusicListName);
+        relativeLayout = headerView.findViewById(R.id.lhm_relativeLayout);
         TextView tvCollect = headerView.findViewById(R.id.lhm_tvCollect);
         TextView tvComment = headerView.findViewById(R.id.lhm_tvComment);
         TextView tvShare = headerView.findViewById(R.id.lhm_tvShare);

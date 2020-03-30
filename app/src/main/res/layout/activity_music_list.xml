@@ -12,7 +12,7 @@
             android:id="@+id/aml_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/grey5"
+            android:background="@color/transparent"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:navigationIcon="@drawable/t_actionbar_back"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
