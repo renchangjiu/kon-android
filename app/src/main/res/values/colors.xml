@@ -21,7 +21,7 @@
     <color name="write2">#F3F3F3</color>
     <color name="write3">#E8E8E8</color>
     <color name="pressed">#ACACAC</color>
-    <color name="transparent">#000000FF</color>
+    <color name="transparent">#00111111</color>
 
     <color name="black_overlay">#66000000</color>
 </resources>

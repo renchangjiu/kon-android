@@ -10,7 +10,7 @@
             android:id="@+id/lhm_relativeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/transparent">
+            android:background="@color/grey5">
 
         <ImageView
                 android:id="@+id/lhm_ivCover"
@@ -49,7 +49,7 @@
                     android:drawableTop="@drawable/btn_ml_collect"
                     android:gravity="center"
                     android:text="@string/collect"
-                    android:textColor="@color/write3" />
+                    android:textColor="@color/write" />
 
             <TextView
                     android:id="@+id/lhm_tvComment"
@@ -60,7 +60,7 @@
                     android:drawableTop="@drawable/btn_ml_comment"
                     android:gravity="center"
                     android:text="@string/comment"
-                    android:textColor="@color/write3" />
+                    android:textColor="@color/write" />
 
             <TextView
                     android:id="@+id/lhm_tvShare"
@@ -71,7 +71,7 @@
                     android:drawableTop="@drawable/btn_ml_share"
                     android:gravity="center"
                     android:text="@string/share"
-                    android:textColor="@color/write3" />
+                    android:textColor="@color/write" />
 
             <TextView
                     android:id="@+id/lhm_tvDownload"
@@ -82,7 +82,7 @@
                     android:drawableTop="@drawable/btn_ml_download"
                     android:gravity="center"
                     android:text="@string/download"
-                    android:textColor="@color/write3" />
+                    android:textColor="@color/write" />
         </LinearLayout>
     </RelativeLayout>
 

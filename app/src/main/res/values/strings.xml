@@ -96,5 +96,6 @@
     <string name="share">分享</string>
     <string name="download">下载</string>
     <string name="digital">%d</string>
+    <string name="music_list">歌单</string>
 
 </resources>

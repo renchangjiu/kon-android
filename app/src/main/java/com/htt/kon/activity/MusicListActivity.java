@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -37,9 +38,12 @@ import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.MMCQ;
 import com.htt.kon.util.UiUtils;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,19 +63,25 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
         switch (msg.what) {
             case WHAT_INIT_MUSIC_LIST:
                 this.tvMusicListName.setText(this.musicList.getName());
+                this.toolbar.setTitle(this.musicList.getName());
                 break;
             case WHAT_INIT_MUSICS:
                 String format = super.getString(R.string.local_music_count);
                 this.tvCount.setText(String.format(format, this.musics.size()));
                 if (!this.musics.isEmpty()) {
                     // 歌单封面暂时使用歌曲的封面
-                    Bitmap bitmap = BitmapFactory.decodeFile(this.musics.get(0).getImage());
+                    Bitmap bitmap;
+                    if (StringUtils.isNotEmpty(this.musics.get(0).getImage())) {
+                        bitmap = BitmapFactory.decodeFile(this.musics.get(0).getImage());
+                    } else {
+                        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.list_item_ml_def);
+                    }
                     this.ivCover.setImageBitmap(bitmap);
                     try {
+                        // 从封面中提取出主色调
                         List<int[]> result = MMCQ.compute(bitmap, 5);
                         int[] dominantColor = result.get(0);
-                        // int rgb = Color.rgb(dominantColor[0], dominantColor[1], dominantColor[2]);
-                        int rgb = Color.argb(255, dominantColor[0], dominantColor[1], dominantColor[2]);
+                        int rgb = Color.rgb(dominantColor[0], dominantColor[1], dominantColor[2]);
                         this.relativeLayout.setBackgroundColor(rgb);
                         this.toolbar.setBackgroundColor(rgb);
                         getWindow().setStatusBarColor(rgb);
@@ -199,12 +209,34 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
         tvMultipleChoice.setOnClickListener(v -> {
             MusicsCheckedActivity.start(this, this.adapter.getRes());
         });
+
+        tvCollect.setOnClickListener(v -> {
+        });
     }
 
     private void initListView() {
         this.listView.setOnItemClickListener((parent, view, position, id) -> {
             super.replacePlaylist(this.musics, position - 1);
             this.adapter.notifyDataSetChanged();
+        });
+
+        this.listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (musicList == null) {
+                    return;
+                }
+                if (firstVisibleItem == 0) {
+                    toolbar.setTitle(R.string.music_list);
+                } else {
+                    toolbar.setTitle(musicList.getName());
+                }
+            }
         });
     }
 
