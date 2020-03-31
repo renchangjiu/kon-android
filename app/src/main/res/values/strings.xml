@@ -97,5 +97,9 @@
     <string name="download">下载</string>
     <string name="digital">%d</string>
     <string name="music_list">歌单</string>
+    <string name="no_music">暂无音乐</string>
+    <string name="ml_empty_tip">播放或浏览音乐时，可以把音乐加入到自己的歌单。</string>
+
+    <string name="remove_music_tip">确定将所选音乐从列表中移除吗？</string>
 
 </resources>

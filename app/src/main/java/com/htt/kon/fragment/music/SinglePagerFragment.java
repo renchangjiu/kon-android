@@ -1,6 +1,5 @@
 package com.htt.kon.fragment.music;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +14,7 @@ import androidx.annotation.Nullable;
 import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.activity.MusicsCheckedActivity;
+import com.htt.kon.adapter.list.dialog.PlaylistDialogAdapter;
 import com.htt.kon.adapter.list.music.SingleAdapter;
 import com.htt.kon.bean.Music;
 import com.htt.kon.broadcast.PlayStateChangeReceiver;
@@ -22,8 +22,8 @@ import com.htt.kon.broadcast.PlayStateChangeReceiver;
 import com.htt.kon.constant.CommonConstant;
 import com.htt.kon.dialog.CommonDialog;
 import com.htt.kon.dialog.MusicListDialog;
+import com.htt.kon.dialog.OptionDialog;
 import com.htt.kon.util.JsonUtils;
-import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.UiUtils;
 
 
@@ -48,6 +48,7 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
     TextView textViewMultipleChoice;
 
     private ListView listView;
+
     private SingleAdapter adapter;
 
     @Nullable
@@ -88,6 +89,18 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
                     // 收藏到歌单
                     MusicListDialog mlDialog = MusicListDialog.of(music, music.getTitle());
                     mlDialog.show(activity.getSupportFragmentManager(), "1");
+                    break;
+                case CommonDialog.TAG_DELETE:
+                    OptionDialog of = OptionDialog.of(this.activity)
+                            .setTitle(getString(R.string.remove_music_tip))
+                            .setContent(getString(R.string.sure_to_clear_playlist))
+                            .setPositiveButton(getString(R.string.clear), (child) -> {
+
+                            })
+                            .setNegativeButton(child -> {
+                            })
+                            .show();
+
                     break;
                 default:
             }

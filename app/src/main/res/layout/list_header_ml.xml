@@ -10,7 +10,7 @@
             android:id="@+id/lhm_relativeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/grey5">
+            android:background="@color/ml_bg_def">
 
         <ImageView
                 android:id="@+id/lhm_ivCover"
@@ -18,7 +18,7 @@
                 android:layout_height="121dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="4dp"
-                android:background="@color/colorPrimary"
+                android:background="@drawable/list_item_ml_def"
                 android:contentDescription="@string/empty_str" />
 
         <TextView

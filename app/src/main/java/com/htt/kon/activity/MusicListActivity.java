@@ -66,6 +66,12 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
                 this.toolbar.setTitle(this.musicList.getName());
                 break;
             case WHAT_INIT_MUSICS:
+                if (this.musics.isEmpty()) {
+                    this.llPlayAll.setVisibility(View.GONE);
+                    View footerView = LayoutInflater.from(this).inflate(R.layout.list_footer_ml, this.listView, false);
+                    this.listView.addFooterView(footerView);
+                    break;
+                }
                 String format = super.getString(R.string.local_music_count);
                 this.tvCount.setText(String.format(format, this.musics.size()));
                 if (!this.musics.isEmpty()) {
@@ -102,6 +108,7 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
 
     @BindView(R.id.aml_listView)
     ListView listView;
+
     private MusicsAdapter adapter;
 
     private View headerView;
@@ -121,6 +128,7 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
     private TextView tvCount;
     private ImageView ivCover;
     private RelativeLayout relativeLayout;
+    private LinearLayout llPlayAll;
 
     /**
      * @param musicListId 歌单id
@@ -138,7 +146,7 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
         ButterKnife.bind(this);
 
         setSupportActionBar(this.toolbar);
-        UiUtils.setStatusBarColor(this, R.color.transparent);
+        UiUtils.setStatusBarColor(this, R.color.ml_bg_def);
 
         this.init();
     }
@@ -197,7 +205,7 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
         TextView tvShare = headerView.findViewById(R.id.lhm_tvShare);
         TextView tvDownload = headerView.findViewById(R.id.lhm_tvDownload);
         tvCount = headerView.findViewById(R.id.lhm_tvCount);
-        LinearLayout llPlayAll = headerView.findViewById(R.id.lhm_llPlayAll);
+        llPlayAll = headerView.findViewById(R.id.lhm_llPlayAll);
         TextView tvMultipleChoice = headerView.findViewById(R.id.lhm_tvMultipleChoice);
 
         // 播放全部
