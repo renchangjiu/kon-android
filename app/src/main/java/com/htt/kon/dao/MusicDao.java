@@ -25,6 +25,7 @@ public interface MusicDao {
 
 
     @Delete
+    @Deprecated
     void delete(Music... musics);
 
     @Query("update MUSIC set DEL_FLAG = 1 where ID = :id")

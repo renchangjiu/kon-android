@@ -7,7 +7,8 @@ package com.htt.kon.function;
  * @author su
  * @date 2020/03/11 21:20
  */
-public interface Function1<T, R> {
+@FunctionalInterface
+public interface Function1<R, T> {
 
     /**
      * callback function

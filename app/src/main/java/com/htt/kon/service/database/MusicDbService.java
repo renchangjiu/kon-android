@@ -16,7 +16,6 @@ import com.htt.kon.util.AppPathManger;
 import com.htt.kon.util.IdWorker;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.MusicFileMetadataParser;
-import com.htt.kon.util.stream.Optional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -29,8 +28,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
+ * 参数有 Callback 的, 都是在子线程中执行
+ *
  * @author su
  * @date 2020/02/11 13:40
  */
@@ -135,7 +137,7 @@ public class MusicDbService {
                 this.putInsertInfo(music);
             }
             this.musicDao.insert(list);
-            Optional.of(call).ifPresent(v -> v.on(list));
+            Optional.ofNullable(call).ifPresent(v -> v.on(list));
         });
     }
 
@@ -258,6 +260,19 @@ public class MusicDbService {
         return map;
     }
 
+    public void logicDelete(long id, @Nullable Callback<Long> call) {
+        App.getPoolExecutor().execute(() -> {
+            this.musicDao.logicDelete(id);
+            Optional.ofNullable(call).ifPresent(v -> v.on(id));
+        });
+    }
+
+    public void logicDelete(@NonNull List<Long> ids, @Nullable Callback<List<Long>> call) {
+        App.getPoolExecutor().execute(() -> {
+            ids.forEach(v -> this.musicDao.logicDelete(v));
+            Optional.ofNullable(call).ifPresent(v -> v.on(ids));
+        });
+    }
 
     private void setDataIfEmpty(Music music) {
         if (StringUtils.isEmpty(music.getArtist())) {

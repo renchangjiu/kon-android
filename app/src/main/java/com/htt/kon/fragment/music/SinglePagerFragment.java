@@ -1,6 +1,8 @@
 package com.htt.kon.fragment.music;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +15,8 @@ import androidx.annotation.Nullable;
 
 import com.htt.kon.App;
 import com.htt.kon.R;
-import com.htt.kon.activity.MusicsCheckedActivity;
-import com.htt.kon.adapter.list.dialog.PlaylistDialogAdapter;
+import com.htt.kon.activity.MusicsCheckActivity;
+import com.htt.kon.activity.ScanMusicFinishActivity;
 import com.htt.kon.adapter.list.music.SingleAdapter;
 import com.htt.kon.bean.Music;
 import com.htt.kon.broadcast.PlayStateChangeReceiver;
@@ -24,7 +26,6 @@ import com.htt.kon.dialog.CommonDialog;
 import com.htt.kon.dialog.MusicListDialog;
 import com.htt.kon.dialog.OptionDialog;
 import com.htt.kon.util.JsonUtils;
-import com.htt.kon.util.UiUtils;
 
 
 import java.util.List;
@@ -40,6 +41,21 @@ import butterknife.ButterKnife;
  */
 public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
 
+    private Handler handler = new Handler((msg) -> {
+        this.adapter.updateRes(this.musics);
+        if (this.musics.isEmpty()) {
+            this.listView.removeHeaderView(this.headerView);
+            View footer = LayoutInflater.from(this.activity).inflate(R.layout.list_footer_sabd, this.listView, false);
+            this.listView.addFooterView(footer);
+            footer.findViewById(R.id.lfs_textView).setOnClickListener(v -> {
+                startActivity(new Intent(this.activity, ScanMusicFinishActivity.class));
+            });
+            return true;
+        }
+        String format = this.activity.getString(R.string.local_music_count);
+        this.textViewCount.setText(String.format(format, this.musics.size()));
+        return true;
+    });
 
     @BindView(R.id.lhs_textViewCount)
     TextView textViewCount;
@@ -50,6 +66,10 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
     private ListView listView;
 
     private SingleAdapter adapter;
+
+    private List<Music> musics;
+
+    private View headerView;
 
     @Nullable
     @Override
@@ -65,19 +85,13 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
 
     private void init() {
         this.playlist = App.getPlaylist();
-        View headerView = LayoutInflater.from(this.activity).inflate(R.layout.list_header_single, this.listView, false);
+        headerView = LayoutInflater.from(this.activity).inflate(R.layout.list_header_single, this.listView, false);
         this.listView.addHeaderView(headerView);
         ButterKnife.bind(this, this.listView);
 
         this.adapter = new SingleAdapter(this.activity);
         this.listView.setAdapter(adapter);
 
-        this.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC, musics -> {
-            this.activity.runOnUiThread(() -> {
-                String format = this.activity.getString(R.string.local_music_count);
-                this.textViewCount.setText(String.format(format, musics.size()));
-            });
-        });
         adapter.setOnOptionClickListener(item -> {
             Music music = JsonUtils.json2Bean(item.getData(), Music.class);
             switch (item.getId()) {
@@ -91,16 +105,13 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
                     mlDialog.show(activity.getSupportFragmentManager(), "1");
                     break;
                 case CommonDialog.TAG_DELETE:
-                    OptionDialog of = OptionDialog.of(this.activity)
-                            .setTitle(getString(R.string.remove_music_tip))
-                            .setContent(getString(R.string.sure_to_clear_playlist))
-                            .setPositiveButton(getString(R.string.clear), (child) -> {
-
-                            })
-                            .setNegativeButton(child -> {
-                            })
-                            .show();
-
+                    OptionDialog.ofDeleteMusic(this.activity, music, () -> {
+                        this.initData();
+                        this.activity.runOnUiThread(() -> {
+                            Toast.makeText(this.activity, R.string.deleted, Toast.LENGTH_SHORT).show();
+                        });
+                        return null;
+                    });
                     break;
                 default:
             }
@@ -109,17 +120,23 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
             setPlaylist(position - 1);
         });
 
-
         // 播放全部
         headerView.setOnClickListener(v -> {
             setPlaylist(0);
         });
 
         this.textViewMultipleChoice.setOnClickListener(v -> {
-            MusicsCheckedActivity.start(this.activity, this.adapter.getRes());
+            MusicsCheckActivity.start(this.activity, this.adapter.getRes());
         });
     }
 
+    @Override
+    public void initData() {
+        this.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC, musics -> {
+            this.musics = musics;
+            this.handler.sendEmptyMessage(0);
+        });
+    }
 
     @Override
     public void onReceiveBroadcast(PlayStateChangeReceiver.Flag flag) {
@@ -127,7 +144,7 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
             case PLAY:
             case CLEAR:
             case REMOVE:
-                UiUtils.getAdapter(this.listView, SingleAdapter.class).notifyDataSetChanged();
+                this.adapter.notifyDataSetChanged();
                 break;
             default:
         }
@@ -140,14 +157,8 @@ public class SinglePagerFragment extends BaseLocalMusicPagerFragment {
      */
     private void setPlaylist(int index) {
         // 使本地音乐列表替代成为新的播放列表
-        App.getPoolExecutor().execute(() -> {
-            List<Music> list = this.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC);
-            this.activity.runOnUiThread(() -> {
-                this.activity.replacePlaylist(list, index);
-                // 通知adapter 更改界面
-                UiUtils.getAdapter(this.listView, SingleAdapter.class).notifyDataSetChanged();
-            });
-        });
+        this.activity.replacePlaylist(this.musics, index);
+        this.adapter.notifyDataSetChanged();
     }
 
     private SinglePagerFragment() {

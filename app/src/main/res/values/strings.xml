@@ -59,6 +59,7 @@
     <string name="artist_album">%s - %s</string>
     <string name="QUALITY_IMPROVE">音质升级</string>
     <string name="added_to_next_play">已添加到下一首播放</string>
+    <string name="deleted">已删除</string>
 
     <string name="lilma_music_count">%d首</string>
     <string name="lilmal_music_count">%d首&#160;%s</string>
@@ -101,5 +102,8 @@
     <string name="ml_empty_tip">播放或浏览音乐时，可以把音乐加入到自己的歌单。</string>
 
     <string name="remove_music_tip">确定将所选音乐从列表中移除吗？</string>
+    <string name="delete_local_file">同时删除本地文件</string>
+    <string name="no_local_music">暂无本地音乐</string>
+    <string name="click2scan">一键扫描</string>
 
 </resources>

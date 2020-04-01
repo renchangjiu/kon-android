@@ -80,7 +80,10 @@ public class AlbumPagerFragment extends BaseLocalMusicPagerFragment {
         });
     }
 
+    @Override
+    public void initData() {
 
+    }
     private AlbumPagerFragment() {
     }
 

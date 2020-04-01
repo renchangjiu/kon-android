@@ -81,7 +81,10 @@ public class DirPagerFragment extends BaseLocalMusicPagerFragment {
             MusicsActivity.start(this.activity, new File(item.getPath()).getName(), item.getMusics());
         });
     }
+    @Override
+    public void initData() {
 
+    }
 
     private DirPagerFragment() {
     }

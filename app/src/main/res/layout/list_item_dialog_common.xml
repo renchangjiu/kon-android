@@ -9,6 +9,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
+            android:contentDescription="@string/empty_str"
             android:src="@drawable/common_dialog_play_next" />
 
     <TextView
@@ -17,6 +18,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="13dp"
+            android:ellipsize="end"
+            android:maxEms="20"
+            android:singleLine="true"
             android:text="@string/cdf_play_next"
             android:textColor="@color/lightBlack" />
 

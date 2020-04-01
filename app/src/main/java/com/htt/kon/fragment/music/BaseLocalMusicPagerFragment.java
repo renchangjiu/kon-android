@@ -54,6 +54,12 @@ public abstract class BaseLocalMusicPagerFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        this.initData();
+    }
+
     private void init() {
         this.receiver = new PlayStateChangeReceiver();
         BaseReceiver.registerLocal(this.activity, this.receiver, PlayStateChangeReceiver.ACTION);
@@ -61,6 +67,11 @@ public abstract class BaseLocalMusicPagerFragment extends Fragment {
         this.musicDbService = MusicDbService.of(this.activity);
         this.playlist = App.getPlaylist();
     }
+
+    /**
+     * 一般用来从数据库中初始化或更新数据
+     */
+    public abstract void initData();
 
     /**
      * 当接收到广播时调用. 除单曲页面外, 其他三个页面无需重写此方法

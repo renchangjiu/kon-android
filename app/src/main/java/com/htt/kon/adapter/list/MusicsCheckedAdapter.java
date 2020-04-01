@@ -9,11 +9,15 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.htt.kon.R;
-import com.htt.kon.activity.MusicsCheckedActivity;
+import com.htt.kon.activity.MusicsCheckActivity;
+import com.htt.kon.adapter.list.music.ArtistAdapter;
 import com.htt.kon.bean.Music;
+import com.htt.kon.constant.CommonConstant;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author su
@@ -23,13 +27,19 @@ public class MusicsCheckedAdapter extends BaseAdapter {
 
     private List<Music> res;
 
-    private MusicsCheckedActivity activity;
+    private MusicsCheckActivity activity;
 
     private final List<Integer> checkedPos = new ArrayList<>();
 
     public MusicsCheckedAdapter(List<Music> res, Context context) {
-        this.activity = (MusicsCheckedActivity) context;
-        this.res = res;
+        this.activity = (MusicsCheckActivity) context;
+        this.res = new ArrayList<>(res);
+    }
+
+    public void updateRes(List<Music> res) {
+        this.res.clear();
+        this.res.addAll(res);
+        this.notifyDataSetChanged();
     }
 
     /**
@@ -66,6 +76,13 @@ public class MusicsCheckedAdapter extends BaseAdapter {
      */
     public int getCheckedCount() {
         return this.checkedPos.size();
+    }
+
+    /**
+     * 清除选择
+     */
+    public void clearChecked() {
+        this.checkedPos.clear();
     }
 
     /**

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+    <CheckBox
+            android:id="@+id/lc_checkBox"
+            android:layout_width="wrap_content"
+            android:textColor="@color/ml_bg_def"
+            android:layout_height="wrap_content"
+            android:text="@string/delete_local_file"
+            android:theme="@style/CheckBox" />
+</LinearLayout>

@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -15,11 +16,20 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 
 import com.htt.kon.R;
+import com.htt.kon.bean.Music;
+import com.htt.kon.function.Function0;
 import com.htt.kon.function.Function1;
+import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.util.TextWatcherWrapper;
 import com.htt.kon.util.stream.Optional;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 
@@ -65,13 +75,13 @@ public class OptionDialog {
     }
 
     /**
-     * 为创建歌单弹出框预定义的方法
+     * 为创建歌单弹出框预定义的通用方法
      *
      * @param context          context
      * @param defMusicListName default music list name
      * @param func             callback function
      */
-    public static void ofCreateMusicList(Context context, @Nullable String defMusicListName, @NonNull Function1<String, Void> func) {
+    public static void ofCreateMusicList(Context context, @Nullable String defMusicListName, @NonNull Function1<Void, String> func) {
         OptionDialog of = OptionDialog.of(context)
                 .setChild(LayoutInflater.from(context).inflate(R.layout.dialog_child_create_music_list, null))
                 .setTitle(context.getString(R.string.create_music_list))
@@ -98,7 +108,46 @@ public class OptionDialog {
         });
         et.setText(defMusicListName);
         of.show();
-        of.show();
+    }
+
+    /**
+     * 为删除音乐预定义的通用方法
+     *
+     * @param context context
+     * @param musics  target music list
+     * @param func    callback function
+     */
+    public static void ofDeleteMusic(Context context, List<Music> musics, @NonNull Function0<Void> func) {
+        MusicDbService service = MusicDbService.of(context);
+        OptionDialog of = OptionDialog.of(context)
+                .setTitle(context.getString(R.string.remove_music_tip))
+                .setChild(LayoutInflater.from(context).inflate(R.layout.layout_cb, null))
+                .setPositiveButton(context.getString(R.string.clear), (child) -> {
+                    // 1. 从数据库中逻辑删除
+                    service.logicDelete(musics.stream().map(Music::getId).collect(Collectors.toList()), vv -> {
+                        if (((CheckBox) child.findViewById(R.id.lc_checkBox)).isChecked()) {
+                            // 2. 从磁盘中删除文件
+                            musics.forEach(v -> new File(v.getPath()).delete());
+                        }
+                        func.invoke();
+                    });
+                })
+                .setNegativeButton(child -> {
+                })
+                .show();
+    }
+
+    /**
+     * 为删除音乐预定义的通用方法
+     *
+     * @param context context
+     * @param music   target music
+     * @param func    callback function
+     */
+    public static void ofDeleteMusic(Context context, Music music, @NonNull Function0<Void> func) {
+        List<Music> list = new ArrayList<>();
+        list.add(music);
+        ofDeleteMusic(context, list, func);
     }
 
 

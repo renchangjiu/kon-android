@@ -7,6 +7,7 @@ package com.htt.kon.function;
  * @author su
  * @date 2020/03/11 21:20
  */
+@FunctionalInterface
 public interface Function0<R> {
 
     /**

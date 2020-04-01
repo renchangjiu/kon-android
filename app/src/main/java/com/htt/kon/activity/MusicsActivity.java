@@ -16,7 +16,6 @@ import com.htt.kon.bean.Music;
 import com.htt.kon.broadcast.BaseReceiver;
 import com.htt.kon.broadcast.PlayStateChangeReceiver;
 import com.htt.kon.util.JsonUtils;
-import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.UiUtils;
 
 import java.util.List;
@@ -25,6 +24,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
+ * 在"歌手", "专辑", "文件夹"等页面点击 item 时进入的activity, 用来展示歌曲列表
+ *
  * @author su
  * @date 2020/03/14 12:31
  */
@@ -81,7 +82,7 @@ public class MusicsActivity extends BaseActivity implements DataRequisiteActivit
         textViewCount.setText(String.format(format, musics.size()));
 
         textViewMultipleChoice.setOnClickListener(v -> {
-            MusicsCheckedActivity.start(this, this.adapter.getRes());
+            MusicsCheckActivity.start(this, this.adapter.getRes());
         });
         this.listView.addHeaderView(headerView);
 

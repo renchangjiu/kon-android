@@ -1,9 +1,7 @@
 package com.htt.kon.activity;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -17,8 +15,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -41,9 +37,7 @@ import com.htt.kon.util.UiUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -215,7 +209,7 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
         });
 
         tvMultipleChoice.setOnClickListener(v -> {
-            MusicsCheckedActivity.start(this, this.adapter.getRes());
+            MusicsCheckActivity.start(this, this.adapter.getRes());
         });
 
         tvCollect.setOnClickListener(v -> {

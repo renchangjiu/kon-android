@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+    <!-- 单曲, 歌手, 专辑, 文件夹等共用的footer -->
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:drawableTop="@drawable/bg_no_local_music"
+            android:drawablePadding="40dp"
+            android:gravity="center"
+            android:text="@string/no_local_music" />
+
+    <TextView
+            android:id="@+id/lfs_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/selector_click2scan_music"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingStart="90dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="90dp"
+            android:paddingBottom="10dp"
+            android:text="@string/click2scan" />
+</LinearLayout>

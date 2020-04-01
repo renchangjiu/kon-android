@@ -1,6 +1,5 @@
 package com.htt.kon.fragment.music;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,23 +9,17 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.activity.MusicsActivity;
-import com.htt.kon.adapter.list.music.AlbumAdapter;
 import com.htt.kon.adapter.list.music.ArtistAdapter;
 import com.htt.kon.bean.Music;
 
-import com.htt.kon.constant.CommonConstant;
 import com.htt.kon.dialog.CommonDialog;
 import com.htt.kon.dialog.MusicListDialog;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.LogUtils;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * 本地音乐activity 下的歌手tab 页
@@ -78,6 +71,10 @@ public class ArtistPagerFragment extends BaseLocalMusicPagerFragment {
         });
     }
 
+    @Override
+    public void initData() {
+
+    }
 
     private ArtistPagerFragment() {
     }

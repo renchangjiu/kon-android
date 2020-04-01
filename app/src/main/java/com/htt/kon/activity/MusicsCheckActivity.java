@@ -5,6 +5,8 @@ import androidx.appcompat.widget.Toolbar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -14,6 +16,7 @@ import com.htt.kon.R;
 import com.htt.kon.adapter.list.MusicsCheckedAdapter;
 import com.htt.kon.bean.Music;
 import com.htt.kon.dialog.MusicListDialog;
+import com.htt.kon.dialog.OptionDialog;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.UiUtils;
 
@@ -27,8 +30,20 @@ import butterknife.OnClick;
  * @author su
  * @date 2020/03/17 19:59
  */
-public class MusicsCheckedActivity extends BaseActivity implements DataRequisiteActivity {
+public class MusicsCheckActivity extends BaseActivity implements DataRequisiteActivity {
     private static final String B_K_MUSICS = "B_K_MUSICS";
+
+    private Handler handler = new Handler((msg) -> {
+        this.adapter.clearChecked();
+        this.adapter.updateRes(this.musics);
+        this.setStatusBarTitle();
+        Toast.makeText(this, R.string.deleted, Toast.LENGTH_SHORT).show();
+        if (this.musics.isEmpty()) {
+            View footer = LayoutInflater.from(this).inflate(R.layout.list_footer_music_check, this.listView, false);
+            this.listView.addFooterView(footer);
+        }
+        return true;
+    });
 
     @BindView(R.id.amc_toolbar)
     Toolbar toolbar;
@@ -38,12 +53,14 @@ public class MusicsCheckedActivity extends BaseActivity implements DataRequisite
 
     @BindView(R.id.amc_listView)
     ListView listView;
+
     private MusicsCheckedAdapter adapter;
+
     private List<Music> musics;
 
 
     public static void start(Activity source, List<Music> musics) {
-        Intent intent = new Intent(source, MusicsCheckedActivity.class);
+        Intent intent = new Intent(source, MusicsCheckActivity.class);
         Bundle bd = new Bundle();
         bd.putString(B_K_MUSICS, JsonUtils.bean2Json(musics));
         intent.putExtras(bd);
@@ -98,25 +115,29 @@ public class MusicsCheckedActivity extends BaseActivity implements DataRequisite
      */
     @OnClick({R.id.amc_playNext, R.id.amc_add2music_list, R.id.amc_share, R.id.amc_delete})
     public void click2(View view) {
-        List<Music> musics = this.adapter.getChecked();
-        if (musics.isEmpty()) {
+        List<Music> checked = this.adapter.getChecked();
+        if (checked.isEmpty()) {
             Toast.makeText(this, getString(R.string.please_select_music), Toast.LENGTH_SHORT).show();
             return;
         }
         switch (view.getId()) {
             case R.id.amc_playNext:
-                super.nextPlay(musics);
+                super.nextPlay(checked);
                 super.hidePlayBar();
                 break;
             case R.id.amc_add2music_list:
-                MusicListDialog mlDialog = MusicListDialog.of(musics, musics.get(0).getTitle());
+                MusicListDialog mlDialog = MusicListDialog.of(checked, checked.get(0).getTitle());
                 mlDialog.show(super.getSupportFragmentManager(), "1");
                 break;
             case R.id.amc_share:
                 Toast.makeText(this, "敬请期待...", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.amc_delete:
-                // TODO: 删除
+                OptionDialog.ofDeleteMusic(this, checked, () -> {
+                    this.musics.removeIf(checked::contains);
+                    this.handler.sendEmptyMessage(0);
+                    return null;
+                });
                 break;
             default:
         }

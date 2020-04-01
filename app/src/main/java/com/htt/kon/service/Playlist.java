@@ -137,7 +137,7 @@ public class Playlist {
      * @param index  index
      */
     void replace(List<Music> musics, int index) {
-        this.musics = musics;
+        this.musics = new ArrayList<>(musics);
         this.index = index;
     }
 
@@ -255,7 +255,7 @@ public class Playlist {
         }
     }
 
-    void setMusics(List<Music> musics) {
+    private void setMusics(List<Music> musics) {
         this.musics = musics;
     }
 
