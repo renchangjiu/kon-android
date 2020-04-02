@@ -23,6 +23,8 @@ import com.htt.kon.util.stream.Optional;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,7 +37,7 @@ import lombok.ToString;
  * @author su
  * @date 2020/02/23 19:52
  */
-public class DirAdapter extends BaseAdapter implements LocalMusicFragmentAdapter, AsyncAdapter {
+public class DirAdapter extends BaseAdapter implements LocalMusicFragmentAdapter {
 
     private List<ItemData> res;
 
@@ -43,43 +45,27 @@ public class DirAdapter extends BaseAdapter implements LocalMusicFragmentAdapter
 
     private Playlist playlist;
 
-    private MusicDbService musicDbService;
-
-    @Setter
     private OnOptionClickListener onOptionClickListener;
 
     public DirAdapter(Context context) {
         this.res = new ArrayList<>();
         this.activity = (LocalMusicActivity) context;
         this.playlist = App.getPlaylist();
-        this.musicDbService = MusicDbService.of(context);
-        this.updateRes();
     }
 
     @Override
-    public void updateRes() {
-        this.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC, musics -> {
-            // 按文件夹分类
-            Map<String, List<Music>> map = this.musicDbService.listGroupByDir(musics);
-
-            // 封装参数
-            Set<Map.Entry<String, List<Music>>> entries = map.entrySet();
-            this.activity.runOnUiThread(() -> {
-                this.res.clear();
-                for (Map.Entry<String, List<Music>> entry : entries) {
-                    DirAdapter.ItemData item = new DirAdapter.ItemData();
-                    item.setPath(entry.getKey());
-                    item.setMusics(entry.getValue());
-                    res.add(item);
-                }
-                super.notifyDataSetChanged();
-            });
-        });
-    }
-
-    @Override
-    public void clearRes() {
+    public void updateRes(List<Music> musics) {
+        // 按文件夹分类
+        Map<String, List<Music>> map = this.listGroupByDir(musics);
+        // 封装参数
+        Set<Map.Entry<String, List<Music>>> entries = map.entrySet();
         this.res.clear();
+        for (Map.Entry<String, List<Music>> entry : entries) {
+            ItemData item = new ItemData();
+            item.setTitle(entry.getKey());
+            item.setMusics(entry.getValue());
+            res.add(item);
+        }
         super.notifyDataSetChanged();
     }
 
@@ -102,7 +88,7 @@ public class DirAdapter extends BaseAdapter implements LocalMusicFragmentAdapter
         }
 
         ItemData item = this.getItem(position);
-        File file = new File(item.getPath());
+        File file = new File(item.getTitle());
         List<Music> musics = item.getMusics();
         // 右侧图标点击事件
         holder.imageViewOption.setOnClickListener(v -> {
@@ -110,10 +96,11 @@ public class DirAdapter extends BaseAdapter implements LocalMusicFragmentAdapter
 
             List<CommonDialogItem> items = new ArrayList<>();
             String data = JsonUtils.bean2Json(item);
+
             items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_PLAY_NEXT).setName(context.getString(R.string.cdf_play_next)).setData(data));
             items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_COLLECT).setName(context.getString(R.string.cdf_collect)).setData(data));
             items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_DELETE).setName(context.getString(R.string.cdf_delete)).setData(data));
-            CommonDialog dialog = CommonDialog.of(String.format(format, new File(item.getPath()).getName()), items);
+            CommonDialog dialog = CommonDialog.of(String.format(format, new File(item.getTitle()).getName()), items);
 
             dialog.show(this.activity.getSupportFragmentManager(), "1");
             dialog.setOnClickListener((CommonDialogItem item1) -> {
@@ -149,19 +136,36 @@ public class DirAdapter extends BaseAdapter implements LocalMusicFragmentAdapter
         return 0;
     }
 
+    @Override
+    public void setOnOptionClickListener(OnOptionClickListener listener) {
+        this.onOptionClickListener = listener;
+    }
+
+    /**
+     * 将给定集合按 dir 分组
+     *
+     * @param list music list.
+     * @return Map<dir, music list>
+     */
+    private Map<String, List<Music>> listGroupByDir(List<Music> list) {
+        Map<String, List<Music>> map = new HashMap<>();
+        for (Music music : list) {
+            String path = new File(music.getPath()).getParent();
+            if (map.containsKey(path)) {
+                map.get(path).add(music);
+            } else {
+                List<Music> r = new LinkedList<>();
+                r.add(music);
+                map.put(path, r);
+            }
+        }
+        return map;
+    }
+
     private static class ViewHolder {
         private TextView textViewDirName;
         private TextView textViewCount;
         private ImageView imageViewOption;
-    }
-
-    @Getter
-    @Setter
-    @ToString
-    public static class ItemData {
-        private String path;
-        private List<Music> musics;
-
     }
 
 }

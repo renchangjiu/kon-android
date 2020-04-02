@@ -47,19 +47,19 @@ public class Music {
     private String image;
 
     /**
-     * 歌曲名
+     * 歌曲名, 必不为空或空串
      */
     @ColumnInfo(name = "TITLE")
     private String title;
 
     /**
-     * 歌手
+     * 歌手, 必不为空或空串
      */
     @ColumnInfo(name = "ARTIST")
     private String artist;
 
     /**
-     * 专辑名
+     * 专辑名, 必不为空或空串
      */
     @ColumnInfo(name = "ALBUM")
     private String album;

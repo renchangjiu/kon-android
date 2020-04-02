@@ -12,10 +12,8 @@ import android.widget.TextView;
 import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
-import com.htt.kon.adapter.AsyncAdapter;
 import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
-import com.htt.kon.constant.CommonConstant;
 import com.htt.kon.dialog.CommonDialog;
 import com.htt.kon.service.Playlist;
 import com.htt.kon.service.database.MusicDbService;
@@ -25,19 +23,17 @@ import com.htt.kon.util.stream.Optional;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
 /**
  * @author su
  * @date 2020/02/16 14:34
  */
-public class AlbumAdapter extends BaseAdapter implements LocalMusicFragmentAdapter, AsyncAdapter {
+public class AlbumAdapter extends BaseAdapter implements LocalMusicFragmentAdapter {
 
     private List<ItemData> res;
 
@@ -45,9 +41,6 @@ public class AlbumAdapter extends BaseAdapter implements LocalMusicFragmentAdapt
 
     private Playlist playlist;
 
-    private MusicDbService musicDbService;
-
-    @Setter
     private OnOptionClickListener onOptionClickListener;
 
 
@@ -55,35 +48,23 @@ public class AlbumAdapter extends BaseAdapter implements LocalMusicFragmentAdapt
         this.res = new ArrayList<>();
         this.activity = (LocalMusicActivity) context;
         this.playlist = App.getPlaylist();
-        this.musicDbService = MusicDbService.of(context);
-        this.updateRes();
     }
 
     @Override
-    public void updateRes() {
-        this.musicDbService.list(CommonConstant.MID_LOCAL_MUSIC, musics -> {
-            // 按专辑分类
-            Map<String, List<Music>> map = this.musicDbService.listGroupByAlbum(musics);
-            Set<Map.Entry<String, List<Music>>> entries = map.entrySet();
-            this.activity.runOnUiThread(() -> {
-                this.res.clear();
-                for (Map.Entry<String, List<Music>> entry : entries) {
-                    ItemData item = new ItemData();
-                    item.setArtist(entry.getValue().get(0).getArtist());
-                    item.setAlbum(entry.getKey());
-                    item.setMusics(entry.getValue());
-                    this.res.add(item);
-                }
-                super.notifyDataSetChanged();
-            });
-        });
-    }
-
-    @Override
-    public void clearRes() {
+    public void updateRes(List<Music> musics) {
+        // 按专辑分类
+        Map<String, List<Music>> map = this.groupByAlbum(musics);
+        Set<Map.Entry<String, List<Music>>> entries = map.entrySet();
         this.res.clear();
+        for (Map.Entry<String, List<Music>> entry : entries) {
+            ItemData item = new ItemData();
+            item.setTitle(entry.getKey());
+            item.setMusics(entry.getValue());
+            this.res.add(item);
+        }
         super.notifyDataSetChanged();
     }
+
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -104,8 +85,8 @@ public class AlbumAdapter extends BaseAdapter implements LocalMusicFragmentAdapt
         }
 
         ItemData item = this.getItem(position);
-
         List<Music> musics = item.getMusics();
+
         // 右侧图标点击事件
         holder.imageViewOption.setOnClickListener(v -> {
             String format = context.getString(R.string.cdf_dialog_title_album);
@@ -115,7 +96,7 @@ public class AlbumAdapter extends BaseAdapter implements LocalMusicFragmentAdapt
             items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_PLAY_NEXT).setName(context.getString(R.string.cdf_play_next)).setData(data));
             items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_COLLECT).setName(context.getString(R.string.cdf_collect)).setData(data));
             items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_DELETE).setName(context.getString(R.string.cdf_delete)).setData(data));
-            CommonDialog dialog = CommonDialog.of(String.format(format, item.getAlbum()), items);
+            CommonDialog dialog = CommonDialog.of(String.format(format, item.getTitle()), items);
 
             dialog.show(this.activity.getSupportFragmentManager(), "1");
             dialog.setOnClickListener((CommonDialogItem item1) -> {
@@ -137,9 +118,9 @@ public class AlbumAdapter extends BaseAdapter implements LocalMusicFragmentAdapt
         } else {
             holder.imageViewOption.setImageResource(R.drawable.list_item_option);
         }
-        holder.textViewAlbum.setText(item.getAlbum());
+        holder.textViewAlbum.setText(item.getTitle());
         String format = this.activity.getString(R.string.lilmal_music_count);
-        holder.textViewCountArtist.setText(String.format(format, musics.size(), item.getArtist()));
+        holder.textViewCountArtist.setText(String.format(format, musics.size(), musics.get(0).getArtist()));
         return view;
     }
 
@@ -158,6 +139,32 @@ public class AlbumAdapter extends BaseAdapter implements LocalMusicFragmentAdapt
         return 0;
     }
 
+    @Override
+    public void setOnOptionClickListener(OnOptionClickListener listener) {
+        this.onOptionClickListener = listener;
+    }
+
+    /**
+     * 将给定集合按 album 分组
+     *
+     * @param list music list.
+     * @return Map<album, music list>
+     */
+    private Map<String, List<Music>> groupByAlbum(List<Music> list) {
+        Map<String, List<Music>> map = new HashMap<>();
+        for (Music music : list) {
+            String album = music.getAlbum();
+            if (map.containsKey(album)) {
+                map.get(album).add(music);
+            } else {
+                List<Music> r = new LinkedList<>();
+                r.add(music);
+                map.put(album, r);
+            }
+        }
+        return map;
+    }
+
     private static class ViewHolder {
         /**
          * 专辑图片
@@ -166,16 +173,6 @@ public class AlbumAdapter extends BaseAdapter implements LocalMusicFragmentAdapt
         private TextView textViewAlbum;
         private TextView textViewCountArtist;
         private ImageView imageViewOption;
-    }
-
-    @Getter
-    @Setter
-    @ToString
-    public static class ItemData {
-        private String album;
-        private String artist;
-        private List<Music> musics;
-
     }
 
 }

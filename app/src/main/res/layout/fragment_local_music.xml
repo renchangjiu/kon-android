@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <!-- 单曲、歌手、专辑、文件夹等4个fragment 使用同一个layout -->
+
+    <ListView
+            android:id="@+id/flm_listView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@drawable/divider_list_artist"
+            android:dividerHeight="1dp"
+            tools:listitem="@layout/list_item_local_music_artist" />
+</LinearLayout>

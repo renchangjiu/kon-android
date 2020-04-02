@@ -1,6 +1,7 @@
 package com.htt.kon.fragment.music;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.annotation.Nullable;
 import com.htt.kon.R;
 import com.htt.kon.activity.MusicsActivity;
 import com.htt.kon.adapter.list.music.ArtistAdapter;
+import com.htt.kon.adapter.list.music.ItemData;
 import com.htt.kon.bean.Music;
 
 import com.htt.kon.dialog.CommonDialog;
@@ -22,12 +24,14 @@ import com.htt.kon.util.LogUtils;
 import java.util.List;
 
 /**
- * 本地音乐activity 下的歌手tab 页
+ * 本地音乐activity 下的歌手页
  *
  * @author su
  * @date 2020/02/14 21:44
  */
 public class ArtistPagerFragment extends BaseLocalMusicPagerFragment {
+
+    private ArtistAdapter adapter;
 
     @Nullable
     @Override
@@ -40,41 +44,15 @@ public class ArtistPagerFragment extends BaseLocalMusicPagerFragment {
 
 
     private void init() {
-        this.initListView();
-    }
+        this.adapter = new ArtistAdapter(this.activity);
+        super.listView.setAdapter(adapter);
 
-    private void initListView() {
-        ArtistAdapter adapter = new ArtistAdapter(this.activity);
-        this.listView.setAdapter(adapter);
-
-        adapter.setOnOptionClickListener(item -> {
-            ArtistAdapter.ItemData itemData = JsonUtils.json2Bean(item.getData(), ArtistAdapter.ItemData.class);
-            List<Music> musics = itemData.getMusics();
-            switch (item.getId()) {
-                case CommonDialog.TAG_PLAY_NEXT:
-                    super.activity.nextPlay(musics);
-                    Toast.makeText(this.activity, this.activity.getString(R.string.added_to_next_play), Toast.LENGTH_SHORT).show();
-                    break;
-                case CommonDialog.TAG_COLLECT:
-                    // 收藏到歌单
-                    MusicListDialog mlDialog = MusicListDialog.of(musics, itemData.getArtist());
-                    mlDialog.show(activity.getSupportFragmentManager(), "1");
-                    break;
-                default:
-            }
-            LogUtils.e(item);
-        });
-
-        this.listView.setOnItemClickListener((parent, view, position, id) -> {
-            ArtistAdapter.ItemData item = adapter.getItem(position);
-            MusicsActivity.start(this.activity, item.getArtist(), item.getMusics());
+        super.listView.setOnItemClickListener((parent, view, position, id) -> {
+            ItemData item = adapter.getItem(position);
+            MusicsActivity.start(this.activity, item.getTitle(), item.getMusics());
         });
     }
 
-    @Override
-    public void initData() {
-
-    }
 
     private ArtistPagerFragment() {
     }

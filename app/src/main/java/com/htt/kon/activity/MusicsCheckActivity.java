@@ -31,7 +31,7 @@ import butterknife.OnClick;
  * @date 2020/03/17 19:59
  */
 public class MusicsCheckActivity extends BaseActivity implements DataRequisiteActivity {
-    private static final String B_K_MUSICS = "B_K_MUSICS";
+    private static List<Music> dataContainer;
 
     private Handler handler = new Handler((msg) -> {
         this.adapter.clearChecked();
@@ -61,9 +61,7 @@ public class MusicsCheckActivity extends BaseActivity implements DataRequisiteAc
 
     public static void start(Activity source, List<Music> musics) {
         Intent intent = new Intent(source, MusicsCheckActivity.class);
-        Bundle bd = new Bundle();
-        bd.putString(B_K_MUSICS, JsonUtils.bean2Json(musics));
-        intent.putExtras(bd);
+        dataContainer = musics;
         source.startActivity(intent);
     }
 
@@ -78,6 +76,7 @@ public class MusicsCheckActivity extends BaseActivity implements DataRequisiteAc
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_musics_checked);
         ButterKnife.bind(this);
+
         setSupportActionBar(this.toolbar);
         UiUtils.setStatusBarColor(this);
         this.init();
@@ -87,9 +86,8 @@ public class MusicsCheckActivity extends BaseActivity implements DataRequisiteAc
         this.toolbar.setNavigationOnClickListener(v -> {
             finish();
         });
-        Bundle bd = getIntent().getExtras();
-        assert bd != null;
-        this.musics = JsonUtils.json2List(bd.getString(B_K_MUSICS), Music.class);
+        this.musics = dataContainer;
+        dataContainer = null;
         this.adapter = new MusicsCheckedAdapter(musics, this);
         this.listView.setAdapter(adapter);
         this.listView.setOnItemClickListener((parent, view, position, id) -> {

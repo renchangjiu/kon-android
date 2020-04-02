@@ -22,6 +22,8 @@ import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.stream.Optional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import lombok.Setter;
@@ -38,15 +40,11 @@ public class SingleAdapter extends BaseAdapter implements LocalMusicFragmentAdap
 
     private Playlist playlist;
 
-    private MusicDbService musicDbService;
-
-    @Setter
     private OnOptionClickListener onOptionClickListener;
 
     public SingleAdapter(Context context) {
         this.activity = (BaseActivity) context;
         this.playlist = App.getPlaylist();
-        this.musicDbService = MusicDbService.of(this.activity);
         this.res = new ArrayList<>();
     }
 
@@ -56,6 +54,7 @@ public class SingleAdapter extends BaseAdapter implements LocalMusicFragmentAdap
         this.res = res;
     }
 
+    @Override
     public void updateRes(List<Music> musics) {
         this.res.clear();
         this.res.addAll(musics);
@@ -90,7 +89,11 @@ public class SingleAdapter extends BaseAdapter implements LocalMusicFragmentAdap
         holder.imageViewOption.setOnClickListener(v -> {
             String format = context.getString(R.string.cdf_dialog_title_single);
             List<CommonDialogItem> items = new ArrayList<>();
-            String data = JsonUtils.bean2Json(item);
+
+            ItemData var = new ItemData();
+            var.setMusics(new ArrayList<>(Collections.singletonList(item)));
+            String data = JsonUtils.bean2Json(var);
+
             items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_PLAY_NEXT).setName(context.getString(R.string.cdf_play_next)).setData(data));
             items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_COLLECT).setName(context.getString(R.string.cdf_collect)).setData(data));
             items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_ARTIST).setName(String.format(context.getString(R.string.cdf_artist), item.getArtist())).setData(data));
@@ -130,6 +133,11 @@ public class SingleAdapter extends BaseAdapter implements LocalMusicFragmentAdap
     @Override
     public long getItemId(int position) {
         return this.getItem(position).getId();
+    }
+
+    @Override
+    public void setOnOptionClickListener(OnOptionClickListener listener) {
+        this.onOptionClickListener = listener;
     }
 
 

@@ -70,7 +70,20 @@ public class LocalMusicActivity extends BaseActivity {
         titles.add("文件夹");
         this.viewPager.setAdapter(new LocalMusicAdapter(getSupportFragmentManager(), fragments, titles));
         this.tabLayout.setupWithViewPager(this.viewPager);
+        this.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
+            @Override
+            public void onPageSelected(int position) {
+                fragments.get(position).initData();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
     }
 
     @Override
