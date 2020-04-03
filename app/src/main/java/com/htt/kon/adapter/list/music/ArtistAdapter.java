@@ -11,11 +11,12 @@ import android.widget.TextView;
 import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
+import com.htt.kon.adapter.list.CommonAdapter;
+import com.htt.kon.adapter.list.OnOptionClickListener;
 import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
 import com.htt.kon.dialog.CommonDialog;
 import com.htt.kon.service.Playlist;
-import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.stream.Optional;
 
@@ -24,7 +25,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,7 +33,7 @@ import java.util.Set;
  * @author su
  * @date 2020/02/15 15:06
  */
-public class ArtistAdapter extends BaseAdapter implements LocalMusicFragmentAdapter {
+public class ArtistAdapter extends BaseAdapter implements CommonAdapter {
 
     private List<ItemData> res = new ArrayList<>();
 
@@ -87,15 +87,15 @@ public class ArtistAdapter extends BaseAdapter implements LocalMusicFragmentAdap
 
         // 单击右侧图标
         holder.imageViewOption.setOnClickListener(v -> {
-            String format = context.getString(R.string.cdf_dialog_title_single);
+            String format = context.getString(R.string.cdf_dialog_title_artist);
 
             List<CommonDialogItem> items = new ArrayList<>();
             String data = JsonUtils.bean2Json(item);
 
-            items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_PLAY_NEXT).setName(context.getString(R.string.cdf_play_next)).setData(data));
-            items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_COLLECT).setName(context.getString(R.string.cdf_collect)).setData(data));
-            items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_SHARE).setName(context.getString(R.string.cdf_share)).setData(data));
-            items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_DELETE).setName(context.getString(R.string.cdf_delete)).setData(data));
+            items.add(CommonDialog.getItem(CommonDialog.TAG_PLAY_NEXT, context.getString(R.string.cdf_play_next), data));
+            items.add(CommonDialog.getItem(CommonDialog.TAG_COLLECT, context.getString(R.string.cdf_collect), data));
+            items.add(CommonDialog.getItem(CommonDialog.TAG_SHARE, context.getString(R.string.cdf_share), data));
+            items.add(CommonDialog.getItem(CommonDialog.TAG_DELETE, context.getString(R.string.cdf_delete), data));
 
             CommonDialog dialog = CommonDialog.of(String.format(format, item.getTitle()), items);
             dialog.show(this.activity.getSupportFragmentManager(), "1");
@@ -164,13 +164,4 @@ public class ArtistAdapter extends BaseAdapter implements LocalMusicFragmentAdap
         private TextView textViewCount;
         private ImageView imageViewOption;
     }
-
-    // @Getter
-    // @Setter
-    // @ToString
-    // public static class ItemData {
-    //     private String artist;
-    //     private List<Music> musics;
-    //
-    // }
 }

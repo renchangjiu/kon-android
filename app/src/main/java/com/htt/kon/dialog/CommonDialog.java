@@ -37,6 +37,7 @@ import lombok.Setter;
  * @date 2020/02/05 17:45
  */
 public class CommonDialog extends DialogFragment {
+
     private static final String B_K_TITLE = "title";
     private static final String B_K_ITEMS = "items";
 
@@ -105,8 +106,18 @@ public class CommonDialog extends DialogFragment {
      */
     public static final int TAG_MUSIC_LIST_RESTORE = 12;
 
+    /**
+     * 下载
+     */
+    public static final int TAG_DOWNLOAD = 13;
 
-    public static final SparseArray<CommonDialogItem> FULL_ITEMS = new SparseArray<>();
+    /**
+     * 编辑歌单信息
+     */
+    public static final int TAG_EDIT_ML = 14;
+
+
+    private static final SparseArray<CommonDialogItem> FULL_ITEMS = new SparseArray<>();
 
     // 初始化item 列表
     static {
@@ -121,9 +132,11 @@ public class CommonDialog extends DialogFragment {
         FULL_ITEMS.put(TAG_DELETE, new CommonDialogItem(TAG_DELETE, "删除", R.drawable.common_dialog_delete, null));
         FULL_ITEMS.put(TAG_IMPROVE, new CommonDialogItem(TAG_IMPROVE, "音质升级", R.drawable.common_dialog_improve, null));
 
-        FULL_ITEMS.put(TAG_MUSIC_LIST_CREATE, new CommonDialogItem(TAG_MUSIC_LIST_CREATE, "创建新歌单", R.drawable.common_dialog_improve, null));
-        FULL_ITEMS.put(TAG_MUSIC_LIST_MANAGE, new CommonDialogItem(TAG_MUSIC_LIST_MANAGE, "歌单管理", R.drawable.common_dialog_improve, null));
+        FULL_ITEMS.put(TAG_MUSIC_LIST_CREATE, new CommonDialogItem(TAG_MUSIC_LIST_CREATE, "创建新歌单", R.drawable.ic_create_ml, null));
+        FULL_ITEMS.put(TAG_MUSIC_LIST_MANAGE, new CommonDialogItem(TAG_MUSIC_LIST_MANAGE, "歌单管理", R.drawable.ic_manage_ml, null));
         FULL_ITEMS.put(TAG_MUSIC_LIST_RESTORE, new CommonDialogItem(TAG_MUSIC_LIST_RESTORE, "恢复歌单", R.drawable.common_dialog_improve, null));
+        FULL_ITEMS.put(TAG_DOWNLOAD, new CommonDialogItem(TAG_DOWNLOAD, "下载", R.drawable.music_icon_download, null));
+        FULL_ITEMS.put(TAG_EDIT_ML, new CommonDialogItem(TAG_EDIT_ML, "编辑歌单信息", R.drawable.ic_edit_ml, null));
     }
 
     @BindView(R.id.dc_textView)
@@ -191,7 +204,7 @@ public class CommonDialog extends DialogFragment {
     /**
      * 向上滑动动画
      */
-    public static void slideToUp(View view) {
+    private static void slideToUp(View view) {
         Animation slide = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
                 Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
                 1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
@@ -200,6 +213,13 @@ public class CommonDialog extends DialogFragment {
         slide.setFillAfter(true);
         slide.setFillEnabled(true);
         view.startAnimation(slide);
+    }
+
+    public static CommonDialogItem getItem(int tag, String name, String data) {
+        return FULL_ITEMS.get(tag).setName(name).setData(data);
+    }
+    public static CommonDialogItem getItem(int tag, String name) {
+        return FULL_ITEMS.get(tag).setName(name);
     }
 
     public interface OnClickListener {

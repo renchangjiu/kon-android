@@ -11,13 +11,12 @@ import android.widget.TextView;
 import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
-import com.htt.kon.adapter.AsyncAdapter;
+import com.htt.kon.adapter.list.CommonAdapter;
+import com.htt.kon.adapter.list.OnOptionClickListener;
 import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
-import com.htt.kon.constant.CommonConstant;
 import com.htt.kon.dialog.CommonDialog;
 import com.htt.kon.service.Playlist;
-import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.stream.Optional;
 
@@ -29,15 +28,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
 /**
  * @author su
  * @date 2020/02/23 19:52
  */
-public class DirAdapter extends BaseAdapter implements LocalMusicFragmentAdapter {
+public class DirAdapter extends BaseAdapter implements CommonAdapter {
 
     private List<ItemData> res;
 
@@ -97,9 +92,9 @@ public class DirAdapter extends BaseAdapter implements LocalMusicFragmentAdapter
             List<CommonDialogItem> items = new ArrayList<>();
             String data = JsonUtils.bean2Json(item);
 
-            items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_PLAY_NEXT).setName(context.getString(R.string.cdf_play_next)).setData(data));
-            items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_COLLECT).setName(context.getString(R.string.cdf_collect)).setData(data));
-            items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_DELETE).setName(context.getString(R.string.cdf_delete)).setData(data));
+            items.add(CommonDialog.getItem(CommonDialog.TAG_PLAY_NEXT, context.getString(R.string.cdf_play_next), data));
+            items.add(CommonDialog.getItem(CommonDialog.TAG_COLLECT, context.getString(R.string.cdf_collect), data));
+            items.add(CommonDialog.getItem(CommonDialog.TAG_DELETE, context.getString(R.string.cdf_delete), data));
             CommonDialog dialog = CommonDialog.of(String.format(format, new File(item.getTitle()).getName()), items);
 
             dialog.show(this.activity.getSupportFragmentManager(), "1");

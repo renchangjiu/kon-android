@@ -79,7 +79,7 @@ public class OptionDialog {
      *
      * @param context          context
      * @param defMusicListName default music list name
-     * @param func             callback function
+     * @param func             callback function, invoke in sub thread
      */
     public static void ofCreateMusicList(Context context, @Nullable String defMusicListName, @NonNull Function1<Void, String> func) {
         OptionDialog of = OptionDialog.of(context)
@@ -115,7 +115,7 @@ public class OptionDialog {
      *
      * @param context context
      * @param musics  target music list
-     * @param func    callback function
+     * @param func    callback function, invoke in sub thread
      */
     public static void ofDeleteMusic(Context context, List<Music> musics, @NonNull Function0<Void> func) {
         MusicDbService service = MusicDbService.of(context);
@@ -142,7 +142,7 @@ public class OptionDialog {
      *
      * @param context context
      * @param music   target music
-     * @param func    callback function
+     * @param func    callback function, invoke in sub thread
      */
     public static void ofDeleteMusic(Context context, Music music, @NonNull Function0<Void> func) {
         List<Music> list = new ArrayList<>();
@@ -153,6 +153,11 @@ public class OptionDialog {
 
     public OptionDialog setTitle(CharSequence title) {
         this.dialog.setTitle(title);
+        return this;
+    }
+
+    public OptionDialog setTitle(int resId) {
+        this.dialog.setTitle(this.context.getString(resId));
         return this;
     }
 

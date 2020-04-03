@@ -30,6 +30,7 @@
 
     <!-- CommonDialogFragment -->
     <string name="cdf_dialog_title_single">歌曲:&#160;&#160;%s</string>
+    <string name="cdf_dialog_title_ml">歌单:&#160;&#160;%s</string>
     <string name="cdf_dialog_title_artist">歌手:&#160;&#160;%s</string>
     <string name="cdf_dialog_title_album">专辑:&#160;&#160;%s</string>
     <string name="cdf_dialog_title_dir">文件夹:&#160;&#160;%s</string>
@@ -39,6 +40,7 @@
     <string name="cdf_artist">歌手：%s</string>
     <string name="cdf_album">专辑：%s</string>
     <string name="cdf_delete">删除</string>
+    <string name="cdf_edit_ml">编辑歌单信息</string>
     <string name="delete">删除</string>
 
     <string name="artist">歌手</string>
@@ -71,7 +73,7 @@
     <string name="create_music_list">新建歌单</string>
     <string name="create_new_music_list">创建新歌单</string>
     <string name="music_list_manage">歌单管理</string>
-    <string name="music_list_restore">恢复创建</string>
+    <string name="music_list_restore">恢复歌单</string>
     <string name="submit">提交</string>
     <string name="enter_musiclist_title">请输入歌单标题</string>
     <string name="set_as_private_music_list">设置为隐私歌单</string>
@@ -105,5 +107,5 @@
     <string name="delete_local_file">同时删除本地文件</string>
     <string name="no_local_music">暂无本地音乐</string>
     <string name="click2scan">一键扫描</string>
-
+    <string name="tip_delete_ml">确定要删除此歌单吗？</string>
 </resources>

@@ -11,28 +11,24 @@ import android.widget.TextView;
 import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.activity.BaseActivity;
-import com.htt.kon.adapter.AsyncAdapter;
+import com.htt.kon.adapter.list.CommonAdapter;
+import com.htt.kon.adapter.list.OnOptionClickListener;
 import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
-import com.htt.kon.constant.CommonConstant;
 import com.htt.kon.dialog.CommonDialog;
 import com.htt.kon.service.Playlist;
-import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.stream.Optional;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import lombok.Setter;
 
 /**
  * @author su
  * @date 2020/02/04 08:33
  */
-public class SingleAdapter extends BaseAdapter implements LocalMusicFragmentAdapter {
+public class SingleAdapter extends BaseAdapter implements CommonAdapter {
 
     private List<Music> res;
 
@@ -94,11 +90,11 @@ public class SingleAdapter extends BaseAdapter implements LocalMusicFragmentAdap
             var.setMusics(new ArrayList<>(Collections.singletonList(item)));
             String data = JsonUtils.bean2Json(var);
 
-            items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_PLAY_NEXT).setName(context.getString(R.string.cdf_play_next)).setData(data));
-            items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_COLLECT).setName(context.getString(R.string.cdf_collect)).setData(data));
-            items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_ARTIST).setName(String.format(context.getString(R.string.cdf_artist), item.getArtist())).setData(data));
-            items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_ALBUM).setName(String.format(context.getString(R.string.cdf_album), item.getAlbum())).setData(data));
-            items.add(CommonDialog.FULL_ITEMS.get(CommonDialog.TAG_DELETE).setName(context.getString(R.string.cdf_delete)).setData(data));
+            items.add(CommonDialog.getItem(CommonDialog.TAG_PLAY_NEXT, context.getString(R.string.cdf_play_next), data));
+            items.add(CommonDialog.getItem(CommonDialog.TAG_COLLECT, context.getString(R.string.cdf_collect), data));
+            items.add(CommonDialog.getItem(CommonDialog.TAG_ARTIST, String.format(context.getString(R.string.cdf_artist), item.getArtist()), data));
+            items.add(CommonDialog.getItem(CommonDialog.TAG_ALBUM, String.format(context.getString(R.string.cdf_album), item.getAlbum()), data));
+            items.add(CommonDialog.getItem(CommonDialog.TAG_DELETE, context.getString(R.string.cdf_delete), data));
 
             CommonDialog dialog = CommonDialog.of(String.format(format, item.getTitle()), items);
             dialog.show(this.activity.getSupportFragmentManager(), "1");

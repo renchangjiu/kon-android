@@ -11,11 +11,11 @@ import com.htt.kon.bean.MusicList;
 import com.htt.kon.dao.AppDatabase;
 import com.htt.kon.dao.MusicDao;
 import com.htt.kon.dao.MusicListDao;
-import com.htt.kon.util.stream.Optional;
 
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 单例
@@ -69,7 +69,7 @@ public class MusicListDbService {
     public void insert(MusicList musicList, @Nullable Callback<MusicList> call) {
         App.getPoolExecutor().execute(() -> {
             this.insert(musicList);
-            Optional.of(call).ifPresent(v -> v.on(musicList));
+            Optional.ofNullable(call).ifPresent(v -> v.on(musicList));
         });
     }
 
@@ -83,6 +83,13 @@ public class MusicListDbService {
     public void getById(long id, Callback<MusicList> call) {
         App.getPoolExecutor().execute(() -> {
             call.on(this.getById(id));
+        });
+    }
+
+    public void logicDelete(long id, @Nullable Callback<Long> call) {
+        App.getPoolExecutor().execute(() -> {
+            this.musicListDao.logicDelete(id);
+            Optional.ofNullable(call).ifPresent(v -> v.on(id));
         });
     }
 

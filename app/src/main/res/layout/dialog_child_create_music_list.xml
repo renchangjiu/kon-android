@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/dccml_editText"
             android:layout_alignStart="@id/dccml_editText"
+            android:theme="@style/CheckBox"
             android:text="@string/set_as_private_music_list"
             android:textSize="12sp" />
 

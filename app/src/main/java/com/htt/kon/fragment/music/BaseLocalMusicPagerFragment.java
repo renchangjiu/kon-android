@@ -20,7 +20,7 @@ import com.htt.kon.R;
 import com.htt.kon.activity.LocalMusicActivity;
 import com.htt.kon.activity.ScanMusicFinishActivity;
 import com.htt.kon.adapter.list.music.ItemData;
-import com.htt.kon.adapter.list.music.LocalMusicFragmentAdapter;
+import com.htt.kon.adapter.list.CommonAdapter;
 import com.htt.kon.bean.CommonDialogItem;
 import com.htt.kon.bean.Music;
 import com.htt.kon.broadcast.BaseReceiver;
@@ -33,7 +33,6 @@ import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.UiUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -66,7 +65,7 @@ public abstract class BaseLocalMusicPagerFragment extends Fragment {
 
     private PlayStateChangeReceiver receiver;
 
-    private LocalMusicFragmentAdapter adapter;
+    private CommonAdapter adapter;
 
     private View footer;
 
@@ -92,7 +91,7 @@ public abstract class BaseLocalMusicPagerFragment extends Fragment {
         super.onStart();
 
         this.initData();
-        this.adapter = UiUtils.getAdapter(this.listView, LocalMusicFragmentAdapter.class);
+        this.adapter = UiUtils.getAdapter(this.listView, CommonAdapter.class);
         assert adapter != null;
 
         // 事件处理

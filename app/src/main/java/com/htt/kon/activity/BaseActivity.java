@@ -35,7 +35,6 @@ import java.util.List;
 
 
 /**
- * TODO: 做歌单功能
  * base activity, 实现底部播放栏及处理音乐播放相关功能
  *
  * @author su

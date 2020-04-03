@@ -65,8 +65,6 @@ public class MusicListDialog extends DialogFragment {
     }
 
     /**
-     * of
-     *
      * @param defMusicListName 若选择"新建歌单"选项, 则其为新建歌单的默认名称
      */
     public static MusicListDialog of(@NonNull Music music, String defMusicListName) {
@@ -79,8 +77,6 @@ public class MusicListDialog extends DialogFragment {
     }
 
     /**
-     * of
-     *
      * @param defMusicListName 若选择"新建歌单"选项, 则其为新建歌单的默认名称
      */
     public static MusicListDialog of(@NonNull List<Music> musics, String defMusicListName) {

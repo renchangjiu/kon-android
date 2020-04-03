@@ -132,7 +132,7 @@ public class App extends Application {
     }
 
     /**
-     * 插入一首应用自带的歌曲
+     * 插入自带的歌曲
      */
     private void work1() {
         try {

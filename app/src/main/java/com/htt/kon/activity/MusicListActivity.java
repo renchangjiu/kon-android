@@ -21,15 +21,21 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.htt.kon.R;
 import com.htt.kon.adapter.list.MusicsAdapter;
+import com.htt.kon.adapter.list.music.ItemData;
 import com.htt.kon.bean.Music;
 import com.htt.kon.bean.MusicList;
 import com.htt.kon.broadcast.BaseReceiver;
 import com.htt.kon.broadcast.PlayStateChangeReceiver;
+import com.htt.kon.dialog.CommonDialog;
+import com.htt.kon.dialog.MusicListDialog;
+import com.htt.kon.dialog.OptionDialog;
 import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.service.database.MusicListDbService;
+import com.htt.kon.util.JsonUtils;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.MMCQ;
 import com.htt.kon.util.UiUtils;
@@ -50,6 +56,8 @@ import butterknife.ButterKnife;
  * @date 2020/03/21 21:04
  */
 public class MusicListActivity extends BaseActivity implements DataRequisiteActivity {
+    private static final String B_K_MUSIC_LIST_ID = "B_K_MUSIC_LIST_ID";
+
     private final int WHAT_INIT_MUSIC_LIST = 1;
     private final int WHAT_INIT_MUSICS = 2;
 
@@ -60,6 +68,7 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
                 this.toolbar.setTitle(this.musicList.getName());
                 break;
             case WHAT_INIT_MUSICS:
+                this.adapter.updateRes(this.musics);
                 if (this.musics.isEmpty()) {
                     this.llPlayAll.setVisibility(View.GONE);
                     View footerView = LayoutInflater.from(this).inflate(R.layout.list_footer_ml, this.listView, false);
@@ -95,7 +104,6 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
         return true;
     });
 
-    private static final String B_K_MUSIC_LIST_ID = "B_K_MUSIC_LIST_ID";
 
     @BindView(R.id.aml_toolbar)
     Toolbar toolbar;
@@ -123,6 +131,9 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
     private ImageView ivCover;
     private RelativeLayout relativeLayout;
     private LinearLayout llPlayAll;
+    private long mlId;
+    private MusicListDbService musicListDbService;
+    private MusicDbService musicDbService;
 
     /**
      * @param musicListId 歌单id
@@ -146,7 +157,7 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
     }
 
     private void init() {
-        long mlId = getIntent().getLongExtra(B_K_MUSIC_LIST_ID, -1);
+        this.mlId = getIntent().getLongExtra(B_K_MUSIC_LIST_ID, -1);
         this.toolbar.setNavigationOnClickListener(v -> {
             finish();
         });
@@ -155,25 +166,13 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
         this.headerView = LayoutInflater.from(this).inflate(R.layout.list_header_ml, this.listView, false);
         this.initHeaderView();
         this.listView.addHeaderView(headerView);
-        this.adapter = new MusicsAdapter(this, mlId);
+        this.adapter = new MusicsAdapter(this);
         this.listView.setAdapter(this.adapter);
         this.initListView();
 
-        // 初始化数据
-        MusicDbService musicDbService = MusicDbService.of(this);
-        MusicListDbService musicListDbService = MusicListDbService.of(this);
-        musicListDbService.getById(mlId, musicList -> {
-            Message msg = Message.obtain();
-            msg.what = WHAT_INIT_MUSIC_LIST;
-            handler.sendMessage(msg);
-            this.musicList = musicList;
-        });
-        musicDbService.list(mlId, musics -> {
-            Message msg = Message.obtain();
-            msg.what = WHAT_INIT_MUSICS;
-            handler.sendMessage(msg);
-            this.musics = musics;
-        });
+        musicDbService = MusicDbService.of(this);
+        musicListDbService = MusicListDbService.of(this);
+        this.initData();
 
         // 监听播放广播
         PlayStateChangeReceiver receiver = new PlayStateChangeReceiver();
@@ -188,6 +187,23 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
                 default:
             }
         });
+    }
+
+    private void initData() {
+        // 初始化数据
+        musicListDbService.getById(mlId, musicList -> {
+            Message msg = Message.obtain();
+            msg.what = WHAT_INIT_MUSIC_LIST;
+            this.musicList = musicList;
+            handler.sendMessage(msg);
+        });
+        musicDbService.list(mlId, musics -> {
+            Message msg = Message.obtain();
+            msg.what = WHAT_INIT_MUSICS;
+            this.musics = musics;
+            handler.sendMessage(msg);
+        });
+
     }
 
     private void initHeaderView() {
@@ -225,7 +241,6 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
         this.listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-
             }
 
             @Override
@@ -238,6 +253,32 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
                 } else {
                     toolbar.setTitle(musicList.getName());
                 }
+            }
+        });
+
+        this.adapter.setOnOptionClickListener(item -> {
+            Music music = JsonUtils.json2Bean(item.getData(), Music.class);
+            switch (item.getId()) {
+                // 下一首播放
+                case CommonDialog.TAG_PLAY_NEXT:
+                    super.nextPlay(music);
+                    Toast.makeText(this, getString(R.string.added_to_next_play), Toast.LENGTH_SHORT).show();
+                    break;
+                // 收藏到歌单
+                case CommonDialog.TAG_COLLECT:
+                    MusicListDialog.of(music, music.getTitle()).show(getSupportFragmentManager(), "1");
+                    break;
+                // 删除
+                case CommonDialog.TAG_DELETE:
+                    OptionDialog.ofDeleteMusic(this, music, () -> {
+                        this.initData();
+                        this.runOnUiThread(() -> {
+                            Toast.makeText(this, R.string.deleted, Toast.LENGTH_SHORT).show();
+                        });
+                        return null;
+                    });
+                    break;
+                default:
             }
         });
     }
