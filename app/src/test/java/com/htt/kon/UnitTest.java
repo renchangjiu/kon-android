@@ -1,5 +1,9 @@
 package com.htt.kon;
 
+import com.htt.kon.bean.Music;
+import com.htt.kon.util.DataContainer;
+import com.htt.kon.util.LogUtils;
+
 import org.junit.Test;
 
 import java.io.IOException;
@@ -14,13 +18,12 @@ import static org.junit.Assert.*;
 public class UnitTest {
     @Test
     public void main() throws IOException, InterruptedException {
-        String command = "cmd.exe /c adb -s 397d01a shell input tap 500 500";
-        int i = 0;
-        while (true) {
-            Runtime.getRuntime().exec(command);
-            Thread.sleep(100);
-            i++;
-            System.out.println(i);
-        }
+        Music music = new Music();
+        music.setId(11L);
+        DataContainer.set(music);
+        Music music1 = DataContainer.get(Music.class);
+        Music music2 = DataContainer.get(Music.class);
+        // LogUtils.e();
+
     }
 }

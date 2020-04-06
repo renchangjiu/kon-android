@@ -31,8 +31,9 @@ import butterknife.ButterKnife;
  */
 public class MusicsActivity extends BaseActivity implements DataRequisiteActivity {
 
-    private static final String B_K_TITLE = "B_K_TITLE";
-    private static final String B_K_MUSICS = "B_K_MUSICS";
+    private static String title;
+
+    private static List<Music> musics;
 
     @BindView(R.id.ams_toolbar)
     Toolbar toolbar;
@@ -40,16 +41,13 @@ public class MusicsActivity extends BaseActivity implements DataRequisiteActivit
     @BindView(R.id.ams_listView)
     ListView listView;
 
-    private List<Music> musics;
 
     private SingleAdapter adapter;
 
     public static void start(Activity source, String title, List<Music> musics) {
-        Bundle bd = new Bundle();
-        bd.putString(B_K_TITLE, title);
-        bd.putString(B_K_MUSICS, JsonUtils.bean2Json(musics));
         Intent intent = new Intent(source, MusicsActivity.class);
-        intent.putExtras(bd);
+        MusicsActivity.title = title;
+        MusicsActivity.musics = musics;
         source.startActivity(intent);
     }
 
@@ -61,11 +59,7 @@ public class MusicsActivity extends BaseActivity implements DataRequisiteActivit
         setSupportActionBar(this.toolbar);
         UiUtils.setStatusBarColor(this);
 
-        Bundle bd = getIntent().getExtras();
-        assert bd != null;
-
-        this.toolbar.setTitle(bd.getString(B_K_TITLE));
-        this.musics = JsonUtils.json2List(bd.getString(B_K_MUSICS), Music.class);
+        this.toolbar.setTitle(title);
         this.init();
     }
 
@@ -73,7 +67,7 @@ public class MusicsActivity extends BaseActivity implements DataRequisiteActivit
         this.toolbar.setNavigationOnClickListener(v -> {
             finish();
         });
-        this.adapter = new SingleAdapter(this.musics, this);
+        this.adapter = new SingleAdapter(musics, this);
         this.listView.setAdapter(adapter);
         View headerView = LayoutInflater.from(this).inflate(R.layout.list_header_single, this.listView, false);
         TextView textViewCount = headerView.findViewById(R.id.lhs_textViewCount);
@@ -116,8 +110,14 @@ public class MusicsActivity extends BaseActivity implements DataRequisiteActivit
      * @param index 在新的播放列表中的index
      */
     private void setPlaylist(int index) {
-        super.replacePlaylist(this.musics, index);
+        super.replacePlaylist(musics, index);
         this.adapter.notifyDataSetChanged();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        title = null;
+        musics = null;
+    }
 }

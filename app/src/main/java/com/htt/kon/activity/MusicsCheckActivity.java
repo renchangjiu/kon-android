@@ -31,6 +31,7 @@ import butterknife.OnClick;
  * @date 2020/03/17 19:59
  */
 public class MusicsCheckActivity extends BaseActivity implements DataRequisiteActivity {
+
     private static List<Music> dataContainer;
 
     private Handler handler = new Handler((msg) -> {
