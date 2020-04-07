@@ -9,7 +9,7 @@
         tools:context=".activity.MusicListActivity">
 
     <androidx.appcompat.widget.Toolbar
-            android:id="@+id/aml_toolbar"
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/ml_bg_def"

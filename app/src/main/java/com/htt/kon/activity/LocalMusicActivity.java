@@ -33,7 +33,7 @@ import butterknife.ButterKnife;
  */
 public class LocalMusicActivity extends BaseActivity {
 
-    @BindView(R.id.alm_toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
     @BindView(R.id.alm_tabLayout)

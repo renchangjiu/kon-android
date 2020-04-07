@@ -35,7 +35,7 @@ public class MusicsActivity extends BaseActivity implements DataRequisiteActivit
 
     private static List<Music> musics;
 
-    @BindView(R.id.ams_toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
     @BindView(R.id.ams_listView)

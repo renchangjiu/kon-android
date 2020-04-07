@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
  */
 public class ScanMusicActivity extends AppCompatActivity {
 
-    @BindView(R.id.asm_toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
     @BindView(R.id.asm_textViewScanFull)

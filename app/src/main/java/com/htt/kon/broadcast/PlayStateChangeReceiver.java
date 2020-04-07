@@ -3,6 +3,7 @@ package com.htt.kon.broadcast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -24,6 +25,20 @@ public class PlayStateChangeReceiver extends BroadcastReceiver {
 
     @Setter
     private OnReceiveListener onReceiveListener;
+
+    /**
+     * 注册本地广播
+     *
+     * @return 返回 receiver, 以供注销
+     */
+    public static PlayStateChangeReceiver registerLocal(Context context, OnReceiveListener onReceiveListener) {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION);
+        PlayStateChangeReceiver receiver = new PlayStateChangeReceiver();
+        receiver.onReceiveListener = onReceiveListener;
+        LocalBroadcastManager.getInstance(context).registerReceiver(receiver, filter);
+        return receiver;
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {

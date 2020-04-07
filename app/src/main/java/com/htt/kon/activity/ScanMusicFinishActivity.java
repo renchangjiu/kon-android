@@ -58,7 +58,7 @@ public class ScanMusicFinishActivity extends AppCompatActivity {
         return true;
     });
 
-    @BindView(R.id.asmf_toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
     @BindView(R.id.asmf_imageViewSearcher)

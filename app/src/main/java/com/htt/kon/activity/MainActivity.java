@@ -37,6 +37,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
+ * 主页面, 下有 MusicFragment, DiscoverFragment, FriendsFragment 等三个 fragment
+ *
  * @author su
  * @date 2020/01/31 21:20
  */
@@ -45,7 +47,7 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.am_drawerLayout)
     DrawerLayout drawerLayout;
 
-    @BindView(R.id.am_toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
     @BindView(R.id.am_viewPager)

@@ -77,6 +77,7 @@ public class MusicFragment extends Fragment {
     private ListView headerListView;
 
     private List<MusicList> musicLists;
+    private LocalManagerAdapter localManagerAdapter;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -108,7 +109,7 @@ public class MusicFragment extends Fragment {
         this.separateLayout = header.findViewById(R.id.lhmf_separateLayout);
 
         this.listViewMusicList.addHeaderView(header);
-        LocalManagerAdapter localManagerAdapter = new LocalManagerAdapter(this.activity);
+        this.localManagerAdapter = new LocalManagerAdapter(this.activity);
         this.headerListView.setAdapter(localManagerAdapter);
         this.adapter = new MusicListAdapter(this.activity);
         this.listViewMusicList.setAdapter(this.adapter);
@@ -261,6 +262,7 @@ public class MusicFragment extends Fragment {
     }
 
     private void initData() {
+        this.localManagerAdapter.updateRes();
         this.musicListDbService.list(musicLists -> {
             this.musicLists = musicLists;
             this.handler.sendEmptyMessage(0);

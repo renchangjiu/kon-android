@@ -105,7 +105,7 @@ public class MusicListActivity extends BaseActivity implements DataRequisiteActi
     });
 
 
-    @BindView(R.id.aml_toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
     @BindView(R.id.aml_listView)

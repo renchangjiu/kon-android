@@ -66,7 +66,6 @@ public class MusicService extends Service {
         this.receiver = new PlayNotificationReceiver();
         BaseReceiver.register(this, this.receiver, PlayNotificationReceiver.ACTION);
         this.receiver.setOnReceiveListener((flag) -> {
-            LogUtils.e(flag);
             switch (flag) {
                 case CLOSE:
                     this.pause();
@@ -98,7 +97,6 @@ public class MusicService extends Service {
         super.onCreate();
         this.playlist = App.getPlaylist();
         this.player = new MediaPlayer();
-
         this.createNotification();
         if (this.playlist.isEmpty() || !this.isPlaying()) {
             stopForeground(true);
@@ -219,7 +217,6 @@ public class MusicService extends Service {
             this.notificationManager.cancel(NOTIFICATION_ID);
             this.isForeground = false;
         }
-
         PlayStateChangeReceiver.send(this, PlayStateChangeReceiver.Flag.REMOVE);
         this.onPlayStateChangeListener.onChange(OnPlayStateChangeListener.FLAG_3);
     }
@@ -340,6 +337,18 @@ public class MusicService extends Service {
         this.playlist.setMode(mode);
     }
 
+
+    public int getDuration() {
+        return this.player.getDuration();
+    }
+
+    public int getCurrentPosition() {
+        return this.player.getCurrentPosition();
+    }
+
+    public void seekTo(int msec) {
+        player.seekTo(msec);
+    }
 
     public class MusicBinder extends Binder {
         public MusicService getMusicService() {

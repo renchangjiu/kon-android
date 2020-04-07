@@ -126,8 +126,18 @@ public class PlaylistDialogAdapter extends BaseAdapter {
     }
 
     public interface OnClickListener {
+        /**
+         * 当item 的定位按钮被点击时回调, 定位到某歌单或页面
+         *
+         * @param position position
+         */
         void onLocateBtnClick(int position);
 
+        /**
+         * 当item 的删除按钮被点击时回调, 删除播放列表中的某一项
+         *
+         * @param position position
+         */
         void onDeleteBtnClick(int position);
     }
 

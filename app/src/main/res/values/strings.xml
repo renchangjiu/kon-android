@@ -108,4 +108,6 @@
     <string name="no_local_music">暂无本地音乐</string>
     <string name="click2scan">一键扫描</string>
     <string name="tip_delete_ml">确定要删除此歌单吗？</string>
+
+    <string name="one_string">%s</string>
 </resources>

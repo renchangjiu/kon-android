@@ -134,7 +134,7 @@ public class CommonDialog extends DialogFragment {
 
         FULL_ITEMS.put(TAG_MUSIC_LIST_CREATE, new CommonDialogItem(TAG_MUSIC_LIST_CREATE, "创建新歌单", R.drawable.ic_create_ml, null));
         FULL_ITEMS.put(TAG_MUSIC_LIST_MANAGE, new CommonDialogItem(TAG_MUSIC_LIST_MANAGE, "歌单管理", R.drawable.ic_manage_ml, null));
-        FULL_ITEMS.put(TAG_MUSIC_LIST_RESTORE, new CommonDialogItem(TAG_MUSIC_LIST_RESTORE, "恢复歌单", R.drawable.common_dialog_improve, null));
+        FULL_ITEMS.put(TAG_MUSIC_LIST_RESTORE, new CommonDialogItem(TAG_MUSIC_LIST_RESTORE, "恢复歌单", R.drawable.ic_restore_ml, null));
         FULL_ITEMS.put(TAG_DOWNLOAD, new CommonDialogItem(TAG_DOWNLOAD, "下载", R.drawable.music_icon_download, null));
         FULL_ITEMS.put(TAG_EDIT_ML, new CommonDialogItem(TAG_EDIT_ML, "编辑歌单信息", R.drawable.ic_edit_ml, null));
     }
@@ -218,6 +218,7 @@ public class CommonDialog extends DialogFragment {
     public static CommonDialogItem getItem(int tag, String name, String data) {
         return FULL_ITEMS.get(tag).setName(name).setData(data);
     }
+
     public static CommonDialogItem getItem(int tag, String name) {
         return FULL_ITEMS.get(tag).setName(name);
     }

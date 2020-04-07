@@ -43,7 +43,7 @@ public class UiUtils {
 
 
     /**
-     * 设置状态栏颜色
+     * 设置状态栏颜色, 默认颜色为: colorPrimary
      */
     public static void setStatusBarColor(Activity activity) {
         setStatusBarColor(activity, R.color.colorPrimary);

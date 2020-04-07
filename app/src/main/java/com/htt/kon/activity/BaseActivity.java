@@ -58,7 +58,7 @@ public class BaseActivity extends AppCompatActivity {
 
     private MusicService msService;
 
-    private Playlist playlist;
+    protected Playlist playlist;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -110,9 +110,8 @@ public class BaseActivity extends AppCompatActivity {
 
         // 点击弹出播放列表对话框
         imageViewPlayList.setOnClickListener(v -> {
-            PlayListDialog of = PlayListDialog.of();
-            of.show(getSupportFragmentManager(), FragmentTagConstant.PLAYLIST_FRAGMENT);
-            of.setOnClickListener(new PlayListDialogFragmentOnClickListener());
+            PlayListDialog.of(this.msService)
+                    .show(getSupportFragmentManager(), FragmentTagConstant.PLAYLIST_FRAGMENT);
         });
 
         this.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -248,66 +247,6 @@ public class BaseActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * 处理播放列表弹出框的所有事件
-     */
-    private class PlayListDialogFragmentOnClickListener implements PlayListDialog.OnClickListener {
-
-        /**
-         * 当点击播放列表的某一项时
-         *
-         * @param position position
-         */
-        @Override
-        public void onItemClick(int position) {
-            if (position != playlist.getIndex() || !msService.isPlaying()) {
-                BaseActivity.this.msService.play(position);
-            }
-        }
-
-        /**
-         * 当播放模式按钮被点击时回调
-         */
-        @Override
-        public void onPlayModeBtnClick() {
-            PlayMode nextPlayMode = Playlist.getNextPlayMode(playlist.getMode(), BaseActivity.this);
-            msService.setMode(nextPlayMode.getValue());
-        }
-
-        @Override
-        public void onCollectBtnClick() {
-
-        }
-
-        /**
-         * 清空播放列表
-         */
-        @Override
-        public void onClearBtnClick() {
-            msService.clear();
-        }
-
-        /**
-         * 当item 的定位按钮被点击时回调, 定位到某歌单或页面
-         *
-         * @param position pos
-         */
-        @Override
-        public void onLocateBtnClick(int position) {
-            LogUtils.e();
-        }
-
-        /**
-         * 当item 的删除按钮被点击时回调, 删除播放列表中的某一个
-         *
-         * @param position pos
-         */
-        @Override
-        public void onDeleteBtnClick(int position) {
-            msService.remove(position);
-        }
-    }
-
     private class MusicServiceConnect implements ServiceConnection {
 
         @Override
@@ -319,11 +258,6 @@ public class BaseActivity extends AppCompatActivity {
             msService.setOnPreparedListener(new MusicService.OnPreparedListener() {
                 @Override
                 public void onPreparedStart(MediaPlayer mp) {
-                    PlayListDialog dialog = (PlayListDialog) getSupportFragmentManager()
-                            .findFragmentByTag(FragmentTagConstant.PLAYLIST_FRAGMENT);
-                    if (dialog != null) {
-                        dialog.updateAdapterInterface();
-                    }
                 }
 
                 @Override

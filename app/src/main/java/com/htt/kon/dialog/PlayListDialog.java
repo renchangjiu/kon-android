@@ -21,15 +21,21 @@ import androidx.fragment.app.DialogFragment;
 
 import com.htt.kon.App;
 import com.htt.kon.R;
+import com.htt.kon.activity.BaseActivity;
 import com.htt.kon.adapter.list.dialog.PlaylistDialogAdapter;
 import com.htt.kon.bean.PlayMode;
+import com.htt.kon.broadcast.BaseReceiver;
+import com.htt.kon.broadcast.PlayStateChangeReceiver;
+import com.htt.kon.service.MusicService;
 import com.htt.kon.service.Playlist;
 import com.htt.kon.util.UiUtils;
 
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 /**
  * @author su
@@ -49,19 +55,24 @@ public class PlayListDialog extends DialogFragment {
     @BindView(R.id.dp_listView)
     ListView listView;
 
-    @Setter
-    private OnClickListener onClickListener;
-
     private Context context;
 
     private Playlist playlist;
+
+    private PlaylistDialogAdapter adapter;
+
+    private MusicService msService;
+
+    private PlayStateChangeReceiver receiver;
 
     private PlayListDialog() {
         super();
     }
 
-    public static PlayListDialog of() {
-        return new PlayListDialog();
+    public static PlayListDialog of(MusicService msService) {
+        PlayListDialog res = new PlayListDialog();
+        res.msService = msService;
+        return res;
     }
 
     @Override
@@ -95,23 +106,26 @@ public class PlayListDialog extends DialogFragment {
         return view;
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        BaseReceiver.unregisterLocal(context, this.receiver);
+    }
+
     private void init() {
         this.updateModeInterface();
-        PlaylistDialogAdapter adapter1 = new PlaylistDialogAdapter();
-        this.listView.setAdapter(adapter1);
+        this.adapter = new PlaylistDialogAdapter();
+        this.listView.setAdapter(adapter);
         this.listView.setSelection(this.playlist.getIndex());
-        adapter1.setOnClickListener(new PlaylistDialogAdapter.OnClickListener() {
+        this.adapter.setOnClickListener(new PlaylistDialogAdapter.OnClickListener() {
             @Override
             public void onLocateBtnClick(int position) {
-                assert onClickListener != null;
-                onClickListener.onLocateBtnClick(position);
+                // TODO
             }
 
             @Override
             public void onDeleteBtnClick(int position) {
-                assert onClickListener != null;
-                onClickListener.onDeleteBtnClick(position);
-                PlaylistDialogAdapter adapter = UiUtils.getAdapter(listView, PlaylistDialogAdapter.class);
+                msService.remove(position);
                 adapter.notifyDataSetChanged();
                 updateModeInterface();
                 if (adapter.getCount() == 0) {
@@ -121,38 +135,43 @@ public class PlayListDialog extends DialogFragment {
         });
 
         this.listView.setOnItemClickListener((parent, view, position, id) -> {
-            assert onClickListener != null;
-            onClickListener.onItemClick(position);
-            // 更新被点击项图标
-            UiUtils.getAdapter(this.listView, PlaylistDialogAdapter.class).notifyDataSetChanged();
+            if (position != playlist.getIndex() || !msService.isPlaying()) {
+                msService.play(position);
+            }
         });
 
-        // 获取下一个播放模式并设置界面
-        this.textViewPlayMode.setOnClickListener(v -> {
-            assert onClickListener != null;
-            onClickListener.onPlayModeBtnClick();
-            this.updateModeInterface();
+        this.receiver = PlayStateChangeReceiver.registerLocal(context, flag -> {
+            this.adapter.notifyDataSetChanged();
         });
+    }
 
-        // 收藏按钮的点击事件
-        this.textViewCollect.setOnClickListener(v -> {
-            assert onClickListener != null;
-            onClickListener.onCollectBtnClick();
-        });
-
-        //  清空按钮的点击事件
-        this.imageViewClear.setOnClickListener(v -> {
-            OptionDialog of = OptionDialog.of(context).setContent(getString(R.string.sure_to_clear_playlist));
-            of.setPositiveButton(getString(R.string.clear), (child) -> {
-                assert onClickListener != null;
-                onClickListener.onClearBtnClick();
-                UiUtils.getAdapter(this.listView, PlaylistDialogAdapter.class).notifyDataSetChanged();
-                dismiss();
-            });
-            of.setNegativeButton(child -> {
-            });
-            of.show();
-        });
+    @OnClick({R.id.dp_textViewPlayMode, R.id.dp_textViewCollect, R.id.dp_imageViewClear})
+    void click(View view) {
+        switch (view.getId()) {
+            // 播放模式按钮的点击事件
+            case R.id.dp_textViewPlayMode:
+                PlayMode nextPlayMode = Playlist.getNextPlayMode(playlist.getMode(), context);
+                msService.setMode(nextPlayMode.getValue());
+                this.updateModeInterface();
+                break;
+            // 收藏按钮的点击事件
+            // TODO
+            case R.id.dp_textViewCollect:
+                break;
+            //  清空按钮的点击事件
+            case R.id.dp_imageViewClear:
+                OptionDialog.of(context).setContent(getString(R.string.sure_to_clear_playlist))
+                        .setPositiveButton(getString(R.string.clear), (child) -> {
+                            msService.clear();
+                            this.adapter.notifyDataSetChanged();
+                            dismiss();
+                        })
+                        .setNegativeButton(child -> {
+                        })
+                        .show();
+                break;
+            default:
+        }
     }
 
     /**
@@ -168,41 +187,4 @@ public class PlayListDialog extends DialogFragment {
         this.textViewPlayMode.setText(String.format(format, playMode.getLabel(), this.playlist.size()));
     }
 
-    public void updateAdapterInterface() {
-        // 更新当前播放项的图标
-        PlaylistDialogAdapter adapter = UiUtils.getAdapter(this.listView, PlaylistDialogAdapter.class);
-        adapter.notifyDataSetChanged();
-    }
-
-    public interface OnClickListener {
-        /**
-         * 当播放列表的item 被点击时回调
-         *
-         * @param position position
-         */
-        void onItemClick(int position);
-
-        /**
-         * 当播放模式按钮被点击时回调
-         */
-        void onPlayModeBtnClick();
-
-        void onCollectBtnClick();
-
-        void onClearBtnClick();
-
-        /**
-         * 当item 的定位按钮被点击时回调, 定位到某歌单或页面
-         *
-         * @param position pos
-         */
-        void onLocateBtnClick(int position);
-
-        /**
-         * 当item 的删除按钮被点击时回调, 删除播放列表中的某一个
-         *
-         * @param position pos
-         */
-        void onDeleteBtnClick(int position);
-    }
 }

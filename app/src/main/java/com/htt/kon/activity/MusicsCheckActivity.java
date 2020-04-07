@@ -46,7 +46,7 @@ public class MusicsCheckActivity extends BaseActivity implements DataRequisiteAc
         return true;
     });
 
-    @BindView(R.id.amc_toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
     @BindView(R.id.amc_textView)
