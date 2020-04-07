@@ -5,15 +5,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.bean.Music;
 import com.htt.kon.broadcast.BaseReceiver;
@@ -21,6 +26,7 @@ import com.htt.kon.broadcast.PlayStateChangeReceiver;
 import com.htt.kon.constant.FragmentTagConstant;
 import com.htt.kon.dialog.PlayListDialog;
 import com.htt.kon.service.MusicService;
+import com.htt.kon.service.Playlist;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.UiUtils;
 
@@ -60,7 +66,15 @@ public class MusicPlayActivity extends AppCompatActivity {
     @BindView(R.id.amp_seekBar)
     SeekBar seekBar;
 
+    private MusicService msService;
+
+    private Playlist playlist;
+
     private Music curMusic;
+
+    private PlayStateChangeReceiver receiver;
+
+    private ServiceConnection conn;
 
     public static void start(Activity source) {
         source.startActivity(new Intent(source, MusicsActivity.class));
@@ -69,7 +83,6 @@ public class MusicPlayActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        this.initData();
     }
 
     @Override
@@ -85,53 +98,54 @@ public class MusicPlayActivity extends AppCompatActivity {
 
 
     private void init() {
-        // MusicService msService = super.msService;
         this.toolbar.setNavigationOnClickListener(v -> {
             finish();
         });
-        // 监听播放广播
-        PlayStateChangeReceiver receiver = new PlayStateChangeReceiver();
-        BaseReceiver.registerLocal(this, receiver, PlayStateChangeReceiver.ACTION);
-        receiver.setOnReceiveListener(flag -> {
-            switch (flag) {
-                case PLAY:
-                case CLEAR:
-                case REMOVE:
-                    this.initData();
-                    break;
-                default:
+
+        this.conn = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                msService = ((MusicService.MusicBinder) service).getMusicService();
+                initData();
             }
-        });
-        // this.curMusic = super.playlist.getCurMusic();
-        this.initData();
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+            }
+        };
+        bindService(new Intent(this, MusicService.class), conn, Context.BIND_AUTO_CREATE);
+
+        this.playlist = App.getPlaylist();
+
+        // 监听播放广播
+        this.receiver = PlayStateChangeReceiver.registerLocal(this, flag -> this.initData());
     }
 
     private void initData() {
+        this.curMusic = this.playlist.getCurMusic();
         this.toolbar.setTitle(this.curMusic.getTitle());
         this.seekBar.setMax(this.curMusic.getDuration());
-        // if (super.msService != null) {
-        //     this.updateSeekBar();
-        // }
-        // this.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-        //     @Override
-        //     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        //         if (fromUser) {
-        //             msService.seekTo(progress);
-        //         }
-        //     }
-        //
-        //     @Override
-        //     public void onStartTrackingTouch(SeekBar seekBar) {
-        //     }
-        //
-        //     @Override
-        //     public void onStopTrackingTouch(SeekBar seekBar) {
-        //     }
-        // });
+        this.updateSeekBar();
+        this.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    msService.seekTo(progress);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
     }
 
     public void updateSeekBar() {
-        // this.seekBar.setProgress(super.msService.getCurrentPosition());
+        this.seekBar.setProgress(this.msService.getCurrentPosition());
         handler.sendEmptyMessageDelayed(UPDATE_PROGRESS, 500);
     }
 
@@ -156,15 +170,16 @@ public class MusicPlayActivity extends AppCompatActivity {
             case R.id.amp_ivPlayMode:
                 break;
             case R.id.amp_ivPrev:
+                this.msService.prev();
                 break;
             case R.id.amp_ivPlay:
+                this.msService.playOrPause();
                 break;
             case R.id.amp_ivNext:
+                this.msService.next();
                 break;
             case R.id.amp_ivPlaylist:
-                // PlayListDialog.of()
-                //         .setOnClickListener(new BaseActivity.PlayListDialogFragmentOnClickListener())
-                //         .show(getSupportFragmentManager(), FragmentTagConstant.PLAYLIST_FRAGMENT);
+                PlayListDialog.of(this.msService).show(getSupportFragmentManager(), FragmentTagConstant.PLAYLIST_FRAGMENT);
                 break;
             default:
         }
@@ -186,5 +201,12 @@ public class MusicPlayActivity extends AppCompatActivity {
             default:
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(this.conn);
+        BaseReceiver.unregisterLocal(this, this.receiver);
     }
 }
