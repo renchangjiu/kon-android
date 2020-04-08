@@ -30,8 +30,8 @@
 
     <ImageView
             android:id="@+id/lpb_imageViewPlayList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="45dp"
             android:layout_marginEnd="11dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"

@@ -150,8 +150,7 @@ public class PlayListDialog extends DialogFragment {
         switch (view.getId()) {
             // 播放模式按钮的点击事件
             case R.id.dp_textViewPlayMode:
-                PlayMode nextPlayMode = Playlist.getNextPlayMode(playlist.getMode(), context);
-                msService.setMode(nextPlayMode.getValue());
+                msService.setMode();
                 this.updateModeInterface();
                 break;
             // 收藏按钮的点击事件
@@ -180,7 +179,19 @@ public class PlayListDialog extends DialogFragment {
     private void updateModeInterface() {
         int mode = this.playlist.getMode();
         PlayMode playMode = Playlist.getModeByValue(mode, this.context);
-        Drawable drawable = this.context.getResources().getDrawable(playMode.getImageId(), null);
+        int imageId;
+        switch (mode) {
+            case Playlist.MODE_LOOP:
+                imageId = R.drawable.playlist_loop_play;
+                break;
+            case Playlist.MODE_RANDOM:
+                imageId = R.drawable.playlist_random_play;
+                break;
+            default:
+                imageId = R.drawable.playlist_single_loop_play;
+                break;
+        }
+        Drawable drawable = this.context.getResources().getDrawable(imageId, null);
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
         this.textViewPlayMode.setCompoundDrawables(drawable, null, null, null);
         String format = getString(R.string.play_mode_show);

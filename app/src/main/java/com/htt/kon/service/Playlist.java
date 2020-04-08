@@ -50,10 +50,6 @@ public class Playlist {
      */
     public static final int MODE_SINGLE_LOOP = 3;
 
-    public static final int[] MODES = new int[]{MODE_LOOP, MODE_RANDOM, MODE_SINGLE_LOOP};
-
-    private static SparseArray<String> modeLabelsMapping = null;
-
     @Getter
     private List<Music> musics;
 
@@ -63,8 +59,11 @@ public class Playlist {
     @Getter
     private int index = -1;
 
+
     /**
-     * 播放下一首, 返回切换后的Music
+     * 切换到下一首
+     *
+     * @return current music
      */
     Music next() {
         switch (this.mode) {
@@ -86,7 +85,9 @@ public class Playlist {
     }
 
     /**
-     * 播放上一首, 返回切换后的Music
+     * 切换到上一首
+     *
+     * @return current music
      */
     Music prev() {
         switch (this.mode) {
@@ -267,50 +268,17 @@ public class Playlist {
         this.index = index;
     }
 
-
-    /**
-     * 获取到播放模式及其对应的名称的映射
-     *
-     * @return 如 <1, "列表循环">
-     */
-    public static SparseArray<String> getModeLabelsMapping(Context context) {
-        if (modeLabelsMapping != null) {
-            return modeLabelsMapping;
-        }
-        modeLabelsMapping = new SparseArray<>(MODES.length);
-        modeLabelsMapping.put(MODE_LOOP, context.getString(R.string.mode_loop));
-        modeLabelsMapping.put(MODE_RANDOM, context.getString(R.string.mode_random));
-        modeLabelsMapping.put(MODE_SINGLE_LOOP, context.getString(R.string.mode_single_loop));
-        return modeLabelsMapping;
+    public static List<PlayMode> getModes(Context context) {
+        List<PlayMode> modes = new ArrayList<>();
+        modes.add(new PlayMode().setValue(MODE_LOOP).setLabel(context.getString(R.string.mode_loop)));
+        modes.add(new PlayMode().setValue(MODE_RANDOM).setLabel(context.getString(R.string.mode_random)));
+        modes.add(new PlayMode().setValue(MODE_SINGLE_LOOP).setLabel(context.getString(R.string.mode_single_loop)));
+        return modes;
     }
 
     public static PlayMode getModeByValue(int mode, Context context) {
-        PlayMode pm = new PlayMode();
-        pm.setValue(mode);
-        switch (mode) {
-            case MODE_LOOP:
-                pm.setLabel(context.getString(R.string.mode_loop)).setImageId(R.drawable.playlist_loop_play);
-                return pm;
-            case MODE_RANDOM:
-                pm.setLabel(context.getString(R.string.mode_random)).setImageId(R.drawable.playlist_random_play);
-                return pm;
-            case MODE_SINGLE_LOOP:
-            default:
-                pm.setLabel(context.getString(R.string.mode_single_loop)).setImageId(R.drawable.playlist_single_loop_play);
-                return pm;
-        }
-    }
-
-
-    public static PlayMode getNextPlayMode(int mode, Context context) {
-        switch (mode) {
-            case MODE_LOOP:
-                return getModeByValue(MODE_RANDOM, context);
-            case MODE_RANDOM:
-                return getModeByValue(MODE_SINGLE_LOOP, context);
-            default:
-                return getModeByValue(MODE_LOOP, context);
-        }
+        List<PlayMode> modes = getModes(context);
+        return modes.get(modes.indexOf(new PlayMode().setValue(mode)));
     }
 
     @Getter

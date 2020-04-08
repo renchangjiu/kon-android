@@ -106,13 +106,13 @@ public class BaseActivity extends AppCompatActivity {
 
         this.viewPager.setCurrentItem(this.playlist.getIndex(), true);
 
-        this.imageViewPlay.setOnClickListener(v -> this.msService.playOrPause());
+        this.imageViewPlay.setOnClickListener(v -> {
+            this.msService.playOrPause();
+            imageViewPlay.setImageResource(msService.isPlaying() ? R.drawable.playbar_paly : R.drawable.playbar_pause);
+        });
 
         // 点击弹出播放列表对话框
-        imageViewPlayList.setOnClickListener(v -> {
-            PlayListDialog.of(this.msService)
-                    .show(getSupportFragmentManager(), FragmentTagConstant.PLAYLIST_FRAGMENT);
-        });
+        imageViewPlayList.setOnClickListener(v -> PlayListDialog.of(this.msService).show(getSupportFragmentManager(), FragmentTagConstant.PLAYLIST_FRAGMENT));
 
         this.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
@@ -216,11 +216,7 @@ public class BaseActivity extends AppCompatActivity {
      */
     public void updatePlayBarInterface() {
         if (this.msService != null) {
-            if (this.msService.isPlaying()) {
-                this.imageViewPlay.setImageResource(R.drawable.playbar_paly);
-            } else {
-                this.imageViewPlay.setImageResource(R.drawable.playbar_pause);
-            }
+            imageViewPlay.setImageResource(msService.isPlaying() ? R.drawable.playbar_paly : R.drawable.playbar_pause);
         }
     }
 
@@ -262,7 +258,7 @@ public class BaseActivity extends AppCompatActivity {
 
                 @Override
                 public void onPreparedFinish(MediaPlayer mp) {
-                    imageViewPlay.setImageResource(R.drawable.playbar_paly);
+                    imageViewPlay.setImageResource(msService.isPlaying() ? R.drawable.playbar_paly : R.drawable.playbar_pause);
                 }
             });
 
@@ -278,7 +274,6 @@ public class BaseActivity extends AppCompatActivity {
                         break;
                     default:
                 }
-                updatePlayBarInterface();
             });
 
             LogUtils.e("MusicServiceConnect onServiceConnected.");

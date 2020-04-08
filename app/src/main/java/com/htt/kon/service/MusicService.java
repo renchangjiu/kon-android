@@ -10,15 +10,16 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.htt.kon.App;
 import com.htt.kon.bean.Music;
+import com.htt.kon.bean.PlayMode;
 import com.htt.kon.broadcast.BaseReceiver;
 import com.htt.kon.broadcast.PlayStateChangeReceiver;
 import com.htt.kon.broadcast.PlayNotificationReceiver;
 import com.htt.kon.notification.PlayNotification;
 import com.htt.kon.util.LogUtils;
-import com.htt.kon.util.stream.Optional;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Setter;
 
@@ -122,10 +123,11 @@ public class MusicService extends Service {
                 mp.start();
             }
 
-            Optional.of(this.onPreparedListener).ifPresent(v -> v.onPreparedFinish(mp));
             if (this.isPlaying()) {
                 this.notificationManager.notify(NOTIFICATION_ID, PlayNotification.of(PlayNotification.Style.ONE, this, this.playlist.getCurMusic(), this.isPlaying()));
             }
+            Optional.ofNullable(this.onPreparedListener).ifPresent(v -> v.onPreparedFinish(mp));
+            PlayStateChangeReceiver.send(this, PlayStateChangeReceiver.Flag.PREPARED);
         });
         LogUtils.e("MusicService onCreate.");
     }
@@ -169,11 +171,13 @@ public class MusicService extends Service {
     public void pause() {
         this.player.pause();
         this.onPlayStateChangeListener.onChange(OnPlayStateChangeListener.FLAG_1);
+        PlayStateChangeReceiver.send(this, PlayStateChangeReceiver.Flag.PAUSE);
     }
 
     public void start() {
         this.player.start();
         this.onPlayStateChangeListener.onChange(OnPlayStateChangeListener.FLAG_1);
+        PlayStateChangeReceiver.send(this, PlayStateChangeReceiver.Flag.PLAY);
     }
 
     /**
@@ -332,6 +336,16 @@ public class MusicService extends Service {
         }
     }
 
+    /**
+     * 按顺序将播放模式设置为下一个模式
+     */
+    public void setMode() {
+        List<PlayMode> modes = Playlist.getModes(this);
+        modes.addAll(Playlist.getModes(this));
+        int i = modes.indexOf(new PlayMode().setValue(this.playlist.getMode()));
+        PlayMode nextMode = modes.get(i + 1);
+        this.playlist.setMode(nextMode.getValue());
+    }
 
     public void setMode(int mode) {
         this.playlist.setMode(mode);

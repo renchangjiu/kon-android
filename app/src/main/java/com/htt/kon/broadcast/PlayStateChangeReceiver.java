@@ -69,6 +69,16 @@ public class PlayStateChangeReceiver extends BroadcastReceiver {
         PLAY,
 
         /**
+         * 表示歌曲暂停播放
+         */
+        PAUSE,
+
+        /**
+         * 表示歌曲异步准备已完成
+         */
+        PREPARED,
+
+        /**
          * 表示播放列表被清空
          */
         CLEAR,
