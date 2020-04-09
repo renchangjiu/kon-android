@@ -224,12 +224,12 @@ public class Playlist {
             if (ipl == null) {
                 return new Playlist();
             }
-            Playlist playlist = new Playlist();
-            playlist.setIndex(ipl.getIndex());
-            playlist.setMode(ipl.getMode());
-            playlist.setMusics(ipl.getMusics());
-            LogUtils.e("Init playlist.");
-            return playlist;
+            Playlist pl = new Playlist();
+            pl.setIndex(ipl.getIndex());
+            pl.setMode(ipl.getMode());
+            pl.setMusics(ipl.getMusics());
+            LogUtils.e("Init pl.");
+            return pl;
         } catch (IOException e) {
             LogUtils.e(e);
         }
@@ -284,6 +284,7 @@ public class Playlist {
     @Getter
     @Setter
     private static class InnerPlaylist {
+
         private List<Music> musics;
 
         private int mode;

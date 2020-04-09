@@ -3,12 +3,16 @@ package com.htt.kon.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -16,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +36,13 @@ import com.htt.kon.service.MusicService;
 import com.htt.kon.service.Playlist;
 import com.htt.kon.util.CommonUtils;
 import com.htt.kon.util.LogUtils;
+import com.htt.kon.util.MMCQ;
 import com.htt.kon.util.UiUtils;
+
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.IOException;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -56,6 +67,9 @@ public class MusicPlayActivity extends AppCompatActivity {
         }
         return true;
     });
+
+    @BindView(R.id.amp_llRoot)
+    LinearLayout linearLayout;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -154,6 +168,7 @@ public class MusicPlayActivity extends AppCompatActivity {
         this.tvDuration.setText(CommonUtils.formatTime(this.msService.getDuration() / 1000));
         this.seekBar.setMax(this.curMusic.getDuration());
         this.updateSeekBar();
+        this.setBackground();
         this.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -172,10 +187,29 @@ public class MusicPlayActivity extends AppCompatActivity {
         });
     }
 
-    public void updateSeekBar() {
+    private void updateSeekBar() {
         this.seekBar.setProgress(this.msService.getCurrentPosition());
         this.tvCurrPos.setText(CommonUtils.formatTime(this.msService.getCurrentPosition() / 1000));
         handler.sendEmptyMessageDelayed(UPDATE_PROGRESS, 500);
+    }
+
+    private void setBackground() {
+        int color = ContextCompat.getColor(this, R.color.grey5);
+        // 从封面中提取出主色调
+        // FIXME: 有bug
+        if (StringUtils.isNotEmpty(this.curMusic.getImage())) {
+            Bitmap bitmap = BitmapFactory.decodeFile(this.curMusic.getImage());
+            try {
+                List<int[]> result = MMCQ.compute(bitmap, 5);
+                int[] dominantColor = result.get(0);
+                color = Color.rgb(dominantColor[0], dominantColor[1], dominantColor[2]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        getWindow().setStatusBarColor(color);
+        this.toolbar.setBackgroundColor(color);
+        this.linearLayout.setBackgroundColor(color);
     }
 
 
