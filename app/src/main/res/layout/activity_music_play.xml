@@ -5,7 +5,7 @@
         android:id="@+id/amp_llRoot"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/grey5"
+        android:background="#BF2B0D04"
         android:orientation="vertical"
         tools:context=".activity.MusicPlayActivity">
 
@@ -13,7 +13,6 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/grey5"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:navigationIcon="@drawable/t_actionbar_back"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"

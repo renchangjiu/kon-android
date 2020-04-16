@@ -193,20 +193,32 @@ public class MusicPlayActivity extends AppCompatActivity {
         handler.sendEmptyMessageDelayed(UPDATE_PROGRESS, 500);
     }
 
+    /**
+     * 从封面中提取出主色调
+     */
+    private double scale = 1.0;
+
     private void setBackground() {
         int color = ContextCompat.getColor(this, R.color.grey5);
-        // 从封面中提取出主色调
         // FIXME: 有bug
         if (StringUtils.isNotEmpty(this.curMusic.getImage())) {
             Bitmap bitmap = BitmapFactory.decodeFile(this.curMusic.getImage());
             try {
                 List<int[]> result = MMCQ.compute(bitmap, 5);
                 int[] dominantColor = result.get(0);
-                color = Color.rgb(dominantColor[0], dominantColor[1], dominantColor[2]);
+                String s = "";
+                for (int i = 0; i < dominantColor.length; i++) {
+                    dominantColor[i] = dominantColor[i] / 5;
+                    s += dominantColor[i] + ",";
+                }
+                LogUtils.e(s);
+                color = Color.argb(75, dominantColor[0], dominantColor[1], dominantColor[2]);
+                // color = Color.rgb(dominantColor[0], dominantColor[1], dominantColor[2]);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        LogUtils.e(scale);
         getWindow().setStatusBarColor(color);
         this.toolbar.setBackgroundColor(color);
         this.linearLayout.setBackgroundColor(color);
@@ -220,8 +232,10 @@ public class MusicPlayActivity extends AppCompatActivity {
     public void clickMiddle(View view) {
         switch (view.getId()) {
             case R.id.amp_ivLove:
+                this.scale *= 0.9;
                 break;
             case R.id.amp_ivDownload:
+                this.scale *= 1.1;
                 break;
             case R.id.amp_ivComment:
                 break;
@@ -229,6 +243,7 @@ public class MusicPlayActivity extends AppCompatActivity {
                 break;
             default:
         }
+        this.setBackground();
     }
 
     @OnClick({R.id.amp_ivPlayMode, R.id.amp_ivPrev, R.id.amp_ivPlay, R.id.amp_ivNext, R.id.amp_ivPlaylist})
