@@ -58,7 +58,7 @@ public class MusicService extends Service {
     /**
      * 在 onCreate 方法中 调用 prepare 方法, 不会立即播放
      */
-    private static volatile boolean FLAG_NOT_ON_CREATE = false;
+    private boolean playNow = false;
 
     /**
      * 创建通知栏
@@ -119,10 +119,10 @@ public class MusicService extends Service {
         });
 
         this.player.setOnPreparedListener(mp -> {
-            if (FLAG_NOT_ON_CREATE) {
+            if (playNow) {
                 mp.start();
             }
-
+            playNow = true;
             if (this.isPlaying()) {
                 this.notificationManager.notify(NOTIFICATION_ID, PlayNotification.of(PlayNotification.Style.ONE, this, this.playlist.getCurMusic(), this.isPlaying()));
             }
@@ -318,8 +318,6 @@ public class MusicService extends Service {
             this.player.reset();
             if (curMusic != null) {
                 this.player.setDataSource(curMusic.getPath());
-                // 准备结束后, 总是立即播放
-                FLAG_NOT_ON_CREATE = true;
                 this.player.prepareAsync();
                 this.onPreparedListener.onPreparedStart(this.player);
 
