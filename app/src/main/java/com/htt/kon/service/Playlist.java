@@ -25,7 +25,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * 播放列表, 单例. 其各种设置属性的方法务必仅在 MusicService 中调用, 以防止逻辑混乱
+ * 播放列表, 单例. 其各种设置属性的方法务必仅在 PlayService 中调用, 以防止逻辑混乱
  *
  * @author su
  * @date 2020/02/04 10:21

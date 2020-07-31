@@ -4,19 +4,16 @@ import android.annotation.TargetApi;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
 import androidx.core.app.NotificationManagerCompat;
 
-import com.htt.kon.bean.Music;
 import com.htt.kon.bean.MusicList;
 import com.htt.kon.constant.CommonConstant;
 
 import com.htt.kon.service.Playlist;
-import com.htt.kon.service.MusicService;
-import com.htt.kon.service.database.Callback;
+import com.htt.kon.service.PlayService;
 import com.htt.kon.service.database.MusicDbService;
 import com.htt.kon.service.database.MusicListDbService;
 import com.htt.kon.util.AppPathManger;
@@ -24,13 +21,10 @@ import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.SpUtils;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -71,7 +65,7 @@ public class App extends Application {
 
         this.whenInstall();
 
-        Intent intent = new Intent(this, MusicService.class);
+        Intent intent = new Intent(this, PlayService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(intent);
         } else {

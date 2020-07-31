@@ -31,7 +31,7 @@ import lombok.Setter;
  * @author su
  * @date 2020/02/06 20:11
  */
-public class MusicService extends Service {
+public class PlayService extends Service {
     private static final int NOTIFICATION_ID = 1;
 
     /**
@@ -129,30 +129,30 @@ public class MusicService extends Service {
             Optional.ofNullable(this.onPreparedListener).ifPresent(v -> v.onPreparedFinish(mp));
             PlayStateChangeReceiver.send(this, PlayStateChangeReceiver.Flag.PREPARED);
         });
-        LogUtils.e("MusicService onCreate.");
+        LogUtils.e("PlayService onCreate.");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        LogUtils.e("MusicService onStartCommand.");
+        LogUtils.e("PlayService onStartCommand.");
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        LogUtils.e("MusicService onBind.");
+        LogUtils.e("PlayService onBind.");
         return this.binder;
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
-        LogUtils.e("MusicService onUnbind.");
+        LogUtils.e("PlayService onUnbind.");
         return super.onUnbind(intent);
     }
 
     @Override
     public void onDestroy() {
-        LogUtils.e("MusicService onDestroy.");
+        LogUtils.e("PlayService onDestroy.");
         super.onDestroy();
         BaseReceiver.unregister(this, this.receiver);
     }
@@ -363,8 +363,8 @@ public class MusicService extends Service {
     }
 
     public class MusicBinder extends Binder {
-        public MusicService getMusicService() {
-            return MusicService.this;
+        public PlayService getMusicService() {
+            return PlayService.this;
         }
     }
 

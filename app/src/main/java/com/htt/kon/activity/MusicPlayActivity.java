@@ -32,7 +32,7 @@ import com.htt.kon.broadcast.BaseReceiver;
 import com.htt.kon.broadcast.PlayStateChangeReceiver;
 import com.htt.kon.constant.FragmentTagConstant;
 import com.htt.kon.dialog.PlayListDialog;
-import com.htt.kon.service.MusicService;
+import com.htt.kon.service.PlayService;
 import com.htt.kon.service.Playlist;
 import com.htt.kon.util.CommonUtils;
 import com.htt.kon.util.LogUtils;
@@ -89,7 +89,7 @@ public class MusicPlayActivity extends AppCompatActivity {
     @BindView(R.id.amp_ivPlay)
     ImageView ivPlay;
 
-    private MusicService msService;
+    private PlayService playService;
 
     private Playlist playlist;
 
@@ -128,16 +128,16 @@ public class MusicPlayActivity extends AppCompatActivity {
         this.conn = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
-                msService = ((MusicService.MusicBinder) service).getMusicService();
+                playService = ((PlayService.MusicBinder) service).getMusicService();
                 initData();
-                ivPlay.setImageResource(msService.isPlaying() ? R.drawable.selector_mp_play : R.drawable.selector_mp_pause);
+                ivPlay.setImageResource(playService.isPlaying() ? R.drawable.selector_mp_play : R.drawable.selector_mp_pause);
             }
 
             @Override
             public void onServiceDisconnected(ComponentName name) {
             }
         };
-        bindService(new Intent(this, MusicService.class), conn, Context.BIND_AUTO_CREATE);
+        bindService(new Intent(this, PlayService.class), conn, Context.BIND_AUTO_CREATE);
 
         this.playlist = App.getPlaylist();
 
@@ -150,7 +150,7 @@ public class MusicPlayActivity extends AppCompatActivity {
                     break;
                 case PREPARED:
                     // 防止切换上下首歌时, 按钮图标闪变
-                    this.ivPlay.setImageResource(this.msService.isPlaying() ? R.drawable.selector_mp_play : R.drawable.selector_mp_pause);
+                    this.ivPlay.setImageResource(this.playService.isPlaying() ? R.drawable.selector_mp_play : R.drawable.selector_mp_pause);
                     break;
                 case CLEAR:
                     finish();
@@ -165,7 +165,7 @@ public class MusicPlayActivity extends AppCompatActivity {
     private void initData() {
         this.curMusic = this.playlist.getCurMusic();
         this.toolbar.setTitle(this.curMusic.getTitle());
-        this.tvDuration.setText(CommonUtils.formatTime(this.msService.getDuration() / 1000));
+        this.tvDuration.setText(CommonUtils.formatTime(this.playService.getDuration() / 1000));
         this.seekBar.setMax(this.curMusic.getDuration());
         this.updateSeekBar();
         this.setBackground();
@@ -173,7 +173,7 @@ public class MusicPlayActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
-                    msService.seekTo(progress);
+                    playService.seekTo(progress);
                 }
             }
 
@@ -188,8 +188,8 @@ public class MusicPlayActivity extends AppCompatActivity {
     }
 
     private void updateSeekBar() {
-        this.seekBar.setProgress(this.msService.getCurrentPosition());
-        this.tvCurrPos.setText(CommonUtils.formatTime(this.msService.getCurrentPosition() / 1000));
+        this.seekBar.setProgress(this.playService.getCurrentPosition());
+        this.tvCurrPos.setText(CommonUtils.formatTime(this.playService.getCurrentPosition() / 1000));
         handler.sendEmptyMessageDelayed(UPDATE_PROGRESS, 500);
     }
 
@@ -251,7 +251,7 @@ public class MusicPlayActivity extends AppCompatActivity {
         switch (view.getId()) {
             // 切换播放模式
             case R.id.amp_ivPlayMode:
-                this.msService.setMode();
+                this.playService.setMode();
                 switch (playlist.getMode()) {
                     case Playlist.MODE_LOOP:
                         this.ivPlayMode.setImageResource(R.drawable.selector_mp_loop);
@@ -267,20 +267,20 @@ public class MusicPlayActivity extends AppCompatActivity {
                 break;
             // 上一首
             case R.id.amp_ivPrev:
-                this.msService.prev();
+                this.playService.prev();
                 break;
             // 播放 or 暂停
             case R.id.amp_ivPlay:
-                this.msService.playOrPause();
-                this.ivPlay.setImageResource(this.msService.isPlaying() ? R.drawable.selector_mp_play : R.drawable.selector_mp_pause);
+                this.playService.playOrPause();
+                this.ivPlay.setImageResource(this.playService.isPlaying() ? R.drawable.selector_mp_play : R.drawable.selector_mp_pause);
                 break;
             // 下一首
             case R.id.amp_ivNext:
-                this.msService.next();
+                this.playService.next();
                 break;
             // 播放列表
             case R.id.amp_ivPlaylist:
-                PlayListDialog.of(this.msService).show(getSupportFragmentManager(), FragmentTagConstant.PLAYLIST_FRAGMENT);
+                PlayListDialog.of(this.playService).show(getSupportFragmentManager(), FragmentTagConstant.PLAYLIST_FRAGMENT);
                 break;
             default:
         }

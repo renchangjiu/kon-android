@@ -2,8 +2,6 @@ package com.htt.kon.util;
 
 import android.util.Log;
 
-import com.htt.kon.service.MusicService;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;

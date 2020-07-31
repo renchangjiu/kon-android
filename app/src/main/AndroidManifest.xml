@@ -32,7 +32,7 @@
                 android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <service
-                android:name=".service.MusicService"
+                android:name=".service.PlayService"
                 android:enabled="true"
                 android:exported="true"
                 android:permission="TODO" />

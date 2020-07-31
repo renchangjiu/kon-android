@@ -36,7 +36,7 @@ public interface MusicDao {
     List<Music> list();
 
     /**
-     * list by mid
+     * list by mid.
      */
     @Query("SELECT * FROM MUSIC where DEL_FLAG = 2 and MID = :mid")
     List<Music> list(long mid);

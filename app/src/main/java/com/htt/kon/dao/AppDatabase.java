@@ -12,10 +12,8 @@ import com.htt.kon.bean.MusicList;
 
 
 /**
- * Google doc: https://developer.android.google.cn/training/data-storage/room
- *
  * @author su
- * @date 2020/02/07 13:58
+ * @see "https://developer.android.google.cn/training/data-storage/room"
  */
 @Database(entities = {Music.class, MusicList.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {

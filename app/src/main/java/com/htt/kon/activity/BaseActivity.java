@@ -23,11 +23,10 @@ import com.htt.kon.App;
 import com.htt.kon.R;
 import com.htt.kon.adapter.pager.PlayBarAdapter;
 import com.htt.kon.bean.Music;
-import com.htt.kon.bean.PlayMode;
 import com.htt.kon.dialog.PlayListDialog;
+import com.htt.kon.service.PlayService;
 import com.htt.kon.service.Playlist;
 import com.htt.kon.constant.FragmentTagConstant;
-import com.htt.kon.service.MusicService;
 import com.htt.kon.util.LogUtils;
 import com.htt.kon.util.stream.Optional;
 
@@ -56,7 +55,7 @@ public class BaseActivity extends AppCompatActivity {
 
     private MusicServiceConnect msConn = new MusicServiceConnect();
 
-    private MusicService msService;
+    private PlayService playService;
 
     protected Playlist playlist;
 
@@ -83,7 +82,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Intent intent = new Intent(this, MusicService.class);
+        Intent intent = new Intent(this, PlayService.class);
         bindService(intent, msConn, Context.BIND_AUTO_CREATE);
         if (this.playlist.isEmpty()) {
             this.hidePlayBar();
@@ -107,12 +106,12 @@ public class BaseActivity extends AppCompatActivity {
         this.viewPager.setCurrentItem(this.playlist.getIndex(), true);
 
         this.imageViewPlay.setOnClickListener(v -> {
-            this.msService.playOrPause();
-            imageViewPlay.setImageResource(msService.isPlaying() ? R.drawable.playbar_paly : R.drawable.playbar_pause);
+            this.playService.playOrPause();
+            imageViewPlay.setImageResource(playService.isPlaying() ? R.drawable.playbar_paly : R.drawable.playbar_pause);
         });
 
         // 点击弹出播放列表对话框
-        imageViewPlayList.setOnClickListener(v -> PlayListDialog.of(this.msService).show(getSupportFragmentManager(), FragmentTagConstant.PLAYLIST_FRAGMENT));
+        imageViewPlayList.setOnClickListener(v -> PlayListDialog.of(this.playService).show(getSupportFragmentManager(), FragmentTagConstant.PLAYLIST_FRAGMENT));
 
         this.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
@@ -125,11 +124,11 @@ public class BaseActivity extends AppCompatActivity {
                 int pos = playlist.getIndex();
                 // 右翻页
                 if (position > pos) {
-                    msService.next();
+                    playService.next();
                     LogUtils.e("play next music.");
                 } else if (position < pos) {
                     // 左翻页
-                    msService.prev();
+                    playService.prev();
                     LogUtils.e("play prev music.");
                 }
             }
@@ -189,7 +188,7 @@ public class BaseActivity extends AppCompatActivity {
      * @param index  index
      */
     public void replacePlaylist(List<Music> musics, int index) {
-        this.msService.replace(musics, index);
+        this.playService.replace(musics, index);
     }
 
     /**
@@ -198,7 +197,7 @@ public class BaseActivity extends AppCompatActivity {
      * @param music music
      */
     public void nextPlay(Music music) {
-        this.msService.nextPlay(music);
+        this.playService.nextPlay(music);
     }
 
     /**
@@ -207,7 +206,7 @@ public class BaseActivity extends AppCompatActivity {
      * @param musics music list
      */
     public void nextPlay(List<Music> musics) {
-        this.msService.nextPlay(musics);
+        this.playService.nextPlay(musics);
     }
 
 
@@ -215,8 +214,8 @@ public class BaseActivity extends AppCompatActivity {
      * 根据当前播放状态, 修改playbar 的界面
      */
     public void updatePlayBarInterface() {
-        if (this.msService != null) {
-            imageViewPlay.setImageResource(msService.isPlaying() ? R.drawable.playbar_paly : R.drawable.playbar_pause);
+        if (this.playService != null) {
+            imageViewPlay.setImageResource(playService.isPlaying() ? R.drawable.playbar_paly : R.drawable.playbar_pause);
         }
     }
 
@@ -247,27 +246,27 @@ public class BaseActivity extends AppCompatActivity {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            MusicService.MusicBinder binder = (MusicService.MusicBinder) service;
-            msService = binder.getMusicService();
+            PlayService.MusicBinder binder = (PlayService.MusicBinder) service;
+            playService = binder.getMusicService();
 
             updatePlayBarInterface();
-            msService.setOnPreparedListener(new MusicService.OnPreparedListener() {
+            playService.setOnPreparedListener(new PlayService.OnPreparedListener() {
                 @Override
                 public void onPreparedStart(MediaPlayer mp) {
                 }
 
                 @Override
                 public void onPreparedFinish(MediaPlayer mp) {
-                    imageViewPlay.setImageResource(msService.isPlaying() ? R.drawable.playbar_paly : R.drawable.playbar_pause);
+                    imageViewPlay.setImageResource(playService.isPlaying() ? R.drawable.playbar_paly : R.drawable.playbar_pause);
                 }
             });
 
-            msService.setOnPlayStateChangeListener((flag) -> {
+            playService.setOnPlayStateChangeListener((flag) -> {
                 switch (flag) {
-                    case MusicService.OnPlayStateChangeListener.FLAG_2:
+                    case PlayService.OnPlayStateChangeListener.FLAG_2:
                         viewPager.setCurrentItem(playlist.getIndex(), true);
                         break;
-                    case MusicService.OnPlayStateChangeListener.FLAG_3:
+                    case PlayService.OnPlayStateChangeListener.FLAG_3:
                         Optional.of(viewPager.getAdapter()).ifPresent(PagerAdapter::notifyDataSetChanged);
                         viewPager.setCurrentItem(playlist.getIndex(), true);
                         playBar.setVisibility(playlist.isNotEmpty() ? View.VISIBLE : View.GONE);

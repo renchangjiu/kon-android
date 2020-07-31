@@ -21,21 +21,17 @@ import androidx.fragment.app.DialogFragment;
 
 import com.htt.kon.App;
 import com.htt.kon.R;
-import com.htt.kon.activity.BaseActivity;
 import com.htt.kon.adapter.list.dialog.PlaylistDialogAdapter;
 import com.htt.kon.bean.PlayMode;
 import com.htt.kon.broadcast.BaseReceiver;
 import com.htt.kon.broadcast.PlayStateChangeReceiver;
-import com.htt.kon.service.MusicService;
+import com.htt.kon.service.PlayService;
 import com.htt.kon.service.Playlist;
-import com.htt.kon.util.UiUtils;
 
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 
 /**
  * @author su
@@ -61,7 +57,7 @@ public class PlayListDialog extends DialogFragment {
 
     private PlaylistDialogAdapter adapter;
 
-    private MusicService msService;
+    private PlayService playService;
 
     private PlayStateChangeReceiver receiver;
 
@@ -69,9 +65,9 @@ public class PlayListDialog extends DialogFragment {
         super();
     }
 
-    public static PlayListDialog of(MusicService msService) {
+    public static PlayListDialog of(PlayService ps) {
         PlayListDialog res = new PlayListDialog();
-        res.msService = msService;
+        res.playService = ps;
         return res;
     }
 
@@ -125,7 +121,7 @@ public class PlayListDialog extends DialogFragment {
 
             @Override
             public void onDeleteBtnClick(int position) {
-                msService.remove(position);
+                playService.remove(position);
                 adapter.notifyDataSetChanged();
                 updateModeInterface();
                 if (adapter.getCount() == 0) {
@@ -135,8 +131,8 @@ public class PlayListDialog extends DialogFragment {
         });
 
         this.listView.setOnItemClickListener((parent, view, position, id) -> {
-            if (position != playlist.getIndex() || !msService.isPlaying()) {
-                msService.play(position);
+            if (position != playlist.getIndex() || !playService.isPlaying()) {
+                playService.play(position);
             }
         });
 
@@ -150,7 +146,7 @@ public class PlayListDialog extends DialogFragment {
         switch (view.getId()) {
             // 播放模式按钮的点击事件
             case R.id.dp_textViewPlayMode:
-                msService.setMode();
+                playService.setMode();
                 this.updateModeInterface();
                 break;
             // 收藏按钮的点击事件
@@ -161,7 +157,7 @@ public class PlayListDialog extends DialogFragment {
             case R.id.dp_imageViewClear:
                 OptionDialog.of(context).setContent(getString(R.string.sure_to_clear_playlist))
                         .setPositiveButton(getString(R.string.clear), (child) -> {
-                            msService.clear();
+                            playService.clear();
                             this.adapter.notifyDataSetChanged();
                             dismiss();
                         })
