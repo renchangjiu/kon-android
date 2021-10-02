@@ -26,7 +26,9 @@ public class MusicFileSearcher {
 
 
     /**
-     * 使用 MediaProvider 获取音乐文件
+     * 使用 MediaProvider 搜索音乐文件.
+     * 优势: 搜索速度快.
+     * 缺陷: 数据更新不及时.
      */
     public static List<String> search(Context context) {
         Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
